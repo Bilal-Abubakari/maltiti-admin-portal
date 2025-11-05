@@ -5,6 +5,7 @@ import { of } from 'rxjs';
 import { map, catchError, exhaustMap, tap } from 'rxjs/operators';
 import { AuthService } from '../services/auth.service';
 import * as AuthActions from './auth.actions';
+import {APP_ROUTES} from '../../config/routes.config';
 
 @Injectable()
 export class AuthEffects {
@@ -33,7 +34,7 @@ export class AuthEffects {
       this.actions$.pipe(
         ofType(AuthActions.authLoginSuccess),
         tap(() => {
-          this.router.navigate(['/dashboard']);
+          void this.router.navigate([APP_ROUTES.dashboard]);
         })
       ),
     { dispatch: false }
@@ -56,7 +57,7 @@ export class AuthEffects {
       this.actions$.pipe(
         ofType(AuthActions.authLogoutSuccess, AuthActions.sessionExpired),
         tap(() => {
-          void this.router.navigate(['/login']);
+          void this.router.navigate([APP_ROUTES.auth.login]);
         })
       ),
     { dispatch: false }
