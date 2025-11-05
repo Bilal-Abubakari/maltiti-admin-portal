@@ -15,6 +15,10 @@ You are an expert in TypeScript, Angular, and scalable web application developme
 - Do NOT use the `@HostBinding` and `@HostListener` decorators. Put host bindings inside the `host` object of the `@Component` or `@Directive` decorator instead
 - Use `NgOptimizedImage` for all static images.
   - `NgOptimizedImage` does not work for inline base64 images.
+- Always use access modifiers (`private`, `public`, `protected`, `readonly`) for class properties and methods
+- Prefer dependency injection via the `inject()` function over constructor injection
+- Use signals and selectSignal where possible instead of observables
+- Use `ChangeDetectionStrategy.OnPush` for better performance
 
 ## Components
 

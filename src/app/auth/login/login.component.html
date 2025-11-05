@@ -1,0 +1,79 @@
+<div class="login-container">
+  <div class="login-wrapper">
+    <p-card class="login-card">
+      <ng-template pTemplate="header">
+        <div class="login-header">
+          <h1 class="login-title">Maltiti A. Enterprise</h1>
+          <p class="login-subtitle">Admin Portal</p>
+        </div>
+      </ng-template>
+
+      @if (error(); as error) {
+        <p-message severity="error" styleClass="w-full mb-3">
+          {{error}}
+        </p-message>
+      }
+
+      <form [formGroup]="loginForm" (ngSubmit)="onSubmit()" class="login-form">
+        <div class="form-field">
+          <p-floatlabel>
+            <input
+              id="email"
+              type="email"
+              formControlName="email"
+              pInputText
+              class="w-full"
+              [class.ng-invalid]="emailControl.invalid && emailControl.touched"
+              [class.ng-dirty]="emailControl.touched"
+            />
+            <label for="email">Email</label>
+          </p-floatlabel>
+          @if (emailControl.invalid && emailControl.touched) {
+            <small class="error-text">
+              @if (emailControl.hasError('required')) {
+                Email is required
+              }
+              @if (emailControl.hasError('email')) {
+                Please enter a valid email
+              }
+            </small>
+          }
+        </div>
+
+        <div class="form-field">
+          <p-floatlabel>
+            <p-password
+              inputId="password"
+              formControlName="password"
+              [toggleMask]="true"
+              [feedback]="false"
+              class="w-full"
+              [inputStyleClass]="(passwordControl.invalid && passwordControl.touched) ? 'ng-invalid ng-dirty' : ''"
+            />
+            <label for="password">Password</label>
+          </p-floatlabel>
+          @if (passwordControl.invalid && passwordControl.touched) {
+            <small class="error-text">
+              @if (passwordControl.hasError('required')) {
+                Password is required
+              }
+              @if (passwordControl.hasError('minlength')) {
+                Password must be at least 6 characters
+              }
+            </small>
+          }
+        </div>
+
+        <p-button
+          type="submit"
+          label="Login"
+          icon="pi pi-sign-in"
+          [loading]="loading()"
+          [disabled]="loginForm.invalid"
+          styleClass="w-full"
+        />
+      </form>
+    </p-card>
+  </div>
+</div>
+

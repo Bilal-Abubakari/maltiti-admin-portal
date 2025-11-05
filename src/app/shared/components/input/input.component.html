@@ -1,0 +1,17 @@
+<p-floatlabel>
+  <input
+    [id]="id()"
+    [type]="type()"
+    [placeholder]="placeholder()"
+    [disabled]="disabled()"
+    [readonly]="readonly()"
+    [required]="required()"
+    [class]="styleClass()"
+    [(ngModel)]="value"
+    pInputText
+  />
+  @if (label()) {
+    <label [for]="id()">{{ label() }}</label>
+  }
+</p-floatlabel>
+
