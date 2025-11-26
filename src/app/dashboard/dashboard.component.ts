@@ -3,11 +3,10 @@
  * Main dashboard overview page with key metrics and quick actions
  */
 
-import { Component, OnInit, inject } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterLink } from '@angular/router';
 import { Store } from '@ngrx/store';
-import { toSignal } from '@angular/core/rxjs-interop';
 import { CardModule } from 'primeng/card';
 import { ButtonModule } from 'primeng/button';
 // import { ChartModule } from 'primeng/chart';
@@ -23,30 +22,30 @@ import * as BatchesActions from '../features/batches/store/batches.actions';
   templateUrl: './dashboard.component.html',
   styleUrls: ['./dashboard.component.scss'],
   imports: [CommonModule, RouterLink, CardModule, ButtonModule],
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class DashboardComponent implements OnInit {
   private store = inject(Store);
 
-  user = toSignal(this.store.select(selectUser));
-  products = toSignal(this.store.select(selectAllProducts), { initialValue: [] });
-  batches = toSignal(this.store.select(selectAllBatches), { initialValue: [] });
+  public readonly user = this.store.selectSignal(selectUser);
+  public readonly products = this.store.selectSignal(selectAllProducts);
+  public readonly batches = this.store.selectSignal(selectAllBatches);
 
-  ngOnInit(): void {
+  public ngOnInit(): void {
     // Load initial data for dashboard metrics
     this.store.dispatch(ProductsActions.loadProducts({ params: { limit: 100 } }));
     this.store.dispatch(BatchesActions.loadBatches());
   }
 
-  get activeProducts(): number {
+  public get activeProducts(): number {
     return this.products().filter((p) => p.status === 'active').length;
   }
 
-  get lowStockProducts(): number {
+  public get lowStockProducts(): number {
     return this.products().filter((p) => p.stockQuantity < 10).length;
   }
 
-  get totalBatches(): number {
+  public get totalBatches(): number {
     return this.batches().length;
   }
 }
-

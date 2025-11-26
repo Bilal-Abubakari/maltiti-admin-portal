@@ -3,9 +3,8 @@
  * Top navigation bar with menu toggle, breadcrumbs, and user menu
  */
 
-import { Component, output, inject, computed } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, inject, output } from '@angular/core';
 import { Store } from '@ngrx/store';
-import { toSignal } from '@angular/core/rxjs-interop';
 import { Router } from '@angular/router';
 import { ButtonModule } from 'primeng/button';
 import { MenuModule } from 'primeng/menu';
@@ -19,31 +18,32 @@ import { authLogout } from '../../auth/store/auth.actions';
   imports: [ButtonModule, MenuModule],
   templateUrl: './header.component.html',
   styleUrl: './header.component.scss',
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class HeaderComponent {
   private store = inject(Store);
   private router = inject(Router);
 
   // Output event for sidebar toggle
-  toggleSidebar = output<void>();
+  public readonly toggleSidebar = output<void>();
 
   // User signal from store
-  user = toSignal(this.store.select(selectUser));
+  public readonly user = this.store.selectSignal(selectUser);
 
   // User menu items
-  userMenuItems = computed<MenuItem[]>(() => [
+  public readonly userMenuItems = computed<MenuItem[]>(() => [
     {
       label: this.user()?.name || 'User',
       items: [
         {
           label: 'Profile',
           icon: 'pi pi-user',
-          command: () => this.navigateTo('/profile'),
+          command: (): void => this.navigateTo('/profile'),
         },
         {
           label: 'Settings',
           icon: 'pi pi-cog',
-          command: () => this.navigateTo('/settings'),
+          command: (): void => this.navigateTo('/settings'),
         },
         {
           separator: true,
@@ -51,17 +51,17 @@ export class HeaderComponent {
         {
           label: 'Logout',
           icon: 'pi pi-sign-out',
-          command: () => this.onLogout(),
+          command: (): void => this.onLogout(),
         },
       ],
     },
   ]);
 
-  onToggleSidebar(): void {
+  public onToggleSidebar(): void {
     this.toggleSidebar.emit();
   }
 
-  onLogout(): void {
+  public onLogout(): void {
     this.store.dispatch(authLogout());
   }
 

@@ -3,18 +3,18 @@
  * Navigation sidebar with menu items and logo
  */
 
-import { Component, input } from '@angular/core';
+import { ChangeDetectionStrategy, Component, input } from '@angular/core';
 import { RouterLink, RouterLinkActive } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { ButtonModule } from 'primeng/button';
 import { APP_ROUTES } from '../../config/routes.config';
 
-interface MenuItem {
+type MenuItem = {
   label: string;
   icon: string;
   route: string;
   badge?: string;
-}
+};
 
 @Component({
   selector: 'app-sidebar',
@@ -22,12 +22,13 @@ interface MenuItem {
   imports: [CommonModule, RouterLink, RouterLinkActive, ButtonModule],
   templateUrl: './sidebar.component.html',
   styleUrl: './sidebar.component.scss',
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class SidebarComponent {
-  collapsed = input<boolean>(false);
+  public readonly collapsed = input<boolean>(false);
 
   // Menu items configuration
-  menuItems: MenuItem[] = [
+  public menuItems: MenuItem[] = [
     {
       label: 'Dashboard',
       icon: 'pi pi-home',

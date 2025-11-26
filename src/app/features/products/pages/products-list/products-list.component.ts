@@ -116,46 +116,46 @@ export class ProductsListComponent implements OnInit {
     status: this.selectedStatus() || undefined,
   }));
 
-  ngOnInit(): void {
+  public ngOnInit(): void {
     this.loadProducts();
   }
 
-  loadProducts(): void {
+  public loadProducts(): void {
     this.store.dispatch(ProductsActions.loadProducts({ params: this.queryParams() }));
   }
 
-  onSearch(): void {
+  public onSearch(): void {
     this.currentPage.set(1);
     this.loadProducts();
   }
 
-  onFilterChange(): void {
+  public onFilterChange(): void {
     this.currentPage.set(1);
     this.loadProducts();
   }
 
-  onPageChange(event: TablePageEvent): void {
+  public onPageChange(event: TablePageEvent): void {
     console.log('Page changed:', event);
     this.currentPage.set(event.first + 1);
     this.pageSize.set(event.rows);
     this.loadProducts();
   }
 
-  onCreateProduct(): void {
+  public onCreateProduct(): void {
     this.selectedProduct.set(null);
     this.showProductDialog.set(true);
   }
 
-  onEditProduct(product: Product): void {
+  public onEditProduct(product: Product): void {
     this.selectedProduct.set(product);
     this.showProductDialog.set(true);
   }
 
-  onViewProduct(product: Product): void {
+  public onViewProduct(product: Product): void {
     this.selectedProduct.set(product);
   }
 
-  onDeleteProduct(product: Product): void {
+  public onDeleteProduct(product: Product): void {
     this.confirmationService.confirm({
       message: `Are you sure you want to delete "${product.name}"?`,
       header: 'Confirm Delete',
@@ -167,11 +167,11 @@ export class ProductsListComponent implements OnInit {
     });
   }
 
-  onToggleStatus(product: Product): void {
+  public onToggleStatus(product: Product): void {
     this.store.dispatch(ProductsActions.changeProductStatus({ id: product.id }));
   }
 
-  getStatusSeverity(status: ProductStatus): 'success' | 'warn' | 'danger' | 'secondary' {
+  public getStatusSeverity(status: ProductStatus): 'success' | 'warn' | 'danger' | 'secondary' {
     switch (status) {
       case 'active':
         return 'success';
@@ -186,7 +186,7 @@ export class ProductsListComponent implements OnInit {
     }
   }
 
-  formatCurrency(value: number): string {
+  public formatCurrency(value: number): string {
     return new Intl.NumberFormat('en-GH', { style: 'currency', currency: 'GHS' }).format(value);
   }
 }

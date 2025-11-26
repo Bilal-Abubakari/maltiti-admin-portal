@@ -21,7 +21,7 @@ export class BatchApiService {
    * Get all batches
    * GET /products/batches
    */
-  getAllBatches(): Observable<Batch[]> {
+  public getAllBatches(): Observable<Batch[]> {
     return this.http.get<Batch[]>(this.baseUrl);
   }
 
@@ -29,7 +29,7 @@ export class BatchApiService {
    * Get single batch by ID with associated products
    * GET /products/batches/:id
    */
-  getBatch(id: string): Observable<Batch> {
+  public getBatch(id: string): Observable<Batch> {
     return this.http.get<Batch>(`${this.baseUrl}/${id}`);
   }
 
@@ -37,7 +37,7 @@ export class BatchApiService {
    * Create new batch (Admin only)
    * POST /products/batches
    */
-  createBatch(dto: CreateBatchDto): Observable<Batch> {
+  public createBatch(dto: CreateBatchDto): Observable<Batch> {
     return this.http.post<Batch>(this.baseUrl, dto);
   }
 }

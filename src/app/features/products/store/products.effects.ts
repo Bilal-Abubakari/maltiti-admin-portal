@@ -6,7 +6,7 @@
 import { inject, Injectable } from '@angular/core';
 import { Actions, createEffect, ofType } from '@ngrx/effects';
 import { of } from 'rxjs';
-import { map, catchError, switchMap, tap } from 'rxjs/operators';
+import { catchError, map, switchMap, tap } from 'rxjs/operators';
 import { ProductApiService } from '../services/product-api.service';
 import * as ProductsActions from './products.actions';
 import { MessageService } from 'primeng/api';
@@ -17,7 +17,7 @@ export class ProductsEffects {
   private productApi = inject(ProductApiService);
   private messageService = inject(MessageService);
 
-  loadProducts$ = createEffect(() =>
+  public loadProducts$ = createEffect(() =>
     this.actions$.pipe(
       ofType(ProductsActions.loadProducts),
       switchMap(({ params }) =>
@@ -29,7 +29,7 @@ export class ProductsEffects {
     ),
   );
 
-  loadProduct$ = createEffect(() =>
+  public loadProduct$ = createEffect(() =>
     this.actions$.pipe(
       ofType(ProductsActions.loadProduct),
       switchMap(({ id }) =>
@@ -41,7 +41,7 @@ export class ProductsEffects {
     ),
   );
 
-  createProduct$ = createEffect(() =>
+  public createProduct$ = createEffect(() =>
     this.actions$.pipe(
       ofType(ProductsActions.createProduct),
       switchMap(({ dto }) =>
@@ -53,7 +53,7 @@ export class ProductsEffects {
     ),
   );
 
-  createProductSuccess$ = createEffect(
+  public createProductSuccess$ = createEffect(
     () =>
       this.actions$.pipe(
         ofType(ProductsActions.createProductSuccess),
@@ -68,7 +68,7 @@ export class ProductsEffects {
     { dispatch: false },
   );
 
-  updateProduct$ = createEffect(() =>
+  public updateProduct$ = createEffect(() =>
     this.actions$.pipe(
       ofType(ProductsActions.updateProduct),
       switchMap(({ id, dto }) =>
@@ -80,7 +80,7 @@ export class ProductsEffects {
     ),
   );
 
-  updateProductSuccess$ = createEffect(
+  public updateProductSuccess$ = createEffect(
     () =>
       this.actions$.pipe(
         ofType(ProductsActions.updateProductSuccess),
@@ -95,7 +95,7 @@ export class ProductsEffects {
     { dispatch: false },
   );
 
-  deleteProduct$ = createEffect(() =>
+  public deleteProduct$ = createEffect(() =>
     this.actions$.pipe(
       ofType(ProductsActions.deleteProduct),
       switchMap(({ id }) =>
@@ -107,7 +107,7 @@ export class ProductsEffects {
     ),
   );
 
-  deleteProductSuccess$ = createEffect(
+  public deleteProductSuccess$ = createEffect(
     () =>
       this.actions$.pipe(
         ofType(ProductsActions.deleteProductSuccess),
@@ -122,7 +122,7 @@ export class ProductsEffects {
     { dispatch: false },
   );
 
-  changeProductStatus$ = createEffect(() =>
+  public changeProductStatus$ = createEffect(() =>
     this.actions$.pipe(
       ofType(ProductsActions.changeProductStatus),
       switchMap(({ id }) =>
@@ -136,7 +136,7 @@ export class ProductsEffects {
     ),
   );
 
-  changeProductStatusSuccess$ = createEffect(
+  public changeProductStatusSuccess$ = createEffect(
     () =>
       this.actions$.pipe(
         ofType(ProductsActions.changeProductStatusSuccess),
@@ -151,7 +151,7 @@ export class ProductsEffects {
     { dispatch: false },
   );
 
-  handleError$ = createEffect(
+  public handleError$ = createEffect(
     () =>
       this.actions$.pipe(
         ofType(

@@ -48,9 +48,7 @@ module.exports = tseslint.config(
       '@typescript-eslint/explicit-function-return-type': 'error',
       '@typescript-eslint/explicit-member-accessibility': [
         'error',
-        {
-          constructors: 'no-public',
-        },
+        { accessibility: 'explicit', ignoredMethodNames: ['constructor'] },
       ],
       '@typescript-eslint/naming-convention': [
         'warn',

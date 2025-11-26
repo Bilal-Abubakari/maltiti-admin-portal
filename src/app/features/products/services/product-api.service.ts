@@ -9,11 +9,11 @@ import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { environment } from '../../../../environments/environment';
 import {
-  Product,
-  CreateProductDto,
-  UpdateProductDto,
-  ProductQueryParams,
   BestProductsResponse,
+  CreateProductDto,
+  Product,
+  ProductQueryParams,
+  UpdateProductDto,
 } from '../models/product.model';
 import { IPaginationResponse } from '../../../models/response.model';
 
@@ -28,7 +28,7 @@ export class ProductApiService {
    * Get all products with filtering, pagination, and sorting
    * GET /products/all-products
    */
-  getAllProducts(params?: ProductQueryParams): Observable<IPaginationResponse<Product>> {
+  public getAllProducts(params?: ProductQueryParams): Observable<IPaginationResponse<Product>> {
     console.log(params);
     let httpParams = new HttpParams();
 
@@ -50,7 +50,7 @@ export class ProductApiService {
    * Get featured/best products
    * GET /products/best-products
    */
-  getBestProducts(): Observable<BestProductsResponse> {
+  public getBestProducts(): Observable<BestProductsResponse> {
     return this.http.get<BestProductsResponse>(`${this.baseUrl}/best-products`);
   }
 
@@ -58,7 +58,7 @@ export class ProductApiService {
    * Get single product by ID
    * GET /products/product/:id
    */
-  getProduct(id: string): Observable<Product> {
+  public getProduct(id: string): Observable<Product> {
     return this.http.get<Product>(`${this.baseUrl}/product/${id}`);
   }
 
@@ -66,7 +66,7 @@ export class ProductApiService {
    * Create new product (Admin only)
    * POST /products/add-product
    */
-  createProduct(dto: CreateProductDto): Observable<Product> {
+  public createProduct(dto: CreateProductDto): Observable<Product> {
     return this.http.post<Product>(`${this.baseUrl}/add-product`, dto);
   }
 
@@ -74,7 +74,7 @@ export class ProductApiService {
    * Update existing product (Admin only)
    * PUT /products/edit-product/:id
    */
-  updateProduct(id: string, dto: UpdateProductDto): Observable<Product> {
+  public updateProduct(id: string, dto: UpdateProductDto): Observable<Product> {
     return this.http.put<Product>(`${this.baseUrl}/edit-product/${id}`, dto);
   }
 
@@ -82,7 +82,7 @@ export class ProductApiService {
    * Soft delete product (Admin only)
    * DELETE /products/delete-product/:id
    */
-  deleteProduct(id: string): Observable<void> {
+  public deleteProduct(id: string): Observable<void> {
     return this.http.delete<void>(`${this.baseUrl}/delete-product/${id}`);
   }
 
@@ -90,7 +90,7 @@ export class ProductApiService {
    * Toggle product status (Admin only)
    * PATCH /products/change-status/:id
    */
-  changeProductStatus(id: string): Observable<Product> {
+  public changeProductStatus(id: string): Observable<Product> {
     return this.http.patch<Product>(`${this.baseUrl}/change-status/${id}`, {});
   }
 
@@ -98,7 +98,7 @@ export class ProductApiService {
    * Toggle product favorite status
    * PATCH /products/favorite/:id
    */
-  toggleFavorite(id: string): Observable<Product> {
+  public toggleFavorite(id: string): Observable<Product> {
     return this.http.patch<Product>(`${this.baseUrl}/favorite/${id}`, {});
   }
 }

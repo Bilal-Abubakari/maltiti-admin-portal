@@ -6,7 +6,7 @@
 import { inject, Injectable } from '@angular/core';
 import { Actions, createEffect, ofType } from '@ngrx/effects';
 import { of } from 'rxjs';
-import { map, catchError, switchMap, tap } from 'rxjs/operators';
+import { catchError, map, switchMap, tap } from 'rxjs/operators';
 import { BatchApiService } from '../services/batch-api.service';
 import * as BatchesActions from './batches.actions';
 import { MessageService } from 'primeng/api';
@@ -17,43 +17,43 @@ export class BatchesEffects {
   private batchApi = inject(BatchApiService);
   private messageService = inject(MessageService);
 
-  loadBatches$ = createEffect(() =>
+  public loadBatches$ = createEffect(() =>
     this.actions$.pipe(
       ofType(BatchesActions.loadBatches),
       switchMap(() =>
         this.batchApi.getAllBatches().pipe(
           map((batches) => BatchesActions.loadBatchesSuccess({ batches })),
-          catchError((error) => of(BatchesActions.loadBatchesFailure({ error: error.message })))
-        )
-      )
-    )
+          catchError((error) => of(BatchesActions.loadBatchesFailure({ error: error.message }))),
+        ),
+      ),
+    ),
   );
 
-  loadBatch$ = createEffect(() =>
+  public loadBatch$ = createEffect(() =>
     this.actions$.pipe(
       ofType(BatchesActions.loadBatch),
       switchMap(({ id }) =>
         this.batchApi.getBatch(id).pipe(
           map((batch) => BatchesActions.loadBatchSuccess({ batch })),
-          catchError((error) => of(BatchesActions.loadBatchFailure({ error: error.message })))
-        )
-      )
-    )
+          catchError((error) => of(BatchesActions.loadBatchFailure({ error: error.message }))),
+        ),
+      ),
+    ),
   );
 
-  createBatch$ = createEffect(() =>
+  public createBatch$ = createEffect(() =>
     this.actions$.pipe(
       ofType(BatchesActions.createBatch),
       switchMap(({ dto }) =>
         this.batchApi.createBatch(dto).pipe(
           map((batch) => BatchesActions.createBatchSuccess({ batch })),
-          catchError((error) => of(BatchesActions.createBatchFailure({ error: error.message })))
-        )
-      )
-    )
+          catchError((error) => of(BatchesActions.createBatchFailure({ error: error.message }))),
+        ),
+      ),
+    ),
   );
 
-  createBatchSuccess$ = createEffect(
+  public createBatchSuccess$ = createEffect(
     () =>
       this.actions$.pipe(
         ofType(BatchesActions.createBatchSuccess),
@@ -63,27 +63,27 @@ export class BatchesEffects {
             summary: 'Success',
             detail: 'Batch created successfully',
           });
-        })
+        }),
       ),
-    { dispatch: false }
+    { dispatch: false },
   );
 
-  handleError$ = createEffect(
+  public handleError$ = createEffect(
     () =>
       this.actions$.pipe(
         ofType(
           BatchesActions.loadBatchesFailure,
           BatchesActions.loadBatchFailure,
-          BatchesActions.createBatchFailure
+          BatchesActions.createBatchFailure,
         ),
         tap(({ error }) => {
           this.messageService.add({
             severity: 'error',
             summary: 'Error',
-            detail: error || 'An error occurred',
+            detail: error,
           });
-        })
+        }),
       ),
-    { dispatch: false }
+    { dispatch: false },
   );
 }
