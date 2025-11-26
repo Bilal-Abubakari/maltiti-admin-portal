@@ -3,6 +3,10 @@
 /* Custom Theme */
 @use "styles/theme.scss";
 
+/* SCSS Variables and Mixins */
+@import 'styles/variables';
+@import 'styles/mixins';
+
 /* Global Reset */
 * {
   margin: 0;

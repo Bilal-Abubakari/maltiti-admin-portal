@@ -1,0 +1,26 @@
+<header class="header">
+  <div class="header-left">
+    <p-button
+      icon="pi pi-bars"
+      severity="secondary"
+      [rounded]="true"
+      [text]="true"
+      (onClick)="onToggleSidebar()"
+    />
+    <div class="header-title">
+      <h2>Maltiti Admin Portal</h2>
+    </div>
+  </div>
+
+  <div class="header-right">
+    <p-button icon="pi pi-bell" severity="secondary" [badge]="'3'" [rounded]="true" [text]="true" />
+    <p-menu #userMenu [model]="userMenuItems()" [popup]="true" />
+    <p-button
+      icon="pi pi-user"
+      severity="secondary"
+      [rounded]="true"
+      [text]="true"
+      (onClick)="userMenu.toggle($event)"
+    />
+  </div>
+</header>

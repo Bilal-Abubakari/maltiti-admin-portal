@@ -15,6 +15,30 @@ export const APP_ROUTES = {
     path: 'dashboard',
     fullPath: '/dashboard',
   },
+  products: {
+    path: 'products',
+    fullPath: '/products',
+  },
+  batches: {
+    path: 'batches',
+    fullPath: '/batches',
+  },
+  orders: {
+    path: 'orders',
+    fullPath: '/orders',
+  },
+  cooperatives: {
+    path: 'cooperatives',
+    fullPath: '/cooperatives',
+  },
+  reports: {
+    path: 'reports',
+    fullPath: '/reports',
+  },
+  settings: {
+    path: 'settings',
+    fullPath: '/settings',
+  },
   root: {
     path: '',
     fullPath: '/',
