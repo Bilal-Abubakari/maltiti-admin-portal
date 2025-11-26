@@ -13,6 +13,11 @@ import { authReducer } from './auth/store/auth.reducer';
 import { AuthEffects } from './auth/store/auth.effects';
 import { AuthStorageEffects } from './auth/store/auth-storage.effects';
 import { authInterceptor } from './interceptors/auth.interceptor';
+import { productsReducer } from './features/products/store/products.reducer';
+import { ProductsEffects } from './features/products/store/products.effects';
+import { batchesReducer } from './features/batches/store/batches.reducer';
+import { BatchesEffects } from './features/batches/store/batches.effects';
+import { MessageService } from 'primeng/api';
 
 export const appConfig: ApplicationConfig = {
   providers: [
@@ -31,8 +36,13 @@ export const appConfig: ApplicationConfig = {
         },
       },
     }),
-    provideStore({ auth: authReducer }),
-    provideEffects([AuthEffects, AuthStorageEffects]),
+    provideStore({
+      auth: authReducer,
+      products: productsReducer,
+      batches: batchesReducer,
+    }),
+    provideEffects([AuthEffects, AuthStorageEffects, ProductsEffects, BatchesEffects]),
     provideStoreDevtools({ maxAge: 25 }),
-  ]
+    MessageService,
+  ],
 };

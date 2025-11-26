@@ -16,7 +16,7 @@ export class AuthEffects {
   public readonly login$ = createEffect(() =>
     this.actions$.pipe(
       ofType(AuthActions.authLogin),
-      exhaustMap((credentials) =>
+      exhaustMap(({credentials}) =>
         this.authService.login(credentials).pipe(
           map(({ user }) => AuthActions.authLoginSuccess({ user })),
           catchError((error) => {
@@ -34,7 +34,7 @@ export class AuthEffects {
       this.actions$.pipe(
         ofType(AuthActions.authLoginSuccess),
         tap(() => {
-          void this.router.navigate([APP_ROUTES.dashboard]);
+          void this.router.navigate([APP_ROUTES.dashboard.path]);
         })
       ),
     { dispatch: false }
@@ -57,7 +57,7 @@ export class AuthEffects {
       this.actions$.pipe(
         ofType(AuthActions.authLogoutSuccess, AuthActions.sessionExpired),
         tap(() => {
-          void this.router.navigate([APP_ROUTES.auth.login]);
+          void this.router.navigate([APP_ROUTES.auth.login.fullPath]);
         })
       ),
     { dispatch: false }

@@ -48,7 +48,7 @@ export class LoginComponent {
   public onSubmit(): void {
     if (this.loginForm.valid) {
       const credentials = this.loginForm.getRawValue();
-      this.store.dispatch(authLogin(credentials));
+      this.store.dispatch(authLogin({credentials}));
       return
     }
     this.loginForm.markAllAsTouched();

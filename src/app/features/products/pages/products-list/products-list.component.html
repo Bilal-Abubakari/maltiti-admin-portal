@@ -1,0 +1,223 @@
+<div class="products-list-container">
+  <!-- Page Header -->
+  <div class="page-header">
+    <div class="page-title">
+      <h1>Products Management</h1>
+      <p class="page-description">Manage your product inventory, prices, and stock levels</p>
+    </div>
+    <p-button
+      icon="pi pi-plus"
+      label="Add Product"
+      styleClass="p-button-primary"
+      (onClick)="onCreateProduct()"
+    />
+  </div>
+
+  <!-- Filters Section -->
+  <div class="filters-section">
+    <div class="filters-row">
+      <!-- Search -->
+      <span class="p-input-icon-left search-input">
+        <i class="pi pi-search"></i>
+        <input
+          class="w-full"
+          pInputText
+          placeholder="Search products..."
+          type="text"
+          [(ngModel)]="searchTerm"
+          (keyup.enter)="onSearch()"
+        />
+      </span>
+
+      <!-- Category Filter -->
+      <p-select
+        class="filter-dropdown"
+        placeholder="Category"
+        [options]="categoryOptions"
+        [showClear]="true"
+        [(ngModel)]="selectedCategory"
+        (onChange)="onFilterChange()"
+      />
+
+      <!-- Status Filter -->
+      <p-select
+        placeholder="Status"
+        styleClass="filter-dropdown"
+        [options]="statusOptions"
+        [showClear]="true"
+        [(ngModel)]="selectedStatus"
+        (onChange)="onFilterChange()"
+      />
+
+      <!-- Search Button -->
+      <p-button
+        icon="pi pi-search"
+        label="Search"
+        styleClass="p-button-outlined"
+        (onClick)="onSearch()"
+      />
+    </div>
+  </div>
+
+  <!-- Products Table -->
+  <div class="table-card">
+    <p-table
+      class="p-datatable-sm"
+      currentPageReportTemplate="Showing {first} to {last} of {totalRecords} products"
+      [loading]="loading()"
+      [paginator]="true"
+      [rows]="pageSize()"
+      [rowsPerPageOptions]="[10, 25, 50, 100]"
+      [showCurrentPageReport]="true"
+      [totalRecords]="pagination().totalItems"
+      [value]="products()"
+    >
+      <!-- Image Column -->
+      <ng-template #header>
+        <tr>
+          <th style="width: 80px">Image</th>
+          <th pSortableColumn="name">
+            Name <p-sortIcon field="name" />
+          </th>
+          <th>Category</th>
+          <th pSortableColumn="retail">
+            Retail Price <p-sortIcon field="retail" />
+          </th>
+          <th pSortableColumn="stockQuantity">
+            Stock <p-sortIcon field="stockQuantity" />
+          </th>
+          <th>Status</th>
+          <th style="width: 150px">Actions</th>
+        </tr>
+      </ng-template>
+
+      <ng-template #body let-product>
+        <tr>
+          <!-- Image -->
+          <td>
+            <img
+              class="product-image"
+              [alt]="product.name"
+              [src]="product.image || 'assets/images/placeholder-product.png'"
+            />
+          </td>
+
+          <!-- Name -->
+          <td>
+            <div class="product-name-cell">
+              <span class="product-name">{{ product.name }}</span>
+              @if (product.isFeatured) {
+                <i class="pi pi-star-fill featured-icon" pTooltip="Featured Product"></i>
+              }
+              @if (product.isOrganic) {
+                <span class="organic-badge" pTooltip="Organic Certified">🌿</span>
+              }
+            </div>
+          </td>
+
+          <!-- Category -->
+          <td>
+            <span class="category-tag">{{ product.category | titlecase }}</span>
+          </td>
+
+          <!-- Retail Price -->
+          <td>
+            <span class="price">{{ formatCurrency(product.retail) }}</span>
+          </td>
+
+          <!-- Stock -->
+          <td>
+            <span
+              class="stock-badge"
+              [class.low-stock]="product.stockQuantity < 10"
+              [class.out-of-stock]="product.stockQuantity === 0"
+            >
+              {{ product.stockQuantity }}
+            </span>
+          </td>
+
+          <!-- Status -->
+          <td>
+            <p-tag
+              [severity]="getStatusSeverity(product.status)"
+              [value]="product.status | titlecase"
+            />
+          </td>
+
+          <!-- Actions -->
+          <td>
+            <div class="action-buttons">
+              <p-button
+                icon="pi pi-eye"
+                pTooltip="View Details"
+                severity="secondary"
+                [rounded]="true"
+                [text]="true"
+                (onClick)="onViewProduct(product)"
+              />
+              <p-button
+                icon="pi pi-pencil"
+                pTooltip="Edit Product"
+                severity="info"
+                [rounded]="true"
+                [text]="true"
+                (onClick)="onEditProduct(product)"
+              />
+              <p-button
+                [icon]="product.status === 'active' ? 'pi pi-ban' : 'pi pi-check-circle'"
+                [pTooltip]="product.status === 'active' ? 'Deactivate' : 'Activate'"
+                [rounded]="true"
+                [severity]="product.status === 'active' ? 'warn' : 'success'"
+                [text]="true"
+                (onClick)="onToggleStatus(product)"
+              />
+              <p-button
+                icon="pi pi-trash"
+                pTooltip="Delete Product"
+                severity="danger"
+                [rounded]="true"
+                [text]="true"
+                (onClick)="onDeleteProduct(product)"
+              />
+            </div>
+          </td>
+        </tr>
+      </ng-template>
+
+      <!-- Loading Template -->
+      <ng-template pTemplate="loadingbody">
+        <tr>
+          @for (i of [1, 2, 3, 4, 5, 6, 7, 8]; track i) {
+            <td>
+              <p-skeleton />
+            </td>
+          }
+        </tr>
+      </ng-template>
+
+      <!-- Empty State -->
+      <ng-template pTemplate="emptymessage">
+        <tr>
+          <td class="empty-state" colspan="8">
+            <div class="empty-state-content">
+              <i class="pi pi-inbox empty-icon"></i>
+              <h3>No Products Found</h3>
+              <p>Try adjusting your search or filters to find what you're looking for</p>
+              <p-button
+                icon="pi pi-plus"
+                label="Add Your First Product"
+                (onClick)="onCreateProduct()"
+              />
+            </div>
+          </td>
+        </tr>
+      </ng-template>
+    </p-table>
+  </div>
+
+  <!-- Product Dialog (Create/Edit) -->
+  <!-- This will be implemented as a separate component -->
+</div>
+
+<!-- Confirmation Dialog -->
+<p-confirmDialog />

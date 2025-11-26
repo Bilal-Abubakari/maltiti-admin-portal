@@ -1,0 +1,2794 @@
+{
+  "openapi": "3.0.0",
+  "paths": {
+    "/authentication/sign-up": {
+      "post": {
+        "operationId": "AuthenticationController_register",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RegisterUserDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "Authentication"
+        ]
+      }
+    },
+    "/authentication/verify-phone/{id}": {
+      "post": {
+        "operationId": "AuthenticationController_verifyPhone",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/VerifyPhoneDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "Authentication"
+        ]
+      }
+    },
+    "/authentication/customer-signup": {
+      "post": {
+        "operationId": "AuthenticationController_customerSignup",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RegisterUserDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "Authentication"
+        ]
+      }
+    },
+    "/authentication/login": {
+      "post": {
+        "operationId": "AuthenticationController_signIn",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SignInDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "Authentication"
+        ]
+      }
+    },
+    "/authentication/forgot-password": {
+      "post": {
+        "operationId": "AuthenticationController_forgotPassword",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ForgotPasswordDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "Authentication"
+        ]
+      }
+    },
+    "/authentication/reset-password": {
+      "post": {
+        "operationId": "AuthenticationController_resetPassword",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ResetPasswordDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "Authentication"
+        ]
+      }
+    },
+    "/authentication/verify/{id}/{token}": {
+      "get": {
+        "operationId": "AuthenticationController_emailVerification",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "token",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "Authentication"
+        ]
+      }
+    },
+    "/authentication/refresh-token": {
+      "post": {
+        "operationId": "AuthenticationController_refreshToken",
+        "parameters": [],
+        "responses": {
+          "201": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "Authentication"
+        ]
+      }
+    },
+    "/authentication/logout": {
+      "post": {
+        "operationId": "AuthenticationController_logout",
+        "parameters": [],
+        "responses": {
+          "201": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "Authentication"
+        ]
+      }
+    },
+    "/authentication/create-admin": {
+      "post": {
+        "operationId": "AuthenticationController_createAdmin",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateAdminDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "Authentication"
+        ]
+      }
+    },
+    "/authentication/change-password/{id}": {
+      "post": {
+        "operationId": "AuthenticationController_changePassword",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ChangePasswordDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "Authentication"
+        ]
+      }
+    },
+    "/cooperative/cooperatives": {
+      "get": {
+        "operationId": "CooperativeController_getAllCooperatives",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "Cooperative"
+        ]
+      }
+    },
+    "/cooperative/cooperative/{id}": {
+      "get": {
+        "operationId": "CooperativeController_getCooperative",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "Cooperative"
+        ]
+      }
+    },
+    "/cooperative/add-cooperative": {
+      "post": {
+        "operationId": "CooperativeController_addCooperative",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AddCooperativeDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "Cooperative"
+        ]
+      }
+    },
+    "/cooperative/edit-cooperative": {
+      "patch": {
+        "operationId": "CooperativeController_editCooperative",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/EditCooperativeDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "Cooperative"
+        ]
+      }
+    },
+    "/cooperative/delete-cooperative/{id}": {
+      "delete": {
+        "operationId": "CooperativeController_deleteCooperative",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "Cooperative"
+        ]
+      }
+    },
+    "/cooperative/members": {
+      "get": {
+        "operationId": "CooperativeController_getAllCooperativeMembers",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "Cooperative"
+        ]
+      }
+    },
+    "/cooperative/member/{id}": {
+      "get": {
+        "operationId": "CooperativeController_getCooperativeMember",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "Cooperative"
+        ]
+      }
+    },
+    "/cooperative/cooperative-members/{id}": {
+      "get": {
+        "operationId": "CooperativeController_getMembersByCooperative",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "Cooperative"
+        ]
+      }
+    },
+    "/cooperative/add-member": {
+      "post": {
+        "operationId": "CooperativeController_addMember",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AddCooperativeMemberDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "Cooperative"
+        ]
+      }
+    },
+    "/cooperative/edit-member": {
+      "patch": {
+        "operationId": "CooperativeController_editMember",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/EditCooperativeMemberDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "Cooperative"
+        ]
+      }
+    },
+    "/cooperative/delete-member/{id}": {
+      "delete": {
+        "operationId": "CooperativeController_deleteMember",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "Cooperative"
+        ]
+      }
+    },
+    "/products/all-products": {
+      "get": {
+        "description": "Retrieve all products with flexible filtering, pagination, and sorting options",
+        "operationId": "ProductsController_getAllProducts",
+        "parameters": [
+          {
+            "name": "page",
+            "required": false,
+            "in": "query",
+            "description": "Page number for pagination",
+            "schema": {
+              "minimum": 1,
+              "default": 1,
+              "example": 1,
+              "type": "number"
+            }
+          },
+          {
+            "name": "limit",
+            "required": false,
+            "in": "query",
+            "description": "Number of items per page",
+            "schema": {
+              "minimum": 1,
+              "maximum": 100,
+              "default": 10,
+              "example": 10,
+              "type": "number"
+            }
+          },
+          {
+            "name": "searchTerm",
+            "required": false,
+            "in": "query",
+            "description": "Search term for product name or description",
+            "schema": {
+              "example": "shea butter",
+              "type": "string"
+            }
+          },
+          {
+            "name": "category",
+            "required": false,
+            "in": "query",
+            "description": "Filter by product category",
+            "schema": {
+              "example": "shea_butter",
+              "enum": [
+                "shea_butter",
+                "black_soap",
+                "cosmetics",
+                "shea_soap",
+                "powdered_soap",
+                "dawadawa_tea",
+                "essential_oils",
+                "hair_oil",
+                "grains",
+                "legumes",
+                "other"
+              ],
+              "type": "string"
+            }
+          },
+          {
+            "name": "status",
+            "required": false,
+            "in": "query",
+            "description": "Filter by product status",
+            "schema": {
+              "example": "active",
+              "enum": [
+                "active",
+                "inactive",
+                "out_of_stock",
+                "discontinued"
+              ],
+              "type": "string"
+            }
+          },
+          {
+            "name": "grade",
+            "required": false,
+            "in": "query",
+            "description": "Filter by product grade",
+            "schema": {
+              "example": "A",
+              "enum": [
+                "A",
+                "B",
+                "premium",
+                "standard",
+                "organic"
+              ],
+              "type": "string"
+            }
+          },
+          {
+            "name": "packagingSize",
+            "required": false,
+            "in": "query",
+            "description": "Filter by packaging size",
+            "schema": {
+              "example": "1kg",
+              "enum": [
+                "100g",
+                "250g",
+                "500g",
+                "1kg",
+                "5kg",
+                "12kg",
+                "25kg",
+                "50kg",
+                "100ml",
+                "250ml",
+                "500ml",
+                "1L",
+                "custom"
+              ],
+              "type": "string"
+            }
+          },
+          {
+            "name": "isFeatured",
+            "required": false,
+            "in": "query",
+            "description": "Filter by featured products",
+            "schema": {
+              "example": true,
+              "type": "boolean"
+            }
+          },
+          {
+            "name": "isOrganic",
+            "required": false,
+            "in": "query",
+            "description": "Filter by organic products",
+            "schema": {
+              "example": true,
+              "type": "boolean"
+            }
+          },
+          {
+            "name": "minPrice",
+            "required": false,
+            "in": "query",
+            "description": "Minimum price filter",
+            "schema": {
+              "example": 10,
+              "type": "number"
+            }
+          },
+          {
+            "name": "maxPrice",
+            "required": false,
+            "in": "query",
+            "description": "Maximum price filter",
+            "schema": {
+              "example": 100,
+              "type": "number"
+            }
+          },
+          {
+            "name": "sortBy",
+            "required": false,
+            "in": "query",
+            "description": "Sort field",
+            "schema": {
+              "example": "createdAt",
+              "enum": [
+                "name",
+                "retail",
+                "createdAt",
+                "rating",
+                "stockQuantity"
+              ],
+              "type": "string"
+            }
+          },
+          {
+            "name": "sortOrder",
+            "required": false,
+            "in": "query",
+            "description": "Sort order",
+            "schema": {
+              "example": "DESC",
+              "enum": [
+                "ASC",
+                "DESC"
+              ],
+              "type": "string"
+            }
+          },
+          {
+            "name": "batchId",
+            "required": false,
+            "in": "query",
+            "description": "Filter by batch ID",
+            "schema": {
+              "example": "123e4567-e89b-12d3-a456-426614174000",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Products retrieved successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProductsPaginationResponseDto"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid query parameters"
+          }
+        },
+        "summary": "Get all products",
+        "tags": [
+          "Products"
+        ]
+      }
+    },
+    "/products/best-products": {
+      "get": {
+        "description": "Retrieve 8 random featured/best products",
+        "operationId": "ProductsController_getBestProducts",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Featured products retrieved successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BestProductsResponseDto"
+                }
+              }
+            }
+          }
+        },
+        "summary": "Get featured products",
+        "tags": [
+          "Products"
+        ]
+      }
+    },
+    "/products/product/{id}": {
+      "get": {
+        "description": "Retrieve a single product by ID",
+        "operationId": "ProductsController_getProduct",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "description": "Product UUID",
+            "schema": {
+              "example": "123e4567-e89b-12d3-a456-426614174000",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Product retrieved successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProductResponseDto"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Product not found"
+          }
+        },
+        "summary": "Get single product",
+        "tags": [
+          "Products"
+        ]
+      }
+    },
+    "/products/add-product": {
+      "post": {
+        "description": "Create a new product (Admin only)",
+        "operationId": "ProductsController_addProduct",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateProductDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Product created successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProductResponseDto"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid input data"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "409": {
+            "description": "Product with SKU already exists"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Create new product",
+        "tags": [
+          "Products"
+        ]
+      }
+    },
+    "/products/edit-product/{id}": {
+      "put": {
+        "description": "Update an existing product (Admin only)",
+        "operationId": "ProductsController_editProduct",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "description": "Product UUID",
+            "schema": {
+              "example": "123e4567-e89b-12d3-a456-426614174000",
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateProductDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Product updated successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProductResponseDto"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid input data"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "404": {
+            "description": "Product not found"
+          },
+          "409": {
+            "description": "Product with SKU already exists"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Update product",
+        "tags": [
+          "Products"
+        ]
+      }
+    },
+    "/products/delete-product/{id}": {
+      "delete": {
+        "description": "Soft delete a product (Admin only)",
+        "operationId": "ProductsController_deleteProduct",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "description": "Product UUID",
+            "schema": {
+              "example": "123e4567-e89b-12d3-a456-426614174000",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Product deleted successfully"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "404": {
+            "description": "Product not found"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Delete product",
+        "tags": [
+          "Products"
+        ]
+      }
+    },
+    "/products/change-status/{id}": {
+      "patch": {
+        "description": "Toggle product status between active and inactive (Admin only)",
+        "operationId": "ProductsController_changeProductStatus",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "description": "Product UUID",
+            "schema": {
+              "example": "123e4567-e89b-12d3-a456-426614174000",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Product status changed successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProductResponseDto"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "404": {
+            "description": "Product not found"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Toggle product status",
+        "tags": [
+          "Products"
+        ]
+      }
+    },
+    "/products/favorite/{id}": {
+      "patch": {
+        "description": "Toggle product favorite status",
+        "operationId": "ProductsController_toggleFavorite",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "description": "Product UUID",
+            "schema": {
+              "example": "123e4567-e89b-12d3-a456-426614174000",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Product favorite status toggled successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProductResponseDto"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "404": {
+            "description": "Product not found"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Toggle product favorite",
+        "tags": [
+          "Products"
+        ]
+      }
+    },
+    "/products/batches": {
+      "post": {
+        "description": "Create a new product batch (Admin only)",
+        "operationId": "BatchesController_createBatch",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateBatchDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Batch created successfully"
+          },
+          "400": {
+            "description": "Invalid input data"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "409": {
+            "description": "Batch number already exists"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Create new batch",
+        "tags": [
+          "Batches"
+        ]
+      },
+      "get": {
+        "description": "Retrieve all product batches",
+        "operationId": "BatchesController_getAllBatches",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Batches retrieved successfully"
+          }
+        },
+        "summary": "Get all batches",
+        "tags": [
+          "Batches"
+        ]
+      }
+    },
+    "/products/batches/{id}": {
+      "get": {
+        "description": "Retrieve a single batch by ID with all associated products",
+        "operationId": "BatchesController_getBatch",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "description": "Batch UUID",
+            "schema": {
+              "example": "123e4567-e89b-12d3-a456-426614174000",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Batch retrieved successfully"
+          },
+          "404": {
+            "description": "Batch not found"
+          }
+        },
+        "summary": "Get single batch",
+        "tags": [
+          "Batches"
+        ]
+      }
+    },
+    "/cart/{id}": {
+      "get": {
+        "operationId": "CartController_getCart",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "Cart"
+        ]
+      },
+      "delete": {
+        "operationId": "CartController_removeFromCart",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "Cart"
+        ]
+      },
+      "post": {
+        "operationId": "CartController_addToCart",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AddCartDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "Cart"
+        ]
+      },
+      "patch": {
+        "operationId": "CartController_addQuantity",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AddQuantityDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "Cart"
+        ]
+      }
+    },
+    "/cart/all-cart/{id}": {
+      "delete": {
+        "operationId": "CartController_removeAllFromCart",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "Cart"
+        ]
+      }
+    },
+    "/checkout/orders/{id}": {
+      "get": {
+        "operationId": "CheckoutController_getOrders",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "Checkout"
+        ]
+      }
+    },
+    "/checkout/order/{id}": {
+      "get": {
+        "operationId": "CheckoutController_getOrder",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "Checkout"
+        ]
+      }
+    },
+    "/checkout/test-mail": {
+      "get": {
+        "operationId": "CheckoutController_testMail",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "Checkout"
+        ]
+      }
+    },
+    "/checkout/confirm-payment/{userId}/{checkoutId}": {
+      "get": {
+        "operationId": "CheckoutController_confirmPayment",
+        "parameters": [
+          {
+            "name": "userId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "checkoutId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "Checkout"
+        ]
+      }
+    },
+    "/checkout/{id}/{location}": {
+      "get": {
+        "operationId": "CheckoutController_getTransportation",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "location",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "Checkout"
+        ]
+      }
+    },
+    "/checkout/orders": {
+      "get": {
+        "operationId": "CheckoutController_getAllOrders",
+        "parameters": [
+          {
+            "name": "orderStatus",
+            "required": true,
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "searchTerm",
+            "required": true,
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "page",
+            "required": true,
+            "in": "query",
+            "schema": {
+              "type": "number"
+            }
+          },
+          {
+            "name": "paymentStatus",
+            "required": true,
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "Checkout"
+        ]
+      }
+    },
+    "/checkout/initialize-transaction/{id}": {
+      "post": {
+        "operationId": "CheckoutController_initializeTransaction",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/InitializeTransaction"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "Checkout"
+        ]
+      }
+    },
+    "/checkout/order-status/{id}": {
+      "patch": {
+        "operationId": "CheckoutController_orderStatus",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/OrderStatus"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "Checkout"
+        ]
+      }
+    },
+    "/checkout/payment-status/{id}": {
+      "patch": {
+        "operationId": "CheckoutController_paymentStatus",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/PaymentStatus"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "Checkout"
+        ]
+      }
+    },
+    "/checkout/cancel-order/{id}": {
+      "patch": {
+        "operationId": "CheckoutController_cancelOrder",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "Checkout"
+        ]
+      }
+    }
+  },
+  "info": {
+    "title": "Maltiti A. Enterprise Ltd - API",
+    "description": "API documentation for Maltiti A. Enterprise Ltd API Service. Manufacturer of premium shea-based products, cosmetics, and essential oils.",
+    "version": "1.0",
+    "contact": {
+      "name": "Maltiti Support",
+      "url": "https://maltiti.com",
+      "email": "support@maltiti.com"
+    },
+    "license": {
+      "name": "Proprietary",
+      "url": "https://maltiti.com/license"
+    }
+  },
+  "tags": [
+    {
+      "name": "Authentication",
+      "description": "User authentication and authorization endpoints"
+    },
+    {
+      "name": "Products",
+      "description": "Product management endpoints"
+    },
+    {
+      "name": "Cart",
+      "description": "Shopping cart management endpoints"
+    },
+    {
+      "name": "Checkout",
+      "description": "Order and checkout endpoints"
+    },
+    {
+      "name": "Cooperative",
+      "description": "Cooperative management endpoints"
+    },
+    {
+      "name": "Users",
+      "description": "User management endpoints"
+    }
+  ],
+  "servers": [
+    {
+      "url": "http://localhost:3002",
+      "description": "Development"
+    }
+  ],
+  "components": {
+    "securitySchemes": {
+      "JWT-auth": {
+        "scheme": "bearer",
+        "bearerFormat": "JWT",
+        "type": "http",
+        "name": "JWT",
+        "description": "Enter JWT token",
+        "in": "header"
+      }
+    },
+    "schemas": {
+      "RegisterUserDto": {
+        "type": "object",
+        "properties": {
+
+        }
+      },
+      "VerifyPhoneDto": {
+        "type": "object",
+        "properties": {
+
+        }
+      },
+      "SignInDto": {
+        "type": "object",
+        "properties": {
+
+        }
+      },
+      "ForgotPasswordDto": {
+        "type": "object",
+        "properties": {
+
+        }
+      },
+      "ResetPasswordDto": {
+        "type": "object",
+        "properties": {
+
+        }
+      },
+      "CreateAdminDto": {
+        "type": "object",
+        "properties": {
+
+        }
+      },
+      "ChangePasswordDto": {
+        "type": "object",
+        "properties": {
+
+        }
+      },
+      "AddCooperativeDto": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "description": "The name of the cooperative",
+            "example": "Shea Women's Cooperative Union",
+            "minLength": 3,
+            "maxLength": 200
+          },
+          "community": {
+            "type": "string",
+            "description": "The community or location where the cooperative operates",
+            "example": "Tamale, Northern Region",
+            "minLength": 2,
+            "maxLength": 150
+          },
+          "registrationFee": {
+            "type": "string",
+            "description": "The registration fee for joining the cooperative (in local currency)",
+            "example": "50.00"
+          },
+          "monthlyFee": {
+            "type": "string",
+            "description": "The monthly membership fee for the cooperative (in local currency)",
+            "example": "10.00"
+          },
+          "minimalShare": {
+            "type": "string",
+            "description": "The minimum share amount required for membership (in local currency)",
+            "example": "100.00"
+          }
+        },
+        "required": [
+          "name",
+          "community",
+          "registrationFee",
+          "monthlyFee",
+          "minimalShare"
+        ]
+      },
+      "EditCooperativeDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "The UUID of the cooperative to edit",
+            "example": "550e8400-e29b-41d4-a716-446655440000"
+          },
+          "name": {
+            "type": "string",
+            "description": "The updated name of the cooperative",
+            "example": "Shea Women's Cooperative Union",
+            "minLength": 3,
+            "maxLength": 200
+          },
+          "community": {
+            "type": "string",
+            "description": "The updated community or location where the cooperative operates",
+            "example": "Tamale, Northern Region",
+            "minLength": 2,
+            "maxLength": 150
+          },
+          "registrationFee": {
+            "type": "string",
+            "description": "The updated registration fee for joining the cooperative (in local currency)",
+            "example": "50.00"
+          },
+          "monthlyFee": {
+            "type": "string",
+            "description": "The updated monthly membership fee for the cooperative (in local currency)",
+            "example": "10.00"
+          },
+          "minimalShare": {
+            "type": "string",
+            "description": "The updated minimum share amount required for membership (in local currency)",
+            "example": "100.00"
+          }
+        },
+        "required": [
+          "id",
+          "name",
+          "community",
+          "registrationFee",
+          "monthlyFee",
+          "minimalShare"
+        ]
+      },
+      "AddCooperativeMemberDto": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "description": "The full name of the cooperative member",
+            "example": "Fatima Abdul-Rahman",
+            "minLength": 3,
+            "maxLength": 100
+          },
+          "cooperative": {
+            "type": "string",
+            "description": "The UUID of the cooperative this member belongs to",
+            "example": "550e8400-e29b-41d4-a716-446655440000"
+          },
+          "phoneNumber": {
+            "type": "string",
+            "description": "The phone number of the member (must be unique, Ghana format)",
+            "example": "+233244123456"
+          },
+          "houseNumber": {
+            "type": "string",
+            "description": "The house number or residential address identifier",
+            "example": "House 42B",
+            "maxLength": 50
+          },
+          "gpsAddress": {
+            "type": "string",
+            "description": "The GPS address or digital address",
+            "example": "GT-0123-4567",
+            "maxLength": 20
+          },
+          "image": {
+            "type": "string",
+            "description": "The profile image URL or file reference (uploaded separately)",
+            "example": "https://s3.amazonaws.com/bucket/member-photos/image.jpg"
+          },
+          "idType": {
+            "type": "string",
+            "description": "The type of identification document (e.g., National ID, Voter ID, Passport)",
+            "example": "Ghana Card",
+            "enum": [
+              "Ghana Card",
+              "Voter ID",
+              "Passport",
+              "Driver License",
+              "NHIS Card"
+            ]
+          },
+          "idNumber": {
+            "type": "string",
+            "description": "The identification number (must be unique)",
+            "example": "GHA-123456789-0",
+            "maxLength": 50
+          },
+          "community": {
+            "type": "string",
+            "description": "The community or locality where the member resides",
+            "example": "Savelugu",
+            "minLength": 2,
+            "maxLength": 100
+          },
+          "district": {
+            "type": "string",
+            "description": "The district where the member resides",
+            "example": "Savelugu Municipal",
+            "minLength": 2,
+            "maxLength": 100
+          },
+          "region": {
+            "type": "string",
+            "description": "The region of Ghana where the member resides",
+            "example": "Northern Region",
+            "enum": [
+              "Ahafo Region",
+              "Ashanti Region",
+              "Bono East Region",
+              "Bono Region",
+              "Central Region",
+              "Eastern Region",
+              "Greater Accra Region",
+              "North East Region",
+              "Northern Region",
+              "Oti Region",
+              "Savannah Region",
+              "Upper East Region",
+              "Upper West Region",
+              "Volta Region",
+              "Western North Region",
+              "Western Region"
+            ]
+          },
+          "dob": {
+            "type": "string",
+            "description": "The date of birth of the member (ISO 8601 format)",
+            "example": "1985-06-15",
+            "format": "date"
+          },
+          "education": {
+            "type": "string",
+            "description": "The highest level of education attained",
+            "example": "Junior High School",
+            "enum": [
+              "No Formal Education",
+              "Primary School",
+              "Junior High School",
+              "Senior High School",
+              "Tertiary Education",
+              "Vocational Training"
+            ]
+          },
+          "occupation": {
+            "type": "string",
+            "description": "The primary occupation of the member",
+            "example": "Shea Butter Producer",
+            "minLength": 2,
+            "maxLength": 100
+          },
+          "secondaryOccupation": {
+            "type": "string",
+            "description": "The secondary occupation of the member (if any)",
+            "example": "Farmer",
+            "maxLength": 100
+          },
+          "crops": {
+            "type": "string",
+            "description": "The types of crops cultivated by the member (comma-separated)",
+            "example": "Shea nuts, Groundnuts, Maize",
+            "maxLength": 200
+          },
+          "farmSize": {
+            "type": "number",
+            "description": "The size of the farm in acres",
+            "example": 5.5,
+            "minimum": 0,
+            "maximum": 10000
+          }
+        },
+        "required": [
+          "name",
+          "cooperative",
+          "phoneNumber",
+          "houseNumber",
+          "gpsAddress",
+          "idType",
+          "idNumber",
+          "community",
+          "district",
+          "region",
+          "dob",
+          "education",
+          "occupation",
+          "crops",
+          "farmSize"
+        ]
+      },
+      "EditCooperativeMemberDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "The UUID of the cooperative member to edit",
+            "example": "550e8400-e29b-41d4-a716-446655440000"
+          },
+          "name": {
+            "type": "string",
+            "description": "The updated full name of the cooperative member",
+            "example": "Fatima Abdul-Rahman",
+            "minLength": 3,
+            "maxLength": 100
+          },
+          "cooperative": {
+            "type": "string",
+            "description": "The UUID of the cooperative this member belongs to",
+            "example": "550e8400-e29b-41d4-a716-446655440000"
+          },
+          "phoneNumber": {
+            "type": "string",
+            "description": "The updated phone number of the member (must be unique, Ghana format)",
+            "example": "+233244123456"
+          },
+          "houseNumber": {
+            "type": "string",
+            "description": "The updated house number or residential address identifier",
+            "example": "House 42B",
+            "maxLength": 50
+          },
+          "gpsAddress": {
+            "type": "string",
+            "description": "The updated GPS address or digital address",
+            "example": "GT-0123-4567",
+            "maxLength": 20
+          },
+          "image": {
+            "type": "string",
+            "description": "The updated profile image URL or file reference (uploaded separately)",
+            "example": "https://s3.amazonaws.com/bucket/member-photos/image.jpg"
+          },
+          "idType": {
+            "type": "string",
+            "description": "The updated type of identification document (e.g., National ID, Voter ID, Passport)",
+            "example": "Ghana Card",
+            "enum": [
+              "Ghana Card",
+              "Voter ID",
+              "Passport",
+              "Driver License",
+              "NHIS Card"
+            ]
+          },
+          "idNumber": {
+            "type": "string",
+            "description": "The updated identification number (must be unique)",
+            "example": "GHA-123456789-0",
+            "maxLength": 50
+          },
+          "community": {
+            "type": "string",
+            "description": "The updated community or locality where the member resides",
+            "example": "Savelugu",
+            "minLength": 2,
+            "maxLength": 100
+          },
+          "district": {
+            "type": "string",
+            "description": "The updated district where the member resides",
+            "example": "Savelugu Municipal",
+            "minLength": 2,
+            "maxLength": 100
+          },
+          "region": {
+            "type": "string",
+            "description": "The updated region of Ghana where the member resides",
+            "example": "Northern Region",
+            "enum": [
+              "Ahafo Region",
+              "Ashanti Region",
+              "Bono East Region",
+              "Bono Region",
+              "Central Region",
+              "Eastern Region",
+              "Greater Accra Region",
+              "North East Region",
+              "Northern Region",
+              "Oti Region",
+              "Savannah Region",
+              "Upper East Region",
+              "Upper West Region",
+              "Volta Region",
+              "Western North Region",
+              "Western Region"
+            ]
+          },
+          "dob": {
+            "type": "string",
+            "description": "The updated date of birth of the member (ISO 8601 format)",
+            "example": "1985-06-15",
+            "format": "date"
+          },
+          "education": {
+            "type": "string",
+            "description": "The updated highest level of education attained",
+            "example": "Junior High School",
+            "enum": [
+              "No Formal Education",
+              "Primary School",
+              "Junior High School",
+              "Senior High School",
+              "Tertiary Education",
+              "Vocational Training"
+            ]
+          },
+          "occupation": {
+            "type": "string",
+            "description": "The updated primary occupation of the member",
+            "example": "Shea Butter Producer",
+            "minLength": 2,
+            "maxLength": 100
+          },
+          "secondaryOccupation": {
+            "type": "string",
+            "description": "The updated secondary occupation of the member (if any)",
+            "example": "Farmer",
+            "maxLength": 100
+          },
+          "crops": {
+            "type": "string",
+            "description": "The updated types of crops cultivated by the member (comma-separated)",
+            "example": "Shea nuts, Groundnuts, Maize",
+            "maxLength": 200
+          },
+          "farmSize": {
+            "type": "number",
+            "description": "The updated size of the farm in acres",
+            "example": 5.5,
+            "minimum": 0,
+            "maximum": 10000
+          }
+        },
+        "required": [
+          "id",
+          "name",
+          "cooperative",
+          "phoneNumber",
+          "houseNumber",
+          "gpsAddress",
+          "idType",
+          "idNumber",
+          "community",
+          "district",
+          "region",
+          "dob",
+          "education",
+          "occupation",
+          "crops",
+          "farmSize"
+        ]
+      },
+      "ProductResponseDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "example": "123e4567-e89b-12d3-a456-426614174000"
+          },
+          "sku": {
+            "type": "string",
+            "example": "SB-WHT-1KG-001"
+          },
+          "name": {
+            "type": "string",
+            "example": "White Shea Butter Grade A"
+          },
+          "ingredients": {
+            "example": [
+              "100% Pure Shea Butter",
+              "No additives"
+            ],
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "weight": {
+            "type": "string",
+            "example": "1kg"
+          },
+          "category": {
+            "type": "string",
+            "enum": [
+              "shea_butter",
+              "black_soap",
+              "cosmetics",
+              "shea_soap",
+              "powdered_soap",
+              "dawadawa_tea",
+              "essential_oils",
+              "hair_oil",
+              "grains",
+              "legumes",
+              "other"
+            ],
+            "example": "shea_butter"
+          },
+          "description": {
+            "type": "string",
+            "example": "Premium white shea butter extracted from organic shea nuts in Northern Ghana."
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "active",
+              "inactive",
+              "out_of_stock",
+              "discontinued"
+            ],
+            "example": "active"
+          },
+          "size": {
+            "type": "string",
+            "enum": [
+              "100g",
+              "250g",
+              "500g",
+              "1kg",
+              "5kg",
+              "12kg",
+              "25kg",
+              "50kg",
+              "100ml",
+              "250ml",
+              "500ml",
+              "1L",
+              "custom"
+            ],
+            "example": "1kg"
+          },
+          "images": {
+            "example": [
+              "https://example.com/image1.jpg",
+              "https://example.com/image2.jpg"
+            ],
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "image": {
+            "type": "string",
+            "example": "https://example.com/primary-image.jpg"
+          },
+          "wholesale": {
+            "type": "number",
+            "example": 45
+          },
+          "retail": {
+            "type": "number",
+            "example": 60
+          },
+          "stockQuantity": {
+            "type": "number",
+            "example": 150
+          },
+          "inBoxPrice": {
+            "type": "number",
+            "example": 540
+          },
+          "quantityInBox": {
+            "type": "number",
+            "example": 12
+          },
+          "favorite": {
+            "type": "boolean",
+            "example": false
+          },
+          "rating": {
+            "type": "number",
+            "example": 4.5
+          },
+          "reviews": {
+            "type": "number",
+            "example": 23
+          },
+          "grade": {
+            "type": "string",
+            "enum": [
+              "A",
+              "B",
+              "premium",
+              "standard",
+              "organic"
+            ],
+            "example": "A"
+          },
+          "isFeatured": {
+            "type": "boolean",
+            "example": false
+          },
+          "isOrganic": {
+            "type": "boolean",
+            "example": true
+          },
+          "certifications": {
+            "example": [
+              "Ecocert",
+              "FDA",
+              "GSA"
+            ],
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "supplierReference": {
+            "type": "string",
+            "example": "SUP-2024-001"
+          },
+          "producedAt": {
+            "format": "date-time",
+            "type": "string",
+            "example": "2024-01-15T00:00:00.000Z"
+          },
+          "expiryDate": {
+            "format": "date-time",
+            "type": "string",
+            "example": "2026-01-15T00:00:00.000Z"
+          },
+          "minOrderQuantity": {
+            "type": "number",
+            "example": 5
+          },
+          "createdAt": {
+            "format": "date-time",
+            "type": "string",
+            "example": "2024-01-15T10:30:00.000Z"
+          },
+          "updatedAt": {
+            "format": "date-time",
+            "type": "string",
+            "example": "2024-01-20T15:45:00.000Z"
+          }
+        },
+        "required": [
+          "id",
+          "sku",
+          "name",
+          "ingredients",
+          "weight",
+          "category",
+          "description",
+          "status",
+          "size",
+          "images",
+          "image",
+          "wholesale",
+          "retail",
+          "stockQuantity",
+          "inBoxPrice",
+          "quantityInBox",
+          "favorite",
+          "rating",
+          "reviews",
+          "grade",
+          "isFeatured",
+          "isOrganic",
+          "certifications",
+          "supplierReference",
+          "producedAt",
+          "expiryDate",
+          "minOrderQuantity",
+          "createdAt",
+          "updatedAt"
+        ]
+      },
+      "ProductsPaginationResponseDto": {
+        "type": "object",
+        "properties": {
+          "totalItems": {
+            "type": "number",
+            "example": 50
+          },
+          "currentPage": {
+            "type": "number",
+            "example": 1
+          },
+          "totalPages": {
+            "type": "number",
+            "example": 5
+          },
+          "products": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ProductResponseDto"
+            }
+          }
+        },
+        "required": [
+          "totalItems",
+          "currentPage",
+          "totalPages",
+          "products"
+        ]
+      },
+      "BestProductsResponseDto": {
+        "type": "object",
+        "properties": {
+          "totalItems": {
+            "type": "number",
+            "example": 8
+          },
+          "data": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ProductResponseDto"
+            }
+          }
+        },
+        "required": [
+          "totalItems",
+          "data"
+        ]
+      },
+      "CreateProductDto": {
+        "type": "object",
+        "properties": {
+          "sku": {
+            "type": "string",
+            "description": "Unique SKU code for the product",
+            "example": "SB-WHT-1KG-001"
+          },
+          "name": {
+            "type": "string",
+            "description": "Product name",
+            "example": "White Shea Butter Grade A"
+          },
+          "ingredients": {
+            "description": "Product ingredients (comma-separated or array)",
+            "example": [
+              "100% Pure Shea Butter",
+              "No additives"
+            ],
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "weight": {
+            "type": "string",
+            "description": "Product weight description",
+            "example": "1kg"
+          },
+          "category": {
+            "type": "string",
+            "description": "Product category",
+            "enum": [
+              "shea_butter",
+              "black_soap",
+              "cosmetics",
+              "shea_soap",
+              "powdered_soap",
+              "dawadawa_tea",
+              "essential_oils",
+              "hair_oil",
+              "grains",
+              "legumes",
+              "other"
+            ],
+            "example": "shea_butter"
+          },
+          "description": {
+            "type": "string",
+            "description": "Detailed product description",
+            "example": "Premium white shea butter extracted from organic shea nuts in Northern Ghana."
+          },
+          "status": {
+            "type": "string",
+            "description": "Product status",
+            "enum": [
+              "active",
+              "inactive",
+              "out_of_stock",
+              "discontinued"
+            ],
+            "example": "active",
+            "default": "active"
+          },
+          "size": {
+            "type": "string",
+            "description": "Packaging size",
+            "enum": [
+              "100g",
+              "250g",
+              "500g",
+              "1kg",
+              "5kg",
+              "12kg",
+              "25kg",
+              "50kg",
+              "100ml",
+              "250ml",
+              "500ml",
+              "1L",
+              "custom"
+            ],
+            "example": "1kg"
+          },
+          "images": {
+            "description": "Product images URLs",
+            "example": [
+              "https://example.com/image1.jpg",
+              "https://example.com/image2.jpg"
+            ],
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "image": {
+            "type": "string",
+            "description": "Primary product image URL (for backward compatibility)",
+            "example": "https://example.com/primary-image.jpg"
+          },
+          "wholesale": {
+            "type": "number",
+            "description": "Wholesale price in currency",
+            "example": 45
+          },
+          "retail": {
+            "type": "number",
+            "description": "Retail price in currency",
+            "example": 60
+          },
+          "stockQuantity": {
+            "type": "number",
+            "description": "Available stock quantity",
+            "example": 150
+          },
+          "inBoxPrice": {
+            "type": "number",
+            "description": "Price for a full box",
+            "example": 540
+          },
+          "quantityInBox": {
+            "type": "number",
+            "description": "Quantity of items in one box",
+            "example": 12
+          },
+          "grade": {
+            "type": "string",
+            "description": "Product grade/quality",
+            "enum": [
+              "A",
+              "B",
+              "premium",
+              "standard",
+              "organic"
+            ],
+            "example": "A"
+          },
+          "isFeatured": {
+            "type": "boolean",
+            "description": "Whether product is featured",
+            "example": false,
+            "default": false
+          },
+          "isOrganic": {
+            "type": "boolean",
+            "description": "Whether product is organic certified",
+            "example": true,
+            "default": false
+          },
+          "certifications": {
+            "description": "Product certifications",
+            "example": [
+              "Ecocert",
+              "FDA",
+              "GSA"
+            ],
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "supplierReference": {
+            "type": "string",
+            "description": "Supplier reference ID",
+            "example": "SUP-2024-001"
+          },
+          "producedAt": {
+            "type": "string",
+            "description": "Production date",
+            "example": "2024-01-15"
+          },
+          "expiryDate": {
+            "type": "string",
+            "description": "Expiry date",
+            "example": "2026-01-15"
+          },
+          "minOrderQuantity": {
+            "type": "number",
+            "description": "Minimum order quantity",
+            "example": 5,
+            "default": 0
+          },
+          "costPrice": {
+            "type": "number",
+            "description": "Cost price for internal tracking",
+            "example": 35
+          },
+          "batchId": {
+            "type": "string",
+            "description": "Batch ID for batch tracking",
+            "example": "123e4567-e89b-12d3-a456-426614174000"
+          }
+        },
+        "required": [
+          "name",
+          "ingredients",
+          "category",
+          "description",
+          "wholesale",
+          "retail",
+          "stockQuantity"
+        ]
+      },
+      "UpdateProductDto": {
+        "type": "object",
+        "properties": {
+          "sku": {
+            "type": "string",
+            "description": "Unique SKU code for the product",
+            "example": "SB-WHT-1KG-001"
+          },
+          "name": {
+            "type": "string",
+            "description": "Product name",
+            "example": "White Shea Butter Grade A"
+          },
+          "ingredients": {
+            "description": "Product ingredients (comma-separated or array)",
+            "example": [
+              "100% Pure Shea Butter",
+              "No additives"
+            ],
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "weight": {
+            "type": "string",
+            "description": "Product weight description",
+            "example": "1kg"
+          },
+          "category": {
+            "type": "string",
+            "description": "Product category",
+            "enum": [
+              "shea_butter",
+              "black_soap",
+              "cosmetics",
+              "shea_soap",
+              "powdered_soap",
+              "dawadawa_tea",
+              "essential_oils",
+              "hair_oil",
+              "grains",
+              "legumes",
+              "other"
+            ],
+            "example": "shea_butter"
+          },
+          "description": {
+            "type": "string",
+            "description": "Detailed product description",
+            "example": "Premium white shea butter extracted from organic shea nuts in Northern Ghana."
+          },
+          "status": {
+            "type": "string",
+            "description": "Product status",
+            "enum": [
+              "active",
+              "inactive",
+              "out_of_stock",
+              "discontinued"
+            ],
+            "example": "active",
+            "default": "active"
+          },
+          "size": {
+            "type": "string",
+            "description": "Packaging size",
+            "enum": [
+              "100g",
+              "250g",
+              "500g",
+              "1kg",
+              "5kg",
+              "12kg",
+              "25kg",
+              "50kg",
+              "100ml",
+              "250ml",
+              "500ml",
+              "1L",
+              "custom"
+            ],
+            "example": "1kg"
+          },
+          "images": {
+            "description": "Product images URLs",
+            "example": [
+              "https://example.com/image1.jpg",
+              "https://example.com/image2.jpg"
+            ],
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "image": {
+            "type": "string",
+            "description": "Primary product image URL (for backward compatibility)",
+            "example": "https://example.com/primary-image.jpg"
+          },
+          "wholesale": {
+            "type": "number",
+            "description": "Wholesale price in currency",
+            "example": 45
+          },
+          "retail": {
+            "type": "number",
+            "description": "Retail price in currency",
+            "example": 60
+          },
+          "stockQuantity": {
+            "type": "number",
+            "description": "Available stock quantity",
+            "example": 150
+          },
+          "inBoxPrice": {
+            "type": "number",
+            "description": "Price for a full box",
+            "example": 540
+          },
+          "quantityInBox": {
+            "type": "number",
+            "description": "Quantity of items in one box",
+            "example": 12
+          },
+          "grade": {
+            "type": "string",
+            "description": "Product grade/quality",
+            "enum": [
+              "A",
+              "B",
+              "premium",
+              "standard",
+              "organic"
+            ],
+            "example": "A"
+          },
+          "isFeatured": {
+            "type": "boolean",
+            "description": "Whether product is featured",
+            "example": false,
+            "default": false
+          },
+          "isOrganic": {
+            "type": "boolean",
+            "description": "Whether product is organic certified",
+            "example": true,
+            "default": false
+          },
+          "certifications": {
+            "description": "Product certifications",
+            "example": [
+              "Ecocert",
+              "FDA",
+              "GSA"
+            ],
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "supplierReference": {
+            "type": "string",
+            "description": "Supplier reference ID",
+            "example": "SUP-2024-001"
+          },
+          "producedAt": {
+            "type": "string",
+            "description": "Production date",
+            "example": "2024-01-15"
+          },
+          "expiryDate": {
+            "type": "string",
+            "description": "Expiry date",
+            "example": "2026-01-15"
+          },
+          "minOrderQuantity": {
+            "type": "number",
+            "description": "Minimum order quantity",
+            "example": 5,
+            "default": 0
+          },
+          "costPrice": {
+            "type": "number",
+            "description": "Cost price for internal tracking",
+            "example": 35
+          },
+          "batchId": {
+            "type": "string",
+            "description": "Batch ID for batch tracking",
+            "example": "123e4567-e89b-12d3-a456-426614174000"
+          },
+          "isMinorUpdate": {
+            "type": "boolean",
+            "description": "Whether to mark this update as a minor change",
+            "example": false
+          }
+        }
+      },
+      "CreateBatchDto": {
+        "type": "object",
+        "properties": {
+          "batchNumber": {
+            "type": "string",
+            "description": "Unique batch number",
+            "example": "BATCH-2024-001"
+          },
+          "productionDate": {
+            "type": "string",
+            "description": "Production/manufacturing date",
+            "example": "2024-01-15"
+          },
+          "expiryDate": {
+            "type": "string",
+            "description": "Expiry date",
+            "example": "2026-01-15"
+          },
+          "manufacturingLocation": {
+            "type": "string",
+            "description": "Manufacturing location",
+            "example": "Tamale Production Facility"
+          },
+          "qualityCheckStatus": {
+            "type": "string",
+            "description": "Quality check status",
+            "example": "Passed"
+          },
+          "notes": {
+            "type": "string",
+            "description": "Additional notes about the batch",
+            "example": "Premium quality shea nuts sourced from Yendi"
+          }
+        },
+        "required": [
+          "batchNumber"
+        ]
+      },
+      "AddCartDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "The UUID of the product to add to cart",
+            "example": "550e8400-e29b-41d4-a716-446655440000"
+          }
+        },
+        "required": [
+          "id"
+        ]
+      },
+      "AddQuantityDto": {
+        "type": "object",
+        "properties": {
+          "quantity": {
+            "type": "number",
+            "description": "The quantity of the product in the cart (must be a positive integer)",
+            "example": 5,
+            "minimum": 1
+          }
+        },
+        "required": [
+          "quantity"
+        ]
+      },
+      "InitializeTransaction": {
+        "type": "object",
+        "properties": {
+
+        }
+      },
+      "OrderStatus": {
+        "type": "object",
+        "properties": {
+
+        }
+      },
+      "PaymentStatus": {
+        "type": "object",
+        "properties": {
+
+        }
+      }
+    }
+  }
+}

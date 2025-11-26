@@ -4,7 +4,7 @@ import { LoginRequest } from '../../models/login-request.model';
 
 export const authLogin = createAction(
   '[Auth] Login',
-  props<LoginRequest>()
+  props<{credentials: LoginRequest}>()
 );
 
 export const authLoginSuccess = createAction(
