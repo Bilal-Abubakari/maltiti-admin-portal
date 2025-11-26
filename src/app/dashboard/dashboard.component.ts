@@ -9,7 +9,6 @@ import { RouterLink } from '@angular/router';
 import { Store } from '@ngrx/store';
 import { CardModule } from 'primeng/card';
 import { ButtonModule } from 'primeng/button';
-// import { ChartModule } from 'primeng/chart';
 import { selectUser } from '../auth/store/auth.selectors';
 import { selectAllProducts } from '../features/products/store/products.selectors';
 import { selectAllBatches } from '../features/batches/store/batches.selectors';

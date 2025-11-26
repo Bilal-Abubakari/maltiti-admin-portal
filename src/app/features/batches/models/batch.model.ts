@@ -2,8 +2,9 @@
  * Batch domain models based on Swagger API documentation
  * These models represent the Batch entity for product batch tracking
  */
+import { Product } from '../../products/models/product.model';
 
-export interface Batch {
+export type Batch = {
   id: string;
   batchNumber: string;
   productionDate?: string;
@@ -11,34 +12,34 @@ export interface Batch {
   manufacturingLocation?: string;
   qualityCheckStatus?: string;
   notes?: string;
-  products?: any[]; // Products associated with this batch
+  products?: Product[]; // Products associated with this batch
   createdAt: string;
   updatedAt: string;
-}
+};
 
-export interface CreateBatchDto {
+export type CreateBatchDto = {
   batchNumber: string;
   productionDate?: string;
   expiryDate?: string;
   manufacturingLocation?: string;
   qualityCheckStatus?: string;
   notes?: string;
-}
+};
 
-export interface UpdateBatchDto extends Partial<CreateBatchDto> {}
+export type UpdateBatchDto = {} & Partial<CreateBatchDto>;
 
-export interface BatchQueryParams {
+export type BatchQueryParams = {
   page?: number;
   limit?: number;
   searchTerm?: string;
   qualityCheckStatus?: string;
   sortBy?: 'batchNumber' | 'productionDate' | 'expiryDate' | 'createdAt';
   sortOrder?: 'ASC' | 'DESC';
-}
+};
 
-export interface BatchesPaginationResponse {
+export type BatchesPaginationResponse = {
   totalItems: number;
   currentPage: number;
   totalPages: number;
   batches: Batch[];
-}
+};
