@@ -35,7 +35,7 @@
   align-items: center;
   gap: 0.75rem;
   padding: 1.25rem 1rem;
-  border-bottom: 1px solid var(--surface-border);
+  border-bottom: 1px solid var(--p-surface-border);
   min-height: 60px;
 
   .logo-image {
@@ -48,9 +48,10 @@
   .logo-text {
     font-size: 1.125rem;
     font-weight: 600;
-    color: var(--text-color);
+    color: var(--p-text-color);
     white-space: nowrap;
     transition: opacity 0.2s ease;
+    flex: 1;
   }
 }
 
@@ -73,7 +74,7 @@
   align-items: center;
   gap: 0.875rem;
   padding: 0.875rem 1rem;
-  color: var(--text-color-secondary);
+  color: var(--p-text-muted-color);
   text-decoration: none;
   transition: all 0.2s ease;
   border-radius: 0.375rem;
@@ -81,20 +82,20 @@
   position: relative;
 
   &:hover {
-    background-color: var(--surface-hover);
-    color: var(--primary-color);
+    background-color: var(--p-surface-hover);
+    color: var(--p-primary-color);
 
     .nav-icon {
-      color: var(--primary-color);
+      color: var(--p-primary-color);
     }
   }
 
   &.active {
-    background-color: var(--primary-color);
-    color: var(--primary-color-text);
+    background-color: var(--p-primary-color);
+    color: var(--p-primary-contrast-color);
 
     .nav-icon {
-      color: var(--primary-color-text);
+      color: var(--p-primary-contrast-color);
     }
 
     &::before {
@@ -105,7 +106,7 @@
       transform: translateY(-50%);
       width: 4px;
       height: 70%;
-      background-color: var(--primary-color);
+      background-color: var(--p-primary-color);
       border-radius: 0 4px 4px 0;
     }
   }
@@ -126,7 +127,7 @@
 }
 
 .nav-badge {
-  background-color: var(--red-500);
+  background-color: var(--p-red-500);
   color: white;
   padding: 0.125rem 0.5rem;
   border-radius: 1rem;
@@ -138,7 +139,7 @@
 // Custom Scrollbar
 .sidebar {
   scrollbar-width: thin;
-  scrollbar-color: var(--surface-border) transparent;
+  scrollbar-color: var(--p-surface-border) transparent;
 
   &::-webkit-scrollbar {
     width: 6px;
@@ -149,18 +150,7 @@
   }
 
   &::-webkit-scrollbar-thumb {
-    background-color: var(--surface-border);
+    background-color: var(--p-surface-border);
     border-radius: 3px;
-  }
-}
-
-// Responsive Design
-@media (max-width: 768px) {
-  .sidebar {
-    transform: translateX(-100%);
-
-    &:not(.collapsed) {
-      transform: translateX(0);
-    }
   }
 }

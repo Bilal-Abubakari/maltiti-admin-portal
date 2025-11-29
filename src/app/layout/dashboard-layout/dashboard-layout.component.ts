@@ -19,7 +19,7 @@ import { HeaderComponent } from '../header/header.component';
 })
 export class DashboardLayoutComponent {
   // Signal for sidebar collapsed state
-  public readonly sidebarCollapsed = signal(false);
+  public readonly sidebarCollapsed = signal(true);
 
   public onToggleSidebar(): void {
     this.sidebarCollapsed.update((value) => !value);

@@ -1,6 +1,6 @@
 <div class="dashboard-layout" [class.sidebar-collapsed]="sidebarCollapsed()">
   <!-- Sidebar -->
-  <app-sidebar [collapsed]="sidebarCollapsed()" />
+  <app-sidebar [isCollapsed]="sidebarCollapsed()" (toggleSidebar)="onToggleSidebar()" />
 
   <!-- Main Content Area -->
   <div class="dashboard-main">
