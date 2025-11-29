@@ -22,6 +22,7 @@ import { Actions, ofType } from '@ngrx/effects';
 import { Dialog } from 'primeng/dialog';
 import { Button } from 'primeng/button';
 import { FileSelectEvent } from 'primeng/fileupload';
+import { MessageService } from 'primeng/api';
 import * as ProductsActions from '../../store/products.actions';
 import { IngredientApiService } from '../../services/ingredient-api.service';
 import { UploadService } from '../../../../services/upload.service';
@@ -72,6 +73,7 @@ export class ProductDialogComponent {
   private readonly ingredientApiService = inject(IngredientApiService);
   private readonly uploadService = inject(UploadService);
   private readonly actions$ = inject(Actions);
+  private readonly messageService = inject(MessageService);
 
   // Inputs
   public readonly visible = input.required<boolean>();
@@ -329,7 +331,11 @@ export class ProductDialogComponent {
         },
         error: (error) => {
           console.error('Upload failed:', error);
-          // TODO: Show error message to user
+          this.messageService.add({
+            severity: 'error',
+            summary: 'Upload Failed',
+            detail: 'Failed to upload primary image. Please try again.',
+          });
         },
       });
     }
@@ -349,7 +355,11 @@ export class ProductDialogComponent {
         },
         error: (error) => {
           console.error('Upload failed:', error);
-          // TODO: Show error message to user
+          this.messageService.add({
+            severity: 'error',
+            summary: 'Upload Failed',
+            detail: 'Failed to upload images. Please try again.',
+          });
         },
       });
     }

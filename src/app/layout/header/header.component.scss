@@ -4,8 +4,8 @@
   justify-content: space-between;
   padding: 0 1.5rem;
   height: 60px;
-  background-color: var(--surface-card);
-  border-bottom: 1px solid var(--surface-border);
+  background-color: var(--p-surface-card);
+  border-bottom: 1px solid var(--p-surface-border);
   position: sticky;
   top: 0;
   z-index: 100;
@@ -22,7 +22,7 @@
     margin: 0;
     font-size: 1.25rem;
     font-weight: 600;
-    color: var(--text-color);
+    color: var(--p-text-color);
   }
 }
 
@@ -39,8 +39,6 @@
   }
 
   .header-title {
-    h2 {
-      font-size: 1rem;
-    }
+    display: none;
   }
 }

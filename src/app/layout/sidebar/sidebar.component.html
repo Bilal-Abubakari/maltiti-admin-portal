@@ -1,33 +1,72 @@
-<aside class="sidebar" [class.collapsed]="collapsed()">
-  <!-- Logo Section -->
-  <div class="sidebar-logo">
-    <img alt="Maltiti Logo" class="logo-image" src="/assets/images/maltiti-logo.png" width="309" />
-    @if (!collapsed()) {
-      <span class="logo-text">Maltiti Admin</span>
-    }
-  </div>
-
-  <!-- Navigation Menu -->
-  <nav class="sidebar-nav">
-    <ul class="nav-list">
-      @for (item of menuItems; track item.route) {
-        <li class="nav-item">
-          <a
-            class="nav-link"
-            routerLinkActive="active"
-            [routerLink]="item.route"
-            [title]="item.label"
-          >
-            <i [class]="item.icon + ' nav-icon'"></i>
-            @if (!collapsed()) {
-              <span class="nav-label">{{ item.label }}</span>
-            }
-            @if (item.badge && !collapsed()) {
-              <span class="nav-badge">{{ item.badge }}</span>
-            }
-          </a>
-        </li>
+@if (isMobile()) {
+  <p-drawer
+    [visible]="visible"
+    (onHide)="toggleSidebar.emit()"
+  >
+    <!-- Logo Section -->
+    <div class="sidebar-logo">
+      <img alt="Maltiti Logo" class="logo-image" src="/assets/images/maltiti-logo.png" width="309" />
+      @if (!isCollapsed()) {
+        <span class="logo-text">Maltiti Admin</span>
       }
-    </ul>
-  </nav>
-</aside>
+    </div>
+
+    <!-- Navigation Menu -->
+    <nav class="sidebar-nav">
+      <ul class="nav-list">
+        @for (item of menuItems; track item.route) {
+          <li class="nav-item">
+            <a
+              class="nav-link"
+              routerLinkActive="active"
+              [routerLink]="item.route"
+              [title]="item.label"
+            >
+              <i [class]="item.icon + ' nav-icon'"></i>
+              @if (!isCollapsed()) {
+                <span class="nav-label">{{ item.label }}</span>
+              }
+              @if (item.badge && !isCollapsed()) {
+                <span class="nav-badge">{{ item.badge }}</span>
+              }
+            </a>
+          </li>
+        }
+      </ul>
+    </nav>
+  </p-drawer>
+} @else {
+  <aside class="sidebar" [class.collapsed]="isCollapsed()">
+    <!-- Logo Section -->
+    <div class="sidebar-logo">
+      <img alt="Maltiti Logo" class="logo-image" src="/assets/images/maltiti-logo.png" width="309" />
+      @if (!isCollapsed()) {
+        <span class="logo-text">Maltiti Admin</span>
+      }
+    </div>
+
+    <!-- Navigation Menu -->
+    <nav class="sidebar-nav">
+      <ul class="nav-list">
+        @for (item of menuItems; track item.route) {
+          <li class="nav-item">
+            <a
+              class="nav-link"
+              routerLinkActive="active"
+              [routerLink]="item.route"
+              [title]="item.label"
+            >
+              <i [class]="item.icon + ' nav-icon'"></i>
+              @if (!isCollapsed()) {
+                <span class="nav-label">{{ item.label }}</span>
+              }
+              @if (item.badge && !isCollapsed()) {
+                <span class="nav-badge">{{ item.badge }}</span>
+              }
+            </a>
+          </li>
+        }
+      </ul>
+    </nav>
+  </aside>
+}
