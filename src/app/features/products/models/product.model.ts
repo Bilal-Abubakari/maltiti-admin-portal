@@ -2,19 +2,20 @@
  * Product domain models based on Swagger API documentation
  * These models represent the Product entity and its related DTOs
  */
+import { Ingredient } from '../../../models/ingredient.model';
 
 export type ProductCategory =
-  | 'shea_butter'
-  | 'black_soap'
-  | 'cosmetics'
-  | 'shea_soap'
-  | 'powdered_soap'
-  | 'dawadawa_tea'
-  | 'essential_oils'
-  | 'hair_oil'
-  | 'grains'
-  | 'legumes'
-  | 'other';
+  | 'Shea Butter'
+  | 'Black Soap'
+  | 'Cosmetics'
+  | 'Shea Soap'
+  | 'Powdered Soap'
+  | 'Dawadawa Tea'
+  | 'Essential Oils'
+  | 'Hair Oil'
+  | 'Grains'
+  | 'Legumes'
+  | 'Other';
 
 export type ProductStatus = 'active' | 'inactive' | 'out_of_stock' | 'discontinued';
 
@@ -39,7 +40,7 @@ export interface Product {
   id: string;
   sku: string;
   name: string;
-  ingredients: string[];
+  ingredients: Ingredient[];
   weight: string;
   category: ProductCategory;
   description: string;
@@ -63,6 +64,7 @@ export interface Product {
   producedAt: string;
   expiryDate: string;
   minOrderQuantity: number;
+  costPrice?: number;
   createdAt: string;
   updatedAt: string;
 }
@@ -92,12 +94,9 @@ export interface CreateProductDto {
   expiryDate?: string;
   minOrderQuantity?: number;
   costPrice?: number;
-  batchId?: string;
 }
 
-export interface UpdateProductDto extends Partial<CreateProductDto> {
-  isMinorUpdate?: boolean;
-}
+export type UpdateProductDto = Partial<CreateProductDto>;
 
 export interface ProductQueryParams {
   page?: number;
@@ -113,7 +112,6 @@ export interface ProductQueryParams {
   maxPrice?: number;
   sortBy?: 'name' | 'retail' | 'createdAt' | 'rating' | 'stockQuantity';
   sortOrder?: 'ASC' | 'DESC';
-  batchId?: string;
 }
 
 export interface BestProductsResponse {

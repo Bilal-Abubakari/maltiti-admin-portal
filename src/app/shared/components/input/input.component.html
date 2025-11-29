@@ -1,17 +1,58 @@
-<p-floatlabel>
-  <input
-    [id]="id()"
-    [type]="type()"
-    [placeholder]="placeholder()"
-    [disabled]="disabled()"
-    [readonly]="readonly()"
-    [required]="required()"
-    [class]="styleClass()"
-    [(ngModel)]="value"
-    pInputText
-  />
-  @if (label()) {
-    <label [for]="id()">{{ label() }}</label>
+<div class="main-wrapper">
+  @if (!useInputGroup()) {
+    @if (label()) {
+      <label class="label" [for]="id()">{{ label() }}</label>
+    }
+    <input
+      pInputText
+      [class]="styleClass()"
+      [disabled]="disabled()"
+      [formControl]="control()"
+      [id]="id()"
+      [invalid]="this.control()?.touched && this.control()?.invalid"
+      [placeholder]="placeholder()"
+      [readonly]="readonly()"
+      [required]="required()"
+      [type]="type()"
+    />
+    @if (this.control()?.touched && this.control()?.invalid) {
+      <p-message severity="error" size="small" variant="simple">{{ errorMessage() }}</p-message>
+    }
+  } @else {
+    <p-inputgroup>
+      @if (showPrefixAddon()) {
+        <p-inputgroup-addon><ng-content select="[prefixAddon]" /></p-inputgroup-addon>
+      }
+      @if (type() === 'number') {
+        <p-input-number
+          [class]="styleClass()"
+          [disabled]="disabled()"
+          [formControl]="control()"
+          [id]="id()"
+          [placeholder]="placeholder()"
+          [readonly]="readonly()"
+          [required]="required()"
+        />
+      } @else {
+        <input
+          pInputText
+          [class]="styleClass()"
+          [disabled]="disabled()"
+          [formControl]="control()"
+          [id]="id()"
+          [placeholder]="placeholder()"
+          [readonly]="readonly()"
+          [required]="required()"
+          [type]="type()"
+        />
+      }
+      @if (showSuffixAddon()) {
+        <p-inputgroup-addon><ng-content select="[suffixAddon]" /></p-inputgroup-addon>
+      }
+    </p-inputgroup>
+    @if (this.control()?.touched && this.control()?.invalid) {
+      <p-message severity="error" size="small" variant="simple">{{ errorMessage() }}</p-message>
+    }
   }
-</p-floatlabel>
 
+</div>
