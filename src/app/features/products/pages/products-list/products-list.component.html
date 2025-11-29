@@ -5,56 +5,58 @@
       <h1>Products Management</h1>
       <p class="page-description">Manage your product inventory, prices, and stock levels</p>
     </div>
-    <p-button
-      icon="pi pi-plus"
-      label="Add Product"
-      styleClass="p-button-primary"
-      (onClick)="onCreateProduct()"
-    />
+    <div class="page-actions">
+      <app-button
+        [icon]="'pi pi-plus'"
+        [label]="'Add Product'"
+        [severity]="'primary'"
+        (click)="onCreateProduct()"
+      />
+      <app-button
+        [icon]="'pi pi-download'"
+        [label]="'Export Excel'"
+        [outlined]="true"
+        [severity]="'success'"
+        (click)="onExportExcel()"
+      />
+    </div>
   </div>
 
   <!-- Filters Section -->
   <div class="filters-section">
     <div class="filters-row">
       <!-- Search -->
-      <span class="p-input-icon-left search-input">
-        <i class="pi pi-search"></i>
-        <input
-          class="w-full"
-          pInputText
-          placeholder="Search products..."
-          type="text"
-          [(ngModel)]="searchTerm"
-          (keyup.enter)="onSearch()"
-        />
-      </span>
+      <app-input
+        class="search-input"
+        [control]="searchControl"
+        [id]="'search'"
+        [placeholder]="'Search products...'"
+        [showPrefixAddon]="true"
+        [type]="'search'"
+        [useInputGroup]="true"
+        (keyup.enter)="onSearch()"
+      >
+        <i class="pi pi-search" prefixAddon></i>
+      </app-input>
 
       <!-- Category Filter -->
-      <p-select
-        class="filter-dropdown"
-        placeholder="Category"
+      <app-select
+        id="category"
+        [control]="categoryControl"
         [options]="categoryOptions"
+        [placeholder]="'Category'"
         [showClear]="true"
-        [(ngModel)]="selectedCategory"
-        (onChange)="onFilterChange()"
+        [styleClass]="'filter-dropdown'"
       />
 
       <!-- Status Filter -->
-      <p-select
-        placeholder="Status"
-        styleClass="filter-dropdown"
+      <app-select
+        id="status"
+        [control]="statusControl"
         [options]="statusOptions"
+        [placeholder]="'Status'"
         [showClear]="true"
-        [(ngModel)]="selectedStatus"
-        (onChange)="onFilterChange()"
-      />
-
-      <!-- Search Button -->
-      <p-button
-        icon="pi pi-search"
-        label="Search"
-        styleClass="p-button-outlined"
-        (onClick)="onSearch()"
+        [styleClass]="'filter-dropdown'"
       />
     </div>
   </div>
@@ -64,13 +66,15 @@
     <p-table
       class="p-datatable-sm"
       currentPageReportTemplate="Showing {first} to {last} of {totalRecords} products"
+      [lazy]="true"
       [loading]="loading()"
       [paginator]="true"
       [rows]="pageSize()"
       [rowsPerPageOptions]="[10, 25, 50, 100]"
       [showCurrentPageReport]="true"
-      [totalRecords]="pagination().totalItems"
+      [totalRecords]="totalItems()"
       [value]="products()"
+      (onPage)="onPageChange($event)"
     >
       <!-- Image Column -->
       <ng-template #header>
@@ -98,7 +102,7 @@
             <img
               class="product-image"
               [alt]="product.name"
-              [src]="product.image || 'assets/images/placeholder-product.png'"
+              [src]="product.image || 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjQiIGhlaWdodD0iNjQiIHZpZXdCb3g9IjAgMCA2NCA2NCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHJlY3Qgd2lkdGg9IjY0IiBoZWlnaHQ9IjY0IiBmaWxsPSIjRjNGNEY2Ii8+CjxwYXRoIGQ9Ik0yNCAyMEgxNmEyIDIgMCAwIDAtMi0yVjE2YTIgMiAwIDAgMCAyLTJoOFYyMGEyIDIgMCAwIDAgMiAydjhoOFptMC0xMEgxNmEyIDIgMCAwIDAtMi0yVjE2YTIgMiAwIDAgMCAyLTJoOFYyMGEyIDIgMCAwIDAgMiAydjhoOFoiIGZpbGw9IiM5Q0E0QUYiLz4KPHBhdGggZD0iTTMyIDI4YTEyIDEyIDAgMSAwIDAtMjQgMTIgMTIgMCAwIDAgMCAyNFoiIGZpbGw9IiM5Q0E0QUYiLz4KPHBhdGggZD0iTTQwIDI4YTEyIDEyIDAgMSAwIDAtMjQgMTIgMTIgMCAwIDAgMCAyNFoiIGZpbGw9IiM5Q0E0QUYiLz4KPC9zdmc+'"
             />
           </td>
 
@@ -147,37 +151,37 @@
           <!-- Actions -->
           <td>
             <div class="action-buttons">
-              <p-button
-                icon="pi pi-eye"
-                pTooltip="View Details"
-                severity="secondary"
+              <app-button
+                [icon]="'pi pi-eye'"
                 [rounded]="true"
+                [severity]="'secondary'"
                 [text]="true"
-                (onClick)="onViewProduct(product)"
+                [tooltip]="'View Details'"
+                (click)="onViewProduct(product)"
               />
-              <p-button
-                icon="pi pi-pencil"
-                pTooltip="Edit Product"
-                severity="info"
+              <app-button
+                [icon]="'pi pi-pencil'"
                 [rounded]="true"
+                [severity]="'info'"
                 [text]="true"
-                (onClick)="onEditProduct(product)"
+                [tooltip]="'Edit Product'"
+                (click)="onEditProduct(product)"
               />
-              <p-button
+              <app-button
                 [icon]="product.status === 'active' ? 'pi pi-ban' : 'pi pi-check-circle'"
-                [pTooltip]="product.status === 'active' ? 'Deactivate' : 'Activate'"
                 [rounded]="true"
                 [severity]="product.status === 'active' ? 'warn' : 'success'"
                 [text]="true"
-                (onClick)="onToggleStatus(product)"
+                [tooltip]="product.status === 'active' ? 'Deactivate' : 'Activate'"
+                (click)="onToggleStatus(product)"
               />
-              <p-button
-                icon="pi pi-trash"
-                pTooltip="Delete Product"
-                severity="danger"
+              <app-button
+                [icon]="'pi pi-trash'"
                 [rounded]="true"
+                [severity]="'danger'"
                 [text]="true"
-                (onClick)="onDeleteProduct(product)"
+                [tooltip]="'Delete Product'"
+                (click)="onDeleteProduct(product)"
               />
             </div>
           </td>
@@ -203,10 +207,10 @@
               <i class="pi pi-inbox empty-icon"></i>
               <h3>No Products Found</h3>
               <p>Try adjusting your search or filters to find what you're looking for</p>
-              <p-button
-                icon="pi pi-plus"
-                label="Add Your First Product"
-                (onClick)="onCreateProduct()"
+              <app-button
+                [icon]="'pi pi-plus'"
+                [label]="'Add Your First Product'"
+                (click)="onCreateProduct()"
               />
             </div>
           </td>
@@ -216,8 +220,14 @@
   </div>
 
   <!-- Product Dialog (Create/Edit) -->
-  <!-- This will be implemented as a separate component -->
-</div>
+  <app-product-dialog
+    [product]="selectedProduct()"
+    [viewMode]="viewMode()"
+    [visible]="showProductDialog()"
+    (saveSuccess)="onProductSaved()"
+    (visibleChange)="showProductDialog.set($event)"
+  />
 
-<!-- Confirmation Dialog -->
-<p-confirmDialog />
+  <!-- Confirmation Dialog -->
+  <p-confirmDialog />
+</div>

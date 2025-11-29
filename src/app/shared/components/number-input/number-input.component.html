@@ -1,0 +1,26 @@
+<div class="main-wrapper">
+  @if (label()) {
+    <label class="label" [for]="id()">{{ label() }}</label>
+  }
+  <p-inputNumber
+    [class]="styleClass()"
+    [currency]="currency()"
+    [disabled]="disabled()"
+    [formControl]="control()"
+    [id]="id()"
+    [invalid]="this.control()?.touched && this.control()?.invalid"
+    [locale]="locale()"
+    [max]="max()"
+    [min]="min()"
+    [mode]="mode()"
+    [placeholder]="placeholder()"
+    [prefix]="prefix()"
+    [readonly]="readonly()"
+    [required]="required()"
+    [suffix]="suffix()"
+  />
+  @if (this.control()?.touched && this.control()?.invalid) {
+    <p-message severity="error" size="small" variant="simple">{{ errorMessage() }}</p-message>
+  }
+</div>
+

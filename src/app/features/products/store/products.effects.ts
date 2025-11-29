@@ -166,7 +166,7 @@ export class ProductsEffects {
           this.messageService.add({
             severity: 'error',
             summary: 'Error',
-            detail: error || 'An error occurred',
+            detail: String(error) || 'An error occurred',
           });
         }),
       ),

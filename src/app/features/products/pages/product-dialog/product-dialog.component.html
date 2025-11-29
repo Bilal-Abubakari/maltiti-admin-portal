@@ -1,0 +1,305 @@
+<p-dialog
+  header="{{ dialogTitle() }}"
+  [closable]="true"
+  [draggable]="false"
+  [modal]="true"
+  [resizable]="false"
+  [style]="{ width: '800px', maxWidth: '90vw' }"
+  [visible]="visible()"
+  (onHide)="onHide()"
+  (visibleChange)="visibleChange.emit($event)"
+>
+  <form #productDialog class="product-form" [formGroup]="productForm">
+    <!-- Images Section -->
+    <app-image-section
+      [additionalImagesControl]="productForm.controls.images"
+      [primaryImageControl]="productForm.controls.image"
+      [viewMode]="isViewMode()"
+      (additionalImagesUpload)="onImagesUpload($event)"
+      (primaryImageUpload)="onPrimaryImageUpload($event)"
+    />
+
+    <!-- Basic Information Section -->
+    <div class="form-section">
+      <h3 class="section-title">Basic Information</h3>
+      <div class="form-grid">
+        <app-field-renderer
+          [control]="productForm.controls.name"
+          [label]="'Product Name *'"
+          [mode]="isViewMode() ? 'view' : 'edit'"
+          [placeholder]="'Enter product name'"
+          [required]="true"
+          [type]="'input'"
+          [value]="productForm.value.name"
+        />
+
+        <app-field-renderer
+          [control]="productForm.controls.sku"
+          [label]="'SKU'"
+          [mode]="isViewMode() ? 'view' : 'edit'"
+          [placeholder]="'Enter SKU (optional)'"
+          [type]="'input'"
+          [value]="productForm.value.sku"
+        />
+
+        <app-field-renderer
+          [control]="productForm.controls.description"
+          [label]="'Description *'"
+          [mode]="isViewMode() ? 'view' : 'edit'"
+          [placeholder]="'Enter product description'"
+          [type]="'textarea'"
+          [value]="productForm.value.description"
+        />
+
+        <app-field-renderer
+          [control]="productForm.controls.category"
+          [label]="'Category *'"
+          [mode]="isViewMode() ? 'view' : 'edit'"
+          [options]="categoryOptions"
+          [placeholder]="'Select category'"
+          [type]="'select'"
+          [value]="productForm.value.category"
+        />
+
+        <app-field-renderer
+          [control]="productForm.controls.status"
+          [label]="'Status *'"
+          [mode]="isViewMode() ? 'view' : 'edit'"
+          [options]="statusOptions"
+          [placeholder]="'Select status'"
+          [type]="'select'"
+          [value]="productForm.value.status"
+        />
+      </div>
+    </div>
+
+    <!-- Pricing Section -->
+    <div class="form-section">
+      <h3 class="section-title">Pricing</h3>
+      <div class="form-grid">
+        <app-field-renderer
+          numberMode="currency"
+          [control]="productForm.controls.wholesale"
+          [label]="'Wholesale Price (GHS) *'"
+          [min]="0"
+          [mode]="isViewMode() ? 'view' : 'edit'"
+          [placeholder]="'0.00'"
+          [type]="'number'"
+          [value]="productForm.value.wholesale"
+        />
+
+        <app-field-renderer
+          numberMode="currency"
+          [control]="productForm.controls.retail"
+          [label]="'Retail Price (GHS) *'"
+          [min]="0"
+          [mode]="isViewMode() ? 'view' : 'edit'"
+          [placeholder]="'0.00'"
+          [type]="'number'"
+          [value]="productForm.value.retail"
+        />
+
+        <app-field-renderer
+          numberMode="currency"
+          [control]="productForm.controls.inBoxPrice"
+          [label]="'In-Box Price (GHS)'"
+          [min]="0"
+          [mode]="isViewMode() ? 'view' : 'edit'"
+          [placeholder]="'0.00'"
+          [type]="'number'"
+          [value]="productForm.value.inBoxPrice"
+        />
+
+        <app-field-renderer
+          numberMode="currency"
+          [control]="productForm.controls.costPrice"
+          [label]="'Cost Price (GHS)'"
+          [min]="0"
+          [mode]="isViewMode() ? 'view' : 'edit'"
+          [placeholder]="'0.00'"
+          [type]="'number'"
+          [value]="productForm.value.costPrice"
+        />
+      </div>
+    </div>
+
+    <!-- Inventory Section -->
+    <div class="form-section">
+      <h3 class="section-title">Inventory</h3>
+      <div class="form-grid">
+        <app-field-renderer
+          [control]="productForm.controls.stockQuantity"
+          [label]="'Stock Quantity *'"
+          [min]="0"
+          [mode]="isViewMode() ? 'view' : 'edit'"
+          [placeholder]="'0'"
+          [type]="'number'"
+          [value]="productForm.value.stockQuantity"
+        />
+
+        <app-field-renderer
+          [control]="productForm.controls.quantityInBox"
+          [label]="'Quantity per Box'"
+          [min]="1"
+          [mode]="isViewMode() ? 'view' : 'edit'"
+          [placeholder]="'1'"
+          [type]="'number'"
+          [value]="productForm.value.quantityInBox"
+        />
+
+        <app-field-renderer
+          [control]="productForm.controls.minOrderQuantity"
+          [label]="'Minimum Order Quantity'"
+          [min]="1"
+          [mode]="isViewMode() ? 'view' : 'edit'"
+          [placeholder]="'1'"
+          [type]="'number'"
+          [value]="productForm.value.minOrderQuantity"
+        />
+      </div>
+    </div>
+
+    <!-- Product Details Section -->
+    <div class="form-section">
+      <h3 class="section-title">Product Details</h3>
+      <div class="form-grid">
+        <app-field-renderer
+          [control]="productForm.controls.size"
+          [label]="'Packaging Size'"
+          [mode]="isViewMode() ? 'view' : 'edit'"
+          [options]="sizeOptions"
+          [placeholder]="'Select size'"
+          [showClear]="true"
+          [type]="'select'"
+          [value]="productForm.value.size"
+        />
+
+        <app-field-renderer
+          [control]="productForm.controls.grade"
+          [label]="'Grade'"
+          [mode]="isViewMode() ? 'view' : 'edit'"
+          [options]="gradeOptions"
+          [placeholder]="'Select grade'"
+          [showClear]="true"
+          [type]="'select'"
+          [value]="productForm.value.grade"
+        />
+
+        <app-field-renderer
+          [control]="productForm.controls.weight"
+          [label]="'Weight'"
+          [mode]="isViewMode() ? 'view' : 'edit'"
+          [placeholder]="'e.g., 500g, 1kg'"
+          [type]="'input'"
+          [value]="productForm.value.weight"
+        />
+
+        <app-field-renderer
+          [control]="productForm.controls.ingredients"
+          [label]="'Ingredients'"
+          [mode]="isViewMode() ? 'view' : 'edit'"
+          [options]="ingredientsOptions()"
+          [placeholder]="'Select ingredients'"
+          [type]="'multiselect'"
+          [value]="productForm.value.ingredients"
+        />
+      </div>
+    </div>
+
+    <!-- Features Section -->
+    <div class="form-section">
+      <h3 class="section-title">Features & Certifications</h3>
+      <div class="form-grid">
+        <app-field-renderer
+          [control]="productForm.controls.isFeatured"
+          [label]="'Featured Product'"
+          [mode]="isViewMode() ? 'view' : 'edit'"
+          [type]="'checkbox'"
+          [value]="productForm.value.isFeatured"
+        />
+
+        <app-field-renderer
+          [control]="productForm.controls.isOrganic"
+          [label]="'Organic Certified'"
+          [mode]="isViewMode() ? 'view' : 'edit'"
+          [type]="'checkbox'"
+          [value]="productForm.value.isOrganic"
+        />
+
+        <app-field-renderer
+          [control]="productForm.controls.certifications"
+          [label]="'Certifications'"
+          [maxSelectedLabels]="3"
+          [mode]="isViewMode() ? 'view' : 'edit'"
+          [options]="certificationOptions"
+          [placeholder]="'Select certifications'"
+          [selectedItemsLabel]="'{0} certifications selected'"
+          [type]="'multiselect'"
+          [value]="productForm.value.certifications"
+        />
+      </div>
+    </div>
+
+    <!-- Dates Section -->
+    <div class="form-section">
+      <h3 class="section-title">Production & Expiry</h3>
+      <div class="form-grid">
+        <app-field-renderer
+          [control]="productForm.controls.producedAt"
+          [label]="'Production Date'"
+          [maxDate]="today"
+          [mode]="isViewMode() ? 'view' : 'edit'"
+          [placeholder]="'Select production date'"
+          [showIcon]="true"
+          [type]="'date'"
+          [value]="productForm.value.producedAt"
+        />
+
+        <app-field-renderer
+          [control]="productForm.controls.expiryDate"
+          [label]="'Expiry Date'"
+          [minDate]="today"
+          [mode]="isViewMode() ? 'view' : 'edit'"
+          [placeholder]="'Select expiry date'"
+          [showIcon]="true"
+          [type]="'date'"
+          [value]="productForm.value.expiryDate"
+        />
+
+        <app-field-renderer
+          class="supplier-reference-input"
+          [control]="productForm.controls.supplierReference"
+          [label]="'Supplier Reference'"
+          [mode]="isViewMode() ? 'view' : 'edit'"
+          [placeholder]="'Enter supplier reference'"
+          [type]="'input'"
+          [value]="productForm.value.supplierReference"
+        />
+      </div>
+    </div>
+  </form>
+  <ng-template pTemplate="footer">
+    @if (showFooterActions()) {
+      <div class="dialog-footer">
+        <p-button
+          icon="pi pi-times"
+          label="Cancel"
+          severity="danger"
+          variant="outlined"
+          (onClick)="onHide()"
+        />
+        <p-button
+          icon="pi pi-check"
+          label="{{ isEdit() ? 'Update Product' : 'Create Product' }}"
+          severity="primary"
+          [appScrollToError]="productForm"
+          [formElement]="productDialog"
+          [loading]="loading()"
+          (onClick)="onSave()"
+        />
+      </div>
+    } @else {
+      <p-button label="Close" (onClick)="onHide()" />
+    }
+  </ng-template>
+</p-dialog>

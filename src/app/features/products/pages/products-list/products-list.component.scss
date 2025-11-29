@@ -36,23 +36,20 @@
 }
 
 .filters-row {
-  display: grid;
-  grid-template-columns: 1fr auto auto auto;
+  display: flex;
+  flex-wrap: wrap;
   gap: $spacing-md;
   align-items: center;
 
-  @include responsive(md) {
-    grid-template-columns: 1fr;
+  .search-input {
+    flex: 1;
+    min-width: 200px;
   }
-}
 
-.search-input {
-  flex: 1;
-  min-width: 200px;
-}
-
-.filter-dropdown {
-  min-width: 180px;
+  .filter-dropdown {
+    min-width: 180px;
+    flex: 1;
+  }
 }
 
 // Table Card
@@ -216,13 +213,16 @@
   }
 
   .filters-row {
-    .search-input,
-    .filter-dropdown {
-      width: 100%;
-    }
+    // Removed width: 100% for search-input and filter-dropdown to allow flex wrapping
   }
 
   .action-buttons {
     flex-wrap: wrap;
   }
+}
+
+.page-actions {
+  display: flex;
+  align-items: center;
+  gap: $spacing-md;
 }

@@ -5,10 +5,10 @@
 
 import { createAction, props } from '@ngrx/store';
 import {
-  Product,
   CreateProductDto,
-  UpdateProductDto,
+  Product,
   ProductQueryParams,
+  UpdateProductDto,
 } from '../models/product.model';
 import { IPagination } from '../../../models/response.model';
 

@@ -8,19 +8,20 @@ import {
   ChangeDetectionStrategy,
   Component,
   computed,
+  effect,
   inject,
-  OnInit,
   signal,
 } from '@angular/core';
+import { toSignal } from '@angular/core/rxjs-interop';
 import { CommonModule } from '@angular/common';
-import { FormsModule } from '@angular/forms';
+import { FormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { Store } from '@ngrx/store';
+import { debounceTime, startWith } from 'rxjs/operators';
 
 // PrimeNG Imports
 import { TableModule, TablePageEvent } from 'primeng/table';
 import { ButtonModule } from 'primeng/button';
 import { InputTextModule } from 'primeng/inputtext';
-import { Select } from 'primeng/select';
 import { TagModule } from 'primeng/tag';
 import { ConfirmDialogModule } from 'primeng/confirmdialog';
 import { DialogModule } from 'primeng/dialog';
@@ -33,7 +34,7 @@ import * as ProductsActions from '../../store/products.actions';
 import {
   selectAllProducts,
   selectProductsLoading,
-  selectProductsPagination,
+  selectTotalProducts,
 } from '../../store/products.selectors';
 
 import {
@@ -42,6 +43,12 @@ import {
   ProductQueryParams,
   ProductStatus,
 } from '../../models/product.model';
+import { InputComponent } from '../../../../shared/components/input/input.component';
+import { ButtonComponent } from '../../../../shared/components/button/button.component';
+import { SelectComponent } from '../../../../shared/components/select/select.component';
+import { ProductDialogComponent } from '../product-dialog/product-dialog.component';
+import { ProductApiService } from '../../services/product-api.service';
+import { PRODUCT_CATEGORIES } from '../../constants/product-options.constants';
 
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -50,57 +57,66 @@ import {
   imports: [
     CommonModule,
     FormsModule,
+    ReactiveFormsModule,
     TableModule,
     ButtonModule,
     InputTextModule,
-    Select,
     TagModule,
     ConfirmDialogModule,
     DialogModule,
     TooltipModule,
     SkeletonModule,
+    InputComponent,
+    ButtonComponent,
+    SelectComponent,
+    ProductDialogComponent,
   ],
   providers: [ConfirmationService],
   templateUrl: './products-list.component.html',
   styleUrl: './products-list.component.scss',
 })
-export class ProductsListComponent implements OnInit {
+export class ProductsListComponent {
   private readonly store = inject(Store);
   private readonly confirmationService = inject(ConfirmationService);
+  private readonly productApiService = inject(ProductApiService);
 
   // Store signals
   public readonly products = this.store.selectSignal(selectAllProducts);
   public readonly loading = this.store.selectSignal(selectProductsLoading);
-  public readonly pagination = this.store.selectSignal(selectProductsPagination);
+  public readonly totalItems = this.store.selectSignal(selectTotalProducts);
 
-  // Filter signals
-  public readonly searchTerm = signal('');
-  public readonly selectedCategory = signal<ProductCategory | null>(null);
-  public readonly selectedStatus = signal<ProductStatus | null>(null);
-  private readonly currentPage = signal(1);
+  public searchControl = new FormControl('');
+
+  public readonly searchTerm = toSignal(
+    this.searchControl.valueChanges.pipe(startWith(''), debounceTime(1000)),
+    { initialValue: '' },
+  );
+
+  // Filter controls
+  public categoryControl = new FormControl<ProductCategory | null>(null);
+  public statusControl = new FormControl<ProductStatus | null>(null);
+
+  public readonly category = toSignal(this.categoryControl.valueChanges.pipe(startWith(null)), {
+    initialValue: null,
+  });
+
+  public readonly status = toSignal(this.statusControl.valueChanges.pipe(startWith(null)), {
+    initialValue: null,
+  });
+
   public readonly pageSize = signal(10);
+  private readonly currentPage = signal(1);
+  public readonly reloadTrigger = signal(0);
 
   // Dialog signals
   public readonly showProductDialog = signal(false);
   public readonly selectedProduct = signal<Product | null>(null);
+  public readonly viewMode = signal(false);
 
-  public categoryOptions = [
-    { label: 'All Categories', value: null },
-    { label: 'Shea Butter', value: 'shea_butter' },
-    { label: 'Black Soap', value: 'black_soap' },
-    { label: 'Cosmetics', value: 'cosmetics' },
-    { label: 'Shea Soap', value: 'shea_soap' },
-    { label: 'Powdered Soap', value: 'powdered_soap' },
-    { label: 'Dawadawa Tea', value: 'dawadawa_tea' },
-    { label: 'Essential Oils', value: 'essential_oils' },
-    { label: 'Hair Oil', value: 'hair_oil' },
-    { label: 'Grains', value: 'grains' },
-    { label: 'Legumes', value: 'legumes' },
-    { label: 'Other', value: 'other' },
-  ];
+  public categoryOptions = [{ label: 'All Categories', value: '' }, ...PRODUCT_CATEGORIES];
 
   public statusOptions = [
-    { label: 'All Status', value: null },
+    { label: 'All Status', value: '' },
     { label: 'Active', value: 'active' },
     { label: 'Inactive', value: 'inactive' },
     { label: 'Out of Stock', value: 'out_of_stock' },
@@ -112,47 +128,43 @@ export class ProductsListComponent implements OnInit {
     page: this.currentPage(),
     limit: this.pageSize(),
     searchTerm: this.searchTerm() || undefined,
-    category: this.selectedCategory() || undefined,
-    status: this.selectedStatus() || undefined,
+    category: this.category() || undefined,
+    status: this.status() || undefined,
   }));
 
-  public ngOnInit(): void {
-    this.loadProducts();
-  }
-
-  public loadProducts(): void {
-    this.store.dispatch(ProductsActions.loadProducts({ params: this.queryParams() }));
+  constructor() {
+    effect(() => {
+      this.reloadTrigger(); // Trigger reload
+      this.store.dispatch(ProductsActions.loadProducts({ params: this.queryParams() }));
+    });
   }
 
   public onSearch(): void {
     this.currentPage.set(1);
-    this.loadProducts();
-  }
-
-  public onFilterChange(): void {
-    this.currentPage.set(1);
-    this.loadProducts();
   }
 
   public onPageChange(event: TablePageEvent): void {
-    console.log('Page changed:', event);
-    this.currentPage.set(event.first + 1);
+    const page = event.first / event.rows + 1;
+    this.currentPage.set(page);
     this.pageSize.set(event.rows);
-    this.loadProducts();
   }
 
   public onCreateProduct(): void {
     this.selectedProduct.set(null);
+    this.viewMode.set(false);
     this.showProductDialog.set(true);
   }
 
   public onEditProduct(product: Product): void {
     this.selectedProduct.set(product);
+    this.viewMode.set(false);
     this.showProductDialog.set(true);
   }
 
   public onViewProduct(product: Product): void {
     this.selectedProduct.set(product);
+    this.viewMode.set(true);
+    this.showProductDialog.set(true);
   }
 
   public onDeleteProduct(product: Product): void {
@@ -169,6 +181,57 @@ export class ProductsListComponent implements OnInit {
 
   public onToggleStatus(product: Product): void {
     this.store.dispatch(ProductsActions.changeProductStatus({ id: product.id }));
+    this.reloadTrigger.set(this.reloadTrigger() + 1); // Reload to reflect status change
+  }
+
+  public onProductSaved(): void {
+    this.reloadTrigger.set(this.reloadTrigger() + 1);
+  }
+
+  public onExportExcel(): void {
+    // Build query parameters for export (same as list but without pagination)
+    const exportParams: Partial<ProductQueryParams> = {};
+
+    if (this.searchTerm()) {
+      exportParams.searchTerm = this.searchTerm()!;
+    }
+
+    if (this.category()) {
+      exportParams.category = this.category()!;
+    }
+
+    if (this.status()) {
+      exportParams.status = this.status()!;
+    }
+
+    // Make the API call to export endpoint
+    this.productApiService.exportProductsToExcel(exportParams).subscribe({
+      next: (response) => {
+        const blob = new Blob([response], {
+          type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+        });
+
+        // Create download link
+        const url = window.URL.createObjectURL(blob);
+        const link = document.createElement('a');
+        link.href = url;
+
+        // Generate filename with current date
+        const currentDate = new Date().toISOString().split('T')[0];
+        link.download = `products_export_${currentDate}.xlsx`;
+
+        // Trigger download
+        document.body.appendChild(link);
+        link.click();
+
+        // Clean up
+        document.body.removeChild(link);
+        window.URL.revokeObjectURL(url);
+      },
+      error: (error) => {
+        console.error('Export failed:', error);
+      },
+    });
   }
 
   public getStatusSeverity(status: ProductStatus): 'success' | 'warn' | 'danger' | 'secondary' {

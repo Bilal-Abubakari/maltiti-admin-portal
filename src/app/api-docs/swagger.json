@@ -8,54 +8,27 @@
         "requestBody": {
           "required": true,
           "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/RegisterUserDto"
-              }
-            }
+            "application/json": { "schema": { "$ref": "#/components/schemas/RegisterUserDto" } }
           }
         },
-        "responses": {
-          "201": {
-            "description": ""
-          }
-        },
-        "tags": [
-          "Authentication"
-        ]
+        "responses": { "201": { "description": "" } },
+        "tags": ["Authentication"]
       }
     },
     "/authentication/verify-phone/{id}": {
       "post": {
         "operationId": "AuthenticationController_verifyPhone",
         "parameters": [
-          {
-            "name": "id",
-            "required": true,
-            "in": "path",
-            "schema": {
-              "type": "string"
-            }
-          }
+          { "name": "id", "required": true, "in": "path", "schema": { "type": "string" } }
         ],
         "requestBody": {
           "required": true,
           "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/VerifyPhoneDto"
-              }
-            }
+            "application/json": { "schema": { "$ref": "#/components/schemas/VerifyPhoneDto" } }
           }
         },
-        "responses": {
-          "201": {
-            "description": ""
-          }
-        },
-        "tags": [
-          "Authentication"
-        ]
+        "responses": { "201": { "description": "" } },
+        "tags": ["Authentication"]
       }
     },
     "/authentication/customer-signup": {
@@ -65,21 +38,11 @@
         "requestBody": {
           "required": true,
           "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/RegisterUserDto"
-              }
-            }
+            "application/json": { "schema": { "$ref": "#/components/schemas/RegisterUserDto" } }
           }
         },
-        "responses": {
-          "201": {
-            "description": ""
-          }
-        },
-        "tags": [
-          "Authentication"
-        ]
+        "responses": { "201": { "description": "" } },
+        "tags": ["Authentication"]
       }
     },
     "/authentication/login": {
@@ -89,21 +52,11 @@
         "requestBody": {
           "required": true,
           "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/SignInDto"
-              }
-            }
+            "application/json": { "schema": { "$ref": "#/components/schemas/SignInDto" } }
           }
         },
-        "responses": {
-          "201": {
-            "description": ""
-          }
-        },
-        "tags": [
-          "Authentication"
-        ]
+        "responses": { "201": { "description": "" } },
+        "tags": ["Authentication"]
       }
     },
     "/authentication/forgot-password": {
@@ -113,21 +66,11 @@
         "requestBody": {
           "required": true,
           "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/ForgotPasswordDto"
-              }
-            }
+            "application/json": { "schema": { "$ref": "#/components/schemas/ForgotPasswordDto" } }
           }
         },
-        "responses": {
-          "201": {
-            "description": ""
-          }
-        },
-        "tags": [
-          "Authentication"
-        ]
+        "responses": { "201": { "description": "" } },
+        "tags": ["Authentication"]
       }
     },
     "/authentication/reset-password": {
@@ -137,80 +80,38 @@
         "requestBody": {
           "required": true,
           "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/ResetPasswordDto"
-              }
-            }
+            "application/json": { "schema": { "$ref": "#/components/schemas/ResetPasswordDto" } }
           }
         },
-        "responses": {
-          "201": {
-            "description": ""
-          }
-        },
-        "tags": [
-          "Authentication"
-        ]
+        "responses": { "201": { "description": "" } },
+        "tags": ["Authentication"]
       }
     },
     "/authentication/verify/{id}/{token}": {
       "get": {
         "operationId": "AuthenticationController_emailVerification",
         "parameters": [
-          {
-            "name": "id",
-            "required": true,
-            "in": "path",
-            "schema": {
-              "type": "string"
-            }
-          },
-          {
-            "name": "token",
-            "required": true,
-            "in": "path",
-            "schema": {
-              "type": "string"
-            }
-          }
+          { "name": "id", "required": true, "in": "path", "schema": { "type": "string" } },
+          { "name": "token", "required": true, "in": "path", "schema": { "type": "string" } }
         ],
-        "responses": {
-          "200": {
-            "description": ""
-          }
-        },
-        "tags": [
-          "Authentication"
-        ]
+        "responses": { "200": { "description": "" } },
+        "tags": ["Authentication"]
       }
     },
     "/authentication/refresh-token": {
       "post": {
         "operationId": "AuthenticationController_refreshToken",
         "parameters": [],
-        "responses": {
-          "201": {
-            "description": ""
-          }
-        },
-        "tags": [
-          "Authentication"
-        ]
+        "responses": { "201": { "description": "" } },
+        "tags": ["Authentication"]
       }
     },
     "/authentication/logout": {
       "post": {
         "operationId": "AuthenticationController_logout",
         "parameters": [],
-        "responses": {
-          "201": {
-            "description": ""
-          }
-        },
-        "tags": [
-          "Authentication"
-        ]
+        "responses": { "201": { "description": "" } },
+        "tags": ["Authentication"]
       }
     },
     "/authentication/create-admin": {
@@ -220,91 +121,45 @@
         "requestBody": {
           "required": true,
           "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/CreateAdminDto"
-              }
-            }
+            "application/json": { "schema": { "$ref": "#/components/schemas/CreateAdminDto" } }
           }
         },
-        "responses": {
-          "201": {
-            "description": ""
-          }
-        },
-        "tags": [
-          "Authentication"
-        ]
+        "responses": { "201": { "description": "" } },
+        "tags": ["Authentication"]
       }
     },
     "/authentication/change-password/{id}": {
       "post": {
         "operationId": "AuthenticationController_changePassword",
         "parameters": [
-          {
-            "name": "id",
-            "required": true,
-            "in": "path",
-            "schema": {
-              "type": "string"
-            }
-          }
+          { "name": "id", "required": true, "in": "path", "schema": { "type": "string" } }
         ],
         "requestBody": {
           "required": true,
           "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/ChangePasswordDto"
-              }
-            }
+            "application/json": { "schema": { "$ref": "#/components/schemas/ChangePasswordDto" } }
           }
         },
-        "responses": {
-          "201": {
-            "description": ""
-          }
-        },
-        "tags": [
-          "Authentication"
-        ]
+        "responses": { "201": { "description": "" } },
+        "tags": ["Authentication"]
       }
     },
     "/cooperative/cooperatives": {
       "get": {
         "operationId": "CooperativeController_getAllCooperatives",
         "parameters": [],
-        "responses": {
-          "200": {
-            "description": ""
-          }
-        },
-        "tags": [
-          "Cooperative"
-        ]
+        "responses": { "200": { "description": "" } },
+        "tags": ["Cooperative"]
       }
     },
     "/cooperative/cooperative/{id}": {
       "get": {
         "operationId": "CooperativeController_getCooperative",
         "parameters": [
-          {
-            "name": "id",
-            "required": true,
-            "in": "path",
-            "schema": {
-              "type": "string"
-            }
-          }
+          { "name": "id", "required": true, "in": "path", "schema": { "type": "string" } }
         ],
-        "responses": {
-          "200": {
-            "description": ""
-          }
-        },
-        "tags": [
-          "Cooperative"
-        ]
+        "responses": { "200": { "description": "" } },
+        "tags": ["Cooperative"]
       }
     },
     "/cooperative/add-cooperative": {
@@ -314,21 +169,11 @@
         "requestBody": {
           "required": true,
           "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/AddCooperativeDto"
-              }
-            }
+            "application/json": { "schema": { "$ref": "#/components/schemas/AddCooperativeDto" } }
           }
         },
-        "responses": {
-          "201": {
-            "description": ""
-          }
-        },
-        "tags": [
-          "Cooperative"
-        ]
+        "responses": { "201": { "description": "" } },
+        "tags": ["Cooperative"]
       }
     },
     "/cooperative/edit-cooperative": {
@@ -338,104 +183,49 @@
         "requestBody": {
           "required": true,
           "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/EditCooperativeDto"
-              }
-            }
+            "application/json": { "schema": { "$ref": "#/components/schemas/EditCooperativeDto" } }
           }
         },
-        "responses": {
-          "200": {
-            "description": ""
-          }
-        },
-        "tags": [
-          "Cooperative"
-        ]
+        "responses": { "200": { "description": "" } },
+        "tags": ["Cooperative"]
       }
     },
     "/cooperative/delete-cooperative/{id}": {
       "delete": {
         "operationId": "CooperativeController_deleteCooperative",
         "parameters": [
-          {
-            "name": "id",
-            "required": true,
-            "in": "path",
-            "schema": {
-              "type": "string"
-            }
-          }
+          { "name": "id", "required": true, "in": "path", "schema": { "type": "string" } }
         ],
-        "responses": {
-          "200": {
-            "description": ""
-          }
-        },
-        "tags": [
-          "Cooperative"
-        ]
+        "responses": { "200": { "description": "" } },
+        "tags": ["Cooperative"]
       }
     },
     "/cooperative/members": {
       "get": {
         "operationId": "CooperativeController_getAllCooperativeMembers",
         "parameters": [],
-        "responses": {
-          "200": {
-            "description": ""
-          }
-        },
-        "tags": [
-          "Cooperative"
-        ]
+        "responses": { "200": { "description": "" } },
+        "tags": ["Cooperative"]
       }
     },
     "/cooperative/member/{id}": {
       "get": {
         "operationId": "CooperativeController_getCooperativeMember",
         "parameters": [
-          {
-            "name": "id",
-            "required": true,
-            "in": "path",
-            "schema": {
-              "type": "string"
-            }
-          }
+          { "name": "id", "required": true, "in": "path", "schema": { "type": "string" } }
         ],
-        "responses": {
-          "200": {
-            "description": ""
-          }
-        },
-        "tags": [
-          "Cooperative"
-        ]
+        "responses": { "200": { "description": "" } },
+        "tags": ["Cooperative"]
       }
     },
     "/cooperative/cooperative-members/{id}": {
       "get": {
         "operationId": "CooperativeController_getMembersByCooperative",
         "parameters": [
-          {
-            "name": "id",
-            "required": true,
-            "in": "path",
-            "schema": {
-              "type": "string"
-            }
-          }
+          { "name": "id", "required": true, "in": "path", "schema": { "type": "string" } }
         ],
-        "responses": {
-          "200": {
-            "description": ""
-          }
-        },
-        "tags": [
-          "Cooperative"
-        ]
+        "responses": { "200": { "description": "" } },
+        "tags": ["Cooperative"]
       }
     },
     "/cooperative/add-member": {
@@ -446,20 +236,12 @@
           "required": true,
           "content": {
             "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/AddCooperativeMemberDto"
-              }
+              "schema": { "$ref": "#/components/schemas/AddCooperativeMemberDto" }
             }
           }
         },
-        "responses": {
-          "201": {
-            "description": ""
-          }
-        },
-        "tags": [
-          "Cooperative"
-        ]
+        "responses": { "201": { "description": "" } },
+        "tags": ["Cooperative"]
       }
     },
     "/cooperative/edit-member": {
@@ -470,43 +252,22 @@
           "required": true,
           "content": {
             "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/EditCooperativeMemberDto"
-              }
+              "schema": { "$ref": "#/components/schemas/EditCooperativeMemberDto" }
             }
           }
         },
-        "responses": {
-          "200": {
-            "description": ""
-          }
-        },
-        "tags": [
-          "Cooperative"
-        ]
+        "responses": { "200": { "description": "" } },
+        "tags": ["Cooperative"]
       }
     },
     "/cooperative/delete-member/{id}": {
       "delete": {
         "operationId": "CooperativeController_deleteMember",
         "parameters": [
-          {
-            "name": "id",
-            "required": true,
-            "in": "path",
-            "schema": {
-              "type": "string"
-            }
-          }
+          { "name": "id", "required": true, "in": "path", "schema": { "type": "string" } }
         ],
-        "responses": {
-          "200": {
-            "description": ""
-          }
-        },
-        "tags": [
-          "Cooperative"
-        ]
+        "responses": { "200": { "description": "" } },
+        "tags": ["Cooperative"]
       }
     },
     "/products/all-products": {
@@ -519,12 +280,7 @@
             "required": false,
             "in": "query",
             "description": "Page number for pagination",
-            "schema": {
-              "minimum": 1,
-              "default": 1,
-              "example": 1,
-              "type": "number"
-            }
+            "schema": { "minimum": 1, "default": 1, "example": 1, "type": "number" }
           },
           {
             "name": "limit",
@@ -544,10 +300,7 @@
             "required": false,
             "in": "query",
             "description": "Search term for product name or description",
-            "schema": {
-              "example": "shea butter",
-              "type": "string"
-            }
+            "schema": { "example": "shea butter", "type": "string" }
           },
           {
             "name": "category",
@@ -555,18 +308,18 @@
             "in": "query",
             "description": "Filter by product category",
             "schema": {
-              "example": "shea_butter",
+              "example": "Shea Butter",
               "enum": [
-                "shea_butter",
-                "black_soap",
-                "cosmetics",
-                "shea_soap",
-                "powdered_soap",
-                "dawadawa_tea",
-                "essential_oils",
-                "hair_oil",
-                "grains",
-                "legumes",
+                "Shea Butter",
+                "Black Soap",
+                "Cosmetics",
+                "Shea Soap",
+                "Powdered Soap",
+                "Dawadawa Tea",
+                "Essential Oils",
+                "Hair Oil",
+                "Grains",
+                "Legumes",
                 "other"
               ],
               "type": "string"
@@ -579,12 +332,7 @@
             "description": "Filter by product status",
             "schema": {
               "example": "active",
-              "enum": [
-                "active",
-                "inactive",
-                "out_of_stock",
-                "discontinued"
-              ],
+              "enum": ["active", "inactive", "out_of_stock", "discontinued"],
               "type": "string"
             }
           },
@@ -595,13 +343,7 @@
             "description": "Filter by product grade",
             "schema": {
               "example": "A",
-              "enum": [
-                "A",
-                "B",
-                "premium",
-                "standard",
-                "organic"
-              ],
+              "enum": ["A", "B", "premium", "standard", "organic"],
               "type": "string"
             }
           },
@@ -635,40 +377,28 @@
             "required": false,
             "in": "query",
             "description": "Filter by featured products",
-            "schema": {
-              "example": true,
-              "type": "boolean"
-            }
+            "schema": { "example": true, "type": "boolean" }
           },
           {
             "name": "isOrganic",
             "required": false,
             "in": "query",
             "description": "Filter by organic products",
-            "schema": {
-              "example": true,
-              "type": "boolean"
-            }
+            "schema": { "example": true, "type": "boolean" }
           },
           {
             "name": "minPrice",
             "required": false,
             "in": "query",
             "description": "Minimum price filter",
-            "schema": {
-              "example": 10,
-              "type": "number"
-            }
+            "schema": { "example": 10, "type": "number" }
           },
           {
             "name": "maxPrice",
             "required": false,
             "in": "query",
             "description": "Maximum price filter",
-            "schema": {
-              "example": 100,
-              "type": "number"
-            }
+            "schema": { "example": 100, "type": "number" }
           },
           {
             "name": "sortBy",
@@ -677,13 +407,7 @@
             "description": "Sort field",
             "schema": {
               "example": "createdAt",
-              "enum": [
-                "name",
-                "retail",
-                "createdAt",
-                "rating",
-                "stockQuantity"
-              ],
+              "enum": ["name", "retail", "createdAt", "rating", "stockQuantity"],
               "type": "string"
             }
           },
@@ -692,24 +416,14 @@
             "required": false,
             "in": "query",
             "description": "Sort order",
-            "schema": {
-              "example": "DESC",
-              "enum": [
-                "ASC",
-                "DESC"
-              ],
-              "type": "string"
-            }
+            "schema": { "example": "DESC", "enum": ["ASC", "DESC"], "type": "string" }
           },
           {
             "name": "batchId",
             "required": false,
             "in": "query",
             "description": "Filter by batch ID",
-            "schema": {
-              "example": "123e4567-e89b-12d3-a456-426614174000",
-              "type": "string"
-            }
+            "schema": { "example": "123e4567-e89b-12d3-a456-426614174000", "type": "string" }
           }
         ],
         "responses": {
@@ -717,20 +431,14 @@
             "description": "Products retrieved successfully",
             "content": {
               "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ProductsPaginationResponseDto"
-                }
+                "schema": { "$ref": "#/components/schemas/ProductsPaginationResponseDto" }
               }
             }
           },
-          "400": {
-            "description": "Invalid query parameters"
-          }
+          "400": { "description": "Invalid query parameters" }
         },
         "summary": "Get all products",
-        "tags": [
-          "Products"
-        ]
+        "tags": ["Products"]
       }
     },
     "/products/best-products": {
@@ -743,17 +451,13 @@
             "description": "Featured products retrieved successfully",
             "content": {
               "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/BestProductsResponseDto"
-                }
+                "schema": { "$ref": "#/components/schemas/BestProductsResponseDto" }
               }
             }
           }
         },
         "summary": "Get featured products",
-        "tags": [
-          "Products"
-        ]
+        "tags": ["Products"]
       }
     },
     "/products/product/{id}": {
@@ -766,10 +470,7 @@
             "required": true,
             "in": "path",
             "description": "Product UUID",
-            "schema": {
-              "example": "123e4567-e89b-12d3-a456-426614174000",
-              "type": "string"
-            }
+            "schema": { "example": "123e4567-e89b-12d3-a456-426614174000", "type": "string" }
           }
         ],
         "responses": {
@@ -777,20 +478,14 @@
             "description": "Product retrieved successfully",
             "content": {
               "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ProductResponseDto"
-                }
+                "schema": { "$ref": "#/components/schemas/ProductResponseDto" }
               }
             }
           },
-          "404": {
-            "description": "Product not found"
-          }
+          "404": { "description": "Product not found" }
         },
         "summary": "Get single product",
-        "tags": [
-          "Products"
-        ]
+        "tags": ["Products"]
       }
     },
     "/products/add-product": {
@@ -801,11 +496,7 @@
         "requestBody": {
           "required": true,
           "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/CreateProductDto"
-              }
-            }
+            "application/json": { "schema": { "$ref": "#/components/schemas/CreateProductDto" } }
           }
         },
         "responses": {
@@ -813,31 +504,16 @@
             "description": "Product created successfully",
             "content": {
               "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ProductResponseDto"
-                }
+                "schema": { "$ref": "#/components/schemas/ProductResponseDto" }
               }
             }
           },
-          "400": {
-            "description": "Invalid input data"
-          },
-          "401": {
-            "description": "Unauthorized"
-          },
-          "409": {
-            "description": "Product with SKU already exists"
-          }
+          "400": { "description": "Invalid input data" },
+          "401": { "description": "Unauthorized" },
+          "409": { "description": "Product with SKU already exists" }
         },
-        "security": [
-          {
-            "bearer": []
-          }
-        ],
         "summary": "Create new product",
-        "tags": [
-          "Products"
-        ]
+        "tags": ["Products"]
       }
     },
     "/products/edit-product/{id}": {
@@ -850,20 +526,13 @@
             "required": true,
             "in": "path",
             "description": "Product UUID",
-            "schema": {
-              "example": "123e4567-e89b-12d3-a456-426614174000",
-              "type": "string"
-            }
+            "schema": { "example": "123e4567-e89b-12d3-a456-426614174000", "type": "string" }
           }
         ],
         "requestBody": {
           "required": true,
           "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/UpdateProductDto"
-              }
-            }
+            "application/json": { "schema": { "$ref": "#/components/schemas/UpdateProductDto" } }
           }
         },
         "responses": {
@@ -871,34 +540,18 @@
             "description": "Product updated successfully",
             "content": {
               "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ProductResponseDto"
-                }
+                "schema": { "$ref": "#/components/schemas/ProductResponseDto" }
               }
             }
           },
-          "400": {
-            "description": "Invalid input data"
-          },
-          "401": {
-            "description": "Unauthorized"
-          },
-          "404": {
-            "description": "Product not found"
-          },
-          "409": {
-            "description": "Product with SKU already exists"
-          }
+          "400": { "description": "Invalid input data" },
+          "401": { "description": "Unauthorized" },
+          "404": { "description": "Product not found" },
+          "409": { "description": "Product with SKU already exists" }
         },
-        "security": [
-          {
-            "bearer": []
-          }
-        ],
+        "security": [{ "bearer": [] }],
         "summary": "Update product",
-        "tags": [
-          "Products"
-        ]
+        "tags": ["Products"]
       }
     },
     "/products/delete-product/{id}": {
@@ -911,32 +564,17 @@
             "required": true,
             "in": "path",
             "description": "Product UUID",
-            "schema": {
-              "example": "123e4567-e89b-12d3-a456-426614174000",
-              "type": "string"
-            }
+            "schema": { "example": "123e4567-e89b-12d3-a456-426614174000", "type": "string" }
           }
         ],
         "responses": {
-          "200": {
-            "description": "Product deleted successfully"
-          },
-          "401": {
-            "description": "Unauthorized"
-          },
-          "404": {
-            "description": "Product not found"
-          }
+          "200": { "description": "Product deleted successfully" },
+          "401": { "description": "Unauthorized" },
+          "404": { "description": "Product not found" }
         },
-        "security": [
-          {
-            "bearer": []
-          }
-        ],
+        "security": [{ "bearer": [] }],
         "summary": "Delete product",
-        "tags": [
-          "Products"
-        ]
+        "tags": ["Products"]
       }
     },
     "/products/change-status/{id}": {
@@ -949,10 +587,7 @@
             "required": true,
             "in": "path",
             "description": "Product UUID",
-            "schema": {
-              "example": "123e4567-e89b-12d3-a456-426614174000",
-              "type": "string"
-            }
+            "schema": { "example": "123e4567-e89b-12d3-a456-426614174000", "type": "string" }
           }
         ],
         "responses": {
@@ -960,28 +595,16 @@
             "description": "Product status changed successfully",
             "content": {
               "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ProductResponseDto"
-                }
+                "schema": { "$ref": "#/components/schemas/ProductResponseDto" }
               }
             }
           },
-          "401": {
-            "description": "Unauthorized"
-          },
-          "404": {
-            "description": "Product not found"
-          }
+          "401": { "description": "Unauthorized" },
+          "404": { "description": "Product not found" }
         },
-        "security": [
-          {
-            "bearer": []
-          }
-        ],
+        "security": [{ "bearer": [] }],
         "summary": "Toggle product status",
-        "tags": [
-          "Products"
-        ]
+        "tags": ["Products"]
       }
     },
     "/products/favorite/{id}": {
@@ -994,10 +617,7 @@
             "required": true,
             "in": "path",
             "description": "Product UUID",
-            "schema": {
-              "example": "123e4567-e89b-12d3-a456-426614174000",
-              "type": "string"
-            }
+            "schema": { "example": "123e4567-e89b-12d3-a456-426614174000", "type": "string" }
           }
         ],
         "responses": {
@@ -1005,28 +625,169 @@
             "description": "Product favorite status toggled successfully",
             "content": {
               "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ProductResponseDto"
-                }
+                "schema": { "$ref": "#/components/schemas/ProductResponseDto" }
               }
             }
           },
-          "401": {
-            "description": "Unauthorized"
-          },
-          "404": {
-            "description": "Product not found"
-          }
+          "401": { "description": "Unauthorized" },
+          "404": { "description": "Product not found" }
         },
-        "security": [
+        "security": [{ "bearer": [] }],
+        "summary": "Toggle product favorite",
+        "tags": ["Products"]
+      }
+    },
+    "/products/export/excel": {
+      "get": {
+        "description": "Export all products to a well-structured Excel file with optional filtering. Supports category, status, grade, and other filters.",
+        "operationId": "ProductsController_exportProductsToExcel",
+        "parameters": [
           {
-            "bearer": []
+            "name": "searchTerm",
+            "required": false,
+            "in": "query",
+            "description": "Search term for product name or description",
+            "schema": { "example": "shea butter", "type": "string" }
+          },
+          {
+            "name": "category",
+            "required": false,
+            "in": "query",
+            "description": "Filter by product category",
+            "schema": {
+              "example": "Shea Butter",
+              "enum": [
+                "Shea Butter",
+                "Black Soap",
+                "Cosmetics",
+                "Shea Soap",
+                "Powdered Soap",
+                "Dawadawa Tea",
+                "Essential Oils",
+                "Hair Oil",
+                "Grains",
+                "Legumes",
+                "other"
+              ],
+              "type": "string"
+            }
+          },
+          {
+            "name": "status",
+            "required": false,
+            "in": "query",
+            "description": "Filter by product status",
+            "schema": {
+              "example": "active",
+              "enum": ["active", "inactive", "out_of_stock", "discontinued"],
+              "type": "string"
+            }
+          },
+          {
+            "name": "grade",
+            "required": false,
+            "in": "query",
+            "description": "Filter by product grade",
+            "schema": {
+              "example": "A",
+              "enum": ["A", "B", "premium", "standard", "organic"],
+              "type": "string"
+            }
+          },
+          {
+            "name": "packagingSize",
+            "required": false,
+            "in": "query",
+            "description": "Filter by packaging size",
+            "schema": {
+              "example": "1kg",
+              "enum": [
+                "100g",
+                "250g",
+                "500g",
+                "1kg",
+                "5kg",
+                "12kg",
+                "25kg",
+                "50kg",
+                "100ml",
+                "250ml",
+                "500ml",
+                "1L",
+                "custom"
+              ],
+              "type": "string"
+            }
+          },
+          {
+            "name": "isFeatured",
+            "required": false,
+            "in": "query",
+            "description": "Filter by featured products",
+            "schema": { "example": true, "type": "boolean" }
+          },
+          {
+            "name": "isOrganic",
+            "required": false,
+            "in": "query",
+            "description": "Filter by organic products",
+            "schema": { "example": true, "type": "boolean" }
+          },
+          {
+            "name": "minPrice",
+            "required": false,
+            "in": "query",
+            "description": "Minimum price filter",
+            "schema": { "example": 10, "type": "number" }
+          },
+          {
+            "name": "maxPrice",
+            "required": false,
+            "in": "query",
+            "description": "Maximum price filter",
+            "schema": { "example": 100, "type": "number" }
+          },
+          {
+            "name": "sortBy",
+            "required": false,
+            "in": "query",
+            "description": "Sort field",
+            "schema": {
+              "example": "createdAt",
+              "enum": ["name", "retail", "createdAt", "rating", "stockQuantity"],
+              "type": "string"
+            }
+          },
+          {
+            "name": "sortOrder",
+            "required": false,
+            "in": "query",
+            "description": "Sort order",
+            "schema": { "example": "DESC", "enum": ["ASC", "DESC"], "type": "string" }
+          },
+          {
+            "name": "batchId",
+            "required": false,
+            "in": "query",
+            "description": "Filter by batch ID",
+            "schema": { "example": "123e4567-e89b-12d3-a456-426614174000", "type": "string" }
           }
         ],
-        "summary": "Toggle product favorite",
-        "tags": [
-          "Products"
-        ]
+        "responses": {
+          "200": {
+            "description": "Excel file downloaded successfully",
+            "content": {
+              "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet": {
+                "schema": { "type": "string", "format": "binary" }
+              }
+            }
+          },
+          "401": { "description": "Unauthorized" },
+          "404": { "description": "No products found matching filters" }
+        },
+        "security": [{ "bearer": [] }],
+        "summary": "Export all products to Excel",
+        "tags": ["Products"]
       }
     },
     "/products/batches": {
@@ -1037,50 +798,26 @@
         "requestBody": {
           "required": true,
           "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/CreateBatchDto"
-              }
-            }
+            "application/json": { "schema": { "$ref": "#/components/schemas/CreateBatchDto" } }
           }
         },
         "responses": {
-          "201": {
-            "description": "Batch created successfully"
-          },
-          "400": {
-            "description": "Invalid input data"
-          },
-          "401": {
-            "description": "Unauthorized"
-          },
-          "409": {
-            "description": "Batch number already exists"
-          }
+          "201": { "description": "Batch created successfully" },
+          "400": { "description": "Invalid input data" },
+          "401": { "description": "Unauthorized" },
+          "409": { "description": "Batch number already exists" }
         },
-        "security": [
-          {
-            "bearer": []
-          }
-        ],
+        "security": [{ "bearer": [] }],
         "summary": "Create new batch",
-        "tags": [
-          "Batches"
-        ]
+        "tags": ["Batches"]
       },
       "get": {
         "description": "Retrieve all product batches",
         "operationId": "BatchesController_getAllBatches",
         "parameters": [],
-        "responses": {
-          "200": {
-            "description": "Batches retrieved successfully"
-          }
-        },
+        "responses": { "200": { "description": "Batches retrieved successfully" } },
         "summary": "Get all batches",
-        "tags": [
-          "Batches"
-        ]
+        "tags": ["Batches"]
       }
     },
     "/products/batches/{id}": {
@@ -1093,275 +830,209 @@
             "required": true,
             "in": "path",
             "description": "Batch UUID",
-            "schema": {
-              "example": "123e4567-e89b-12d3-a456-426614174000",
-              "type": "string"
-            }
+            "schema": { "example": "123e4567-e89b-12d3-a456-426614174000", "type": "string" }
           }
         ],
         "responses": {
-          "200": {
-            "description": "Batch retrieved successfully"
-          },
-          "404": {
-            "description": "Batch not found"
-          }
+          "200": { "description": "Batch retrieved successfully" },
+          "404": { "description": "Batch not found" }
         },
         "summary": "Get single batch",
-        "tags": [
-          "Batches"
-        ]
+        "tags": ["Batches"]
+      }
+    },
+    "/ingredients": {
+      "get": {
+        "operationId": "IngredientsController_findAll",
+        "parameters": [],
+        "responses": { "200": { "description": "List of all ingredients" } },
+        "summary": "Retrieve all ingredients",
+        "tags": ["ingredients"]
+      },
+      "post": {
+        "operationId": "IngredientsController_create",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": { "schema": { "$ref": "#/components/schemas/CreateIngredientDto" } }
+          }
+        },
+        "responses": {
+          "201": { "description": "The created ingredient" },
+          "400": { "description": "Bad request" }
+        },
+        "summary": "Create a new ingredient",
+        "tags": ["ingredients"]
+      }
+    },
+    "/ingredients/{id}": {
+      "get": {
+        "operationId": "IngredientsController_findOne",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "description": "The ID of the ingredient",
+            "schema": { "type": "string" }
+          }
+        ],
+        "responses": {
+          "200": { "description": "The ingredient object" },
+          "404": { "description": "Ingredient not found" }
+        },
+        "summary": "Retrieve a single ingredient by ID",
+        "tags": ["ingredients"]
+      },
+      "put": {
+        "operationId": "IngredientsController_update",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "description": "The ID of the ingredient to update",
+            "schema": { "type": "string" }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": { "schema": { "$ref": "#/components/schemas/UpdateIngredientDto" } }
+          }
+        },
+        "responses": {
+          "200": { "description": "The updated ingredient" },
+          "400": { "description": "Bad request" },
+          "404": { "description": "Ingredient not found" }
+        },
+        "summary": "Update an existing ingredient",
+        "tags": ["ingredients"]
+      },
+      "delete": {
+        "operationId": "IngredientsController_remove",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "description": "The ID of the ingredient to delete",
+            "schema": { "type": "string" }
+          }
+        ],
+        "responses": {
+          "200": { "description": "Ingredient deleted successfully" },
+          "404": { "description": "Ingredient not found" }
+        },
+        "summary": "Delete an ingredient by ID",
+        "tags": ["ingredients"]
       }
     },
     "/cart/{id}": {
       "get": {
         "operationId": "CartController_getCart",
         "parameters": [
-          {
-            "name": "id",
-            "required": true,
-            "in": "path",
-            "schema": {
-              "type": "string"
-            }
-          }
+          { "name": "id", "required": true, "in": "path", "schema": { "type": "string" } }
         ],
-        "responses": {
-          "200": {
-            "description": ""
-          }
-        },
-        "tags": [
-          "Cart"
-        ]
+        "responses": { "200": { "description": "" } },
+        "tags": ["Cart"]
       },
       "delete": {
         "operationId": "CartController_removeFromCart",
         "parameters": [
-          {
-            "name": "id",
-            "required": true,
-            "in": "path",
-            "schema": {
-              "type": "string"
-            }
-          }
+          { "name": "id", "required": true, "in": "path", "schema": { "type": "string" } }
         ],
-        "responses": {
-          "200": {
-            "description": ""
-          }
-        },
-        "tags": [
-          "Cart"
-        ]
+        "responses": { "200": { "description": "" } },
+        "tags": ["Cart"]
       },
       "post": {
         "operationId": "CartController_addToCart",
         "parameters": [
-          {
-            "name": "id",
-            "required": true,
-            "in": "path",
-            "schema": {
-              "type": "string"
-            }
-          }
+          { "name": "id", "required": true, "in": "path", "schema": { "type": "string" } }
         ],
         "requestBody": {
           "required": true,
           "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/AddCartDto"
-              }
-            }
+            "application/json": { "schema": { "$ref": "#/components/schemas/AddCartDto" } }
           }
         },
-        "responses": {
-          "201": {
-            "description": ""
-          }
-        },
-        "tags": [
-          "Cart"
-        ]
+        "responses": { "201": { "description": "" } },
+        "tags": ["Cart"]
       },
       "patch": {
         "operationId": "CartController_addQuantity",
         "parameters": [
-          {
-            "name": "id",
-            "required": true,
-            "in": "path",
-            "schema": {
-              "type": "string"
-            }
-          }
+          { "name": "id", "required": true, "in": "path", "schema": { "type": "string" } }
         ],
         "requestBody": {
           "required": true,
           "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/AddQuantityDto"
-              }
-            }
+            "application/json": { "schema": { "$ref": "#/components/schemas/AddQuantityDto" } }
           }
         },
-        "responses": {
-          "200": {
-            "description": ""
-          }
-        },
-        "tags": [
-          "Cart"
-        ]
+        "responses": { "200": { "description": "" } },
+        "tags": ["Cart"]
       }
     },
     "/cart/all-cart/{id}": {
       "delete": {
         "operationId": "CartController_removeAllFromCart",
         "parameters": [
-          {
-            "name": "id",
-            "required": true,
-            "in": "path",
-            "schema": {
-              "type": "string"
-            }
-          }
+          { "name": "id", "required": true, "in": "path", "schema": { "type": "string" } }
         ],
-        "responses": {
-          "200": {
-            "description": ""
-          }
-        },
-        "tags": [
-          "Cart"
-        ]
+        "responses": { "200": { "description": "" } },
+        "tags": ["Cart"]
       }
     },
     "/checkout/orders/{id}": {
       "get": {
         "operationId": "CheckoutController_getOrders",
         "parameters": [
-          {
-            "name": "id",
-            "required": true,
-            "in": "path",
-            "schema": {
-              "type": "string"
-            }
-          }
+          { "name": "id", "required": true, "in": "path", "schema": { "type": "string" } }
         ],
-        "responses": {
-          "200": {
-            "description": ""
-          }
-        },
-        "tags": [
-          "Checkout"
-        ]
+        "responses": { "200": { "description": "" } },
+        "tags": ["Checkout"]
       }
     },
     "/checkout/order/{id}": {
       "get": {
         "operationId": "CheckoutController_getOrder",
         "parameters": [
-          {
-            "name": "id",
-            "required": true,
-            "in": "path",
-            "schema": {
-              "type": "string"
-            }
-          }
+          { "name": "id", "required": true, "in": "path", "schema": { "type": "string" } }
         ],
-        "responses": {
-          "200": {
-            "description": ""
-          }
-        },
-        "tags": [
-          "Checkout"
-        ]
+        "responses": { "200": { "description": "" } },
+        "tags": ["Checkout"]
       }
     },
     "/checkout/test-mail": {
       "get": {
         "operationId": "CheckoutController_testMail",
         "parameters": [],
-        "responses": {
-          "200": {
-            "description": ""
-          }
-        },
-        "tags": [
-          "Checkout"
-        ]
+        "responses": { "200": { "description": "" } },
+        "tags": ["Checkout"]
       }
     },
     "/checkout/confirm-payment/{userId}/{checkoutId}": {
       "get": {
         "operationId": "CheckoutController_confirmPayment",
         "parameters": [
-          {
-            "name": "userId",
-            "required": true,
-            "in": "path",
-            "schema": {
-              "type": "string"
-            }
-          },
-          {
-            "name": "checkoutId",
-            "required": true,
-            "in": "path",
-            "schema": {
-              "type": "string"
-            }
-          }
+          { "name": "userId", "required": true, "in": "path", "schema": { "type": "string" } },
+          { "name": "checkoutId", "required": true, "in": "path", "schema": { "type": "string" } }
         ],
-        "responses": {
-          "200": {
-            "description": ""
-          }
-        },
-        "tags": [
-          "Checkout"
-        ]
+        "responses": { "200": { "description": "" } },
+        "tags": ["Checkout"]
       }
     },
     "/checkout/{id}/{location}": {
       "get": {
         "operationId": "CheckoutController_getTransportation",
         "parameters": [
-          {
-            "name": "id",
-            "required": true,
-            "in": "path",
-            "schema": {
-              "type": "string"
-            }
-          },
-          {
-            "name": "location",
-            "required": true,
-            "in": "path",
-            "schema": {
-              "type": "string"
-            }
-          }
+          { "name": "id", "required": true, "in": "path", "schema": { "type": "string" } },
+          { "name": "location", "required": true, "in": "path", "schema": { "type": "string" } }
         ],
-        "responses": {
-          "200": {
-            "description": ""
-          }
-        },
-        "tags": [
-          "Checkout"
-        ]
+        "responses": { "200": { "description": "" } },
+        "tags": ["Checkout"]
       }
     },
     "/checkout/orders": {
@@ -1372,165 +1043,112 @@
             "name": "orderStatus",
             "required": true,
             "in": "query",
-            "schema": {
-              "type": "string"
-            }
+            "schema": { "type": "string" }
           },
-          {
-            "name": "searchTerm",
-            "required": true,
-            "in": "query",
-            "schema": {
-              "type": "string"
-            }
-          },
-          {
-            "name": "page",
-            "required": true,
-            "in": "query",
-            "schema": {
-              "type": "number"
-            }
-          },
+          { "name": "searchTerm", "required": true, "in": "query", "schema": { "type": "string" } },
+          { "name": "page", "required": true, "in": "query", "schema": { "type": "number" } },
           {
             "name": "paymentStatus",
             "required": true,
             "in": "query",
-            "schema": {
-              "type": "string"
-            }
+            "schema": { "type": "string" }
           }
         ],
-        "responses": {
-          "200": {
-            "description": ""
-          }
-        },
-        "tags": [
-          "Checkout"
-        ]
+        "responses": { "200": { "description": "" } },
+        "tags": ["Checkout"]
       }
     },
     "/checkout/initialize-transaction/{id}": {
       "post": {
         "operationId": "CheckoutController_initializeTransaction",
         "parameters": [
-          {
-            "name": "id",
-            "required": true,
-            "in": "path",
-            "schema": {
-              "type": "string"
-            }
-          }
+          { "name": "id", "required": true, "in": "path", "schema": { "type": "string" } }
         ],
         "requestBody": {
           "required": true,
           "content": {
             "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/InitializeTransaction"
-              }
+              "schema": { "$ref": "#/components/schemas/InitializeTransaction" }
             }
           }
         },
-        "responses": {
-          "201": {
-            "description": ""
-          }
-        },
-        "tags": [
-          "Checkout"
-        ]
+        "responses": { "201": { "description": "" } },
+        "tags": ["Checkout"]
       }
     },
     "/checkout/order-status/{id}": {
       "patch": {
         "operationId": "CheckoutController_orderStatus",
         "parameters": [
-          {
-            "name": "id",
-            "required": true,
-            "in": "path",
-            "schema": {
-              "type": "string"
-            }
-          }
+          { "name": "id", "required": true, "in": "path", "schema": { "type": "string" } }
         ],
         "requestBody": {
           "required": true,
           "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/OrderStatus"
-              }
-            }
+            "application/json": { "schema": { "$ref": "#/components/schemas/OrderStatus" } }
           }
         },
-        "responses": {
-          "200": {
-            "description": ""
-          }
-        },
-        "tags": [
-          "Checkout"
-        ]
+        "responses": { "200": { "description": "" } },
+        "tags": ["Checkout"]
       }
     },
     "/checkout/payment-status/{id}": {
       "patch": {
         "operationId": "CheckoutController_paymentStatus",
         "parameters": [
-          {
-            "name": "id",
-            "required": true,
-            "in": "path",
-            "schema": {
-              "type": "string"
-            }
-          }
+          { "name": "id", "required": true, "in": "path", "schema": { "type": "string" } }
         ],
         "requestBody": {
           "required": true,
           "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/PaymentStatus"
-              }
-            }
+            "application/json": { "schema": { "$ref": "#/components/schemas/PaymentStatus" } }
           }
         },
-        "responses": {
-          "200": {
-            "description": ""
-          }
-        },
-        "tags": [
-          "Checkout"
-        ]
+        "responses": { "200": { "description": "" } },
+        "tags": ["Checkout"]
       }
     },
     "/checkout/cancel-order/{id}": {
       "patch": {
         "operationId": "CheckoutController_cancelOrder",
         "parameters": [
-          {
-            "name": "id",
-            "required": true,
-            "in": "path",
-            "schema": {
-              "type": "string"
+          { "name": "id", "required": true, "in": "path", "schema": { "type": "string" } }
+        ],
+        "responses": { "200": { "description": "" } },
+        "tags": ["Checkout"]
+      }
+    },
+    "/upload/image": {
+      "post": {
+        "operationId": "UploadController_uploadImage",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "image": {
+                    "type": "string",
+                    "format": "binary",
+                    "description": "Image file to upload"
+                  }
+                }
+              }
             }
           }
-        ],
+        },
         "responses": {
-          "200": {
-            "description": ""
+          "201": {
+            "description": "Image uploaded successfully",
+            "content": {
+              "application/json": { "schema": { "$ref": "#/components/schemas/UploadResponseDto" } }
+            }
           }
         },
-        "tags": [
-          "Checkout"
-        ]
+        "summary": "Upload an image",
+        "tags": ["Upload"]
       }
     }
   },
@@ -1543,43 +1161,17 @@
       "url": "https://maltiti.com",
       "email": "support@maltiti.com"
     },
-    "license": {
-      "name": "Proprietary",
-      "url": "https://maltiti.com/license"
-    }
+    "license": { "name": "Proprietary", "url": "https://maltiti.com/license" }
   },
   "tags": [
-    {
-      "name": "Authentication",
-      "description": "User authentication and authorization endpoints"
-    },
-    {
-      "name": "Products",
-      "description": "Product management endpoints"
-    },
-    {
-      "name": "Cart",
-      "description": "Shopping cart management endpoints"
-    },
-    {
-      "name": "Checkout",
-      "description": "Order and checkout endpoints"
-    },
-    {
-      "name": "Cooperative",
-      "description": "Cooperative management endpoints"
-    },
-    {
-      "name": "Users",
-      "description": "User management endpoints"
-    }
+    { "name": "Authentication", "description": "User authentication and authorization endpoints" },
+    { "name": "Products", "description": "Product management endpoints" },
+    { "name": "Cart", "description": "Shopping cart management endpoints" },
+    { "name": "Checkout", "description": "Order and checkout endpoints" },
+    { "name": "Cooperative", "description": "Cooperative management endpoints" },
+    { "name": "Users", "description": "User management endpoints" }
   ],
-  "servers": [
-    {
-      "url": "http://localhost:3002",
-      "description": "Development"
-    }
-  ],
+  "servers": [{ "url": "http://localhost:3002", "description": "Development" }],
   "components": {
     "securitySchemes": {
       "JWT-auth": {
@@ -1592,48 +1184,13 @@
       }
     },
     "schemas": {
-      "RegisterUserDto": {
-        "type": "object",
-        "properties": {
-
-        }
-      },
-      "VerifyPhoneDto": {
-        "type": "object",
-        "properties": {
-
-        }
-      },
-      "SignInDto": {
-        "type": "object",
-        "properties": {
-
-        }
-      },
-      "ForgotPasswordDto": {
-        "type": "object",
-        "properties": {
-
-        }
-      },
-      "ResetPasswordDto": {
-        "type": "object",
-        "properties": {
-
-        }
-      },
-      "CreateAdminDto": {
-        "type": "object",
-        "properties": {
-
-        }
-      },
-      "ChangePasswordDto": {
-        "type": "object",
-        "properties": {
-
-        }
-      },
+      "RegisterUserDto": { "type": "object", "properties": {} },
+      "VerifyPhoneDto": { "type": "object", "properties": {} },
+      "SignInDto": { "type": "object", "properties": {} },
+      "ForgotPasswordDto": { "type": "object", "properties": {} },
+      "ResetPasswordDto": { "type": "object", "properties": {} },
+      "CreateAdminDto": { "type": "object", "properties": {} },
+      "ChangePasswordDto": { "type": "object", "properties": {} },
       "AddCooperativeDto": {
         "type": "object",
         "properties": {
@@ -1667,13 +1224,7 @@
             "example": "100.00"
           }
         },
-        "required": [
-          "name",
-          "community",
-          "registrationFee",
-          "monthlyFee",
-          "minimalShare"
-        ]
+        "required": ["name", "community", "registrationFee", "monthlyFee", "minimalShare"]
       },
       "EditCooperativeDto": {
         "type": "object",
@@ -1713,14 +1264,7 @@
             "example": "100.00"
           }
         },
-        "required": [
-          "id",
-          "name",
-          "community",
-          "registrationFee",
-          "monthlyFee",
-          "minimalShare"
-        ]
+        "required": ["id", "name", "community", "registrationFee", "monthlyFee", "minimalShare"]
       },
       "AddCooperativeMemberDto": {
         "type": "object",
@@ -1763,13 +1307,7 @@
             "type": "string",
             "description": "The type of identification document (e.g., National ID, Voter ID, Passport)",
             "example": "Ghana Card",
-            "enum": [
-              "Ghana Card",
-              "Voter ID",
-              "Passport",
-              "Driver License",
-              "NHIS Card"
-            ]
+            "enum": ["Ghana Card", "Voter ID", "Passport", "Driver License", "NHIS Card"]
           },
           "idNumber": {
             "type": "string",
@@ -1924,13 +1462,7 @@
             "type": "string",
             "description": "The updated type of identification document (e.g., National ID, Voter ID, Passport)",
             "example": "Ghana Card",
-            "enum": [
-              "Ghana Card",
-              "Voter ID",
-              "Passport",
-              "Driver License",
-              "NHIS Card"
-            ]
+            "enum": ["Ghana Card", "Voter ID", "Passport", "Driver License", "NHIS Card"]
           },
           "idNumber": {
             "type": "string",
@@ -2043,48 +1575,31 @@
       "ProductResponseDto": {
         "type": "object",
         "properties": {
-          "id": {
-            "type": "string",
-            "example": "123e4567-e89b-12d3-a456-426614174000"
-          },
-          "sku": {
-            "type": "string",
-            "example": "SB-WHT-1KG-001"
-          },
-          "name": {
-            "type": "string",
-            "example": "White Shea Butter Grade A"
-          },
+          "id": { "type": "string", "example": "123e4567-e89b-12d3-a456-426614174000" },
+          "sku": { "type": "string", "example": "SB-WHT-1KG-001" },
+          "name": { "type": "string", "example": "White Shea Butter Grade A" },
           "ingredients": {
-            "example": [
-              "100% Pure Shea Butter",
-              "No additives"
-            ],
+            "example": ["100% Pure Shea Butter", "No additives"],
             "type": "array",
-            "items": {
-              "type": "string"
-            }
+            "items": { "type": "string" }
           },
-          "weight": {
-            "type": "string",
-            "example": "1kg"
-          },
+          "weight": { "type": "string", "example": "1kg" },
           "category": {
             "type": "string",
             "enum": [
-              "shea_butter",
-              "black_soap",
-              "cosmetics",
-              "shea_soap",
-              "powdered_soap",
-              "dawadawa_tea",
-              "essential_oils",
-              "hair_oil",
-              "grains",
-              "legumes",
+              "Shea Butter",
+              "Black Soap",
+              "Cosmetics",
+              "Shea Soap",
+              "Powdered Soap",
+              "Dawadawa Tea",
+              "Essential Oils",
+              "Hair Oil",
+              "Grains",
+              "Legumes",
               "other"
             ],
-            "example": "shea_butter"
+            "example": "Shea Butter"
           },
           "description": {
             "type": "string",
@@ -2092,12 +1607,7 @@
           },
           "status": {
             "type": "string",
-            "enum": [
-              "active",
-              "inactive",
-              "out_of_stock",
-              "discontinued"
-            ],
+            "enum": ["active", "inactive", "out_of_stock", "discontinued"],
             "example": "active"
           },
           "size": {
@@ -2120,85 +1630,32 @@
             "example": "1kg"
           },
           "images": {
-            "example": [
-              "https://example.com/image1.jpg",
-              "https://example.com/image2.jpg"
-            ],
+            "example": ["https://example.com/image1.jpg", "https://example.com/image2.jpg"],
             "type": "array",
-            "items": {
-              "type": "string"
-            }
+            "items": { "type": "string" }
           },
-          "image": {
-            "type": "string",
-            "example": "https://example.com/primary-image.jpg"
-          },
-          "wholesale": {
-            "type": "number",
-            "example": 45
-          },
-          "retail": {
-            "type": "number",
-            "example": 60
-          },
-          "stockQuantity": {
-            "type": "number",
-            "example": 150
-          },
-          "inBoxPrice": {
-            "type": "number",
-            "example": 540
-          },
-          "quantityInBox": {
-            "type": "number",
-            "example": 12
-          },
-          "favorite": {
-            "type": "boolean",
-            "example": false
-          },
-          "rating": {
-            "type": "number",
-            "example": 4.5
-          },
-          "reviews": {
-            "type": "number",
-            "example": 23
-          },
+          "image": { "type": "string", "example": "https://example.com/primary-image.jpg" },
+          "wholesale": { "type": "number", "example": 45 },
+          "retail": { "type": "number", "example": 60 },
+          "stockQuantity": { "type": "number", "example": 150 },
+          "inBoxPrice": { "type": "number", "example": 540 },
+          "quantityInBox": { "type": "number", "example": 12 },
+          "favorite": { "type": "boolean", "example": false },
+          "rating": { "type": "number", "example": 4.5 },
+          "reviews": { "type": "number", "example": 23 },
           "grade": {
             "type": "string",
-            "enum": [
-              "A",
-              "B",
-              "premium",
-              "standard",
-              "organic"
-            ],
+            "enum": ["A", "B", "premium", "standard", "organic"],
             "example": "A"
           },
-          "isFeatured": {
-            "type": "boolean",
-            "example": false
-          },
-          "isOrganic": {
-            "type": "boolean",
-            "example": true
-          },
+          "isFeatured": { "type": "boolean", "example": false },
+          "isOrganic": { "type": "boolean", "example": true },
           "certifications": {
-            "example": [
-              "Ecocert",
-              "FDA",
-              "GSA"
-            ],
+            "example": ["Ecocert", "FDA", "GSA"],
             "type": "array",
-            "items": {
-              "type": "string"
-            }
+            "items": { "type": "string" }
           },
-          "supplierReference": {
-            "type": "string",
-            "example": "SUP-2024-001"
-          },
+          "supplierReference": { "type": "string", "example": "SUP-2024-001" },
           "producedAt": {
             "format": "date-time",
             "type": "string",
@@ -2209,10 +1666,7 @@
             "type": "string",
             "example": "2026-01-15T00:00:00.000Z"
           },
-          "minOrderQuantity": {
-            "type": "number",
-            "example": 5
-          },
+          "minOrderQuantity": { "type": "number", "example": 5 },
           "createdAt": {
             "format": "date-time",
             "type": "string",
@@ -2259,50 +1713,26 @@
       "ProductsPaginationResponseDto": {
         "type": "object",
         "properties": {
-          "totalItems": {
-            "type": "number",
-            "example": 50
-          },
-          "currentPage": {
-            "type": "number",
-            "example": 1
-          },
-          "totalPages": {
-            "type": "number",
-            "example": 5
-          },
+          "totalItems": { "type": "number", "example": 50 },
+          "currentPage": { "type": "number", "example": 1 },
+          "totalPages": { "type": "number", "example": 5 },
           "products": {
             "type": "array",
-            "items": {
-              "$ref": "#/components/schemas/ProductResponseDto"
-            }
+            "items": { "$ref": "#/components/schemas/ProductResponseDto" }
           }
         },
-        "required": [
-          "totalItems",
-          "currentPage",
-          "totalPages",
-          "products"
-        ]
+        "required": ["totalItems", "currentPage", "totalPages", "products"]
       },
       "BestProductsResponseDto": {
         "type": "object",
         "properties": {
-          "totalItems": {
-            "type": "number",
-            "example": 8
-          },
+          "totalItems": { "type": "number", "example": 8 },
           "data": {
             "type": "array",
-            "items": {
-              "$ref": "#/components/schemas/ProductResponseDto"
-            }
+            "items": { "$ref": "#/components/schemas/ProductResponseDto" }
           }
         },
-        "required": [
-          "totalItems",
-          "data"
-        ]
+        "required": ["totalItems", "data"]
       },
       "CreateProductDto": {
         "type": "object",
@@ -2319,14 +1749,9 @@
           },
           "ingredients": {
             "description": "Product ingredients (comma-separated or array)",
-            "example": [
-              "100% Pure Shea Butter",
-              "No additives"
-            ],
+            "example": ["100% Pure Shea Butter", "No additives"],
             "type": "array",
-            "items": {
-              "type": "string"
-            }
+            "items": { "type": "string" }
           },
           "weight": {
             "type": "string",
@@ -2337,19 +1762,19 @@
             "type": "string",
             "description": "Product category",
             "enum": [
-              "shea_butter",
-              "black_soap",
-              "cosmetics",
-              "shea_soap",
-              "powdered_soap",
-              "dawadawa_tea",
-              "essential_oils",
-              "hair_oil",
-              "grains",
-              "legumes",
+              "Shea Butter",
+              "Black Soap",
+              "Cosmetics",
+              "Shea Soap",
+              "Powdered Soap",
+              "Dawadawa Tea",
+              "Essential Oils",
+              "Hair Oil",
+              "Grains",
+              "Legumes",
               "other"
             ],
-            "example": "shea_butter"
+            "example": "Shea Butter"
           },
           "description": {
             "type": "string",
@@ -2359,12 +1784,7 @@
           "status": {
             "type": "string",
             "description": "Product status",
-            "enum": [
-              "active",
-              "inactive",
-              "out_of_stock",
-              "discontinued"
-            ],
+            "enum": ["active", "inactive", "out_of_stock", "discontinued"],
             "example": "active",
             "default": "active"
           },
@@ -2390,14 +1810,9 @@
           },
           "images": {
             "description": "Product images URLs",
-            "example": [
-              "https://example.com/image1.jpg",
-              "https://example.com/image2.jpg"
-            ],
+            "example": ["https://example.com/image1.jpg", "https://example.com/image2.jpg"],
             "type": "array",
-            "items": {
-              "type": "string"
-            }
+            "items": { "type": "string" }
           },
           "image": {
             "type": "string",
@@ -2409,21 +1824,13 @@
             "description": "Wholesale price in currency",
             "example": 45
           },
-          "retail": {
-            "type": "number",
-            "description": "Retail price in currency",
-            "example": 60
-          },
+          "retail": { "type": "number", "description": "Retail price in currency", "example": 60 },
           "stockQuantity": {
             "type": "number",
             "description": "Available stock quantity",
             "example": 150
           },
-          "inBoxPrice": {
-            "type": "number",
-            "description": "Price for a full box",
-            "example": 540
-          },
+          "inBoxPrice": { "type": "number", "description": "Price for a full box", "example": 540 },
           "quantityInBox": {
             "type": "number",
             "description": "Quantity of items in one box",
@@ -2432,13 +1839,7 @@
           "grade": {
             "type": "string",
             "description": "Product grade/quality",
-            "enum": [
-              "A",
-              "B",
-              "premium",
-              "standard",
-              "organic"
-            ],
+            "enum": ["A", "B", "premium", "standard", "organic"],
             "example": "A"
           },
           "isFeatured": {
@@ -2455,15 +1856,9 @@
           },
           "certifications": {
             "description": "Product certifications",
-            "example": [
-              "Ecocert",
-              "FDA",
-              "GSA"
-            ],
+            "example": ["Ecocert", "FDA", "GSA"],
             "type": "array",
-            "items": {
-              "type": "string"
-            }
+            "items": { "type": "string" }
           },
           "supplierReference": {
             "type": "string",
@@ -2475,11 +1870,7 @@
             "description": "Production date",
             "example": "2024-01-15"
           },
-          "expiryDate": {
-            "type": "string",
-            "description": "Expiry date",
-            "example": "2026-01-15"
-          },
+          "expiryDate": { "type": "string", "description": "Expiry date", "example": "2026-01-15" },
           "minOrderQuantity": {
             "type": "number",
             "description": "Minimum order quantity",
@@ -2490,11 +1881,6 @@
             "type": "number",
             "description": "Cost price for internal tracking",
             "example": 35
-          },
-          "batchId": {
-            "type": "string",
-            "description": "Batch ID for batch tracking",
-            "example": "123e4567-e89b-12d3-a456-426614174000"
           }
         },
         "required": [
@@ -2522,14 +1908,9 @@
           },
           "ingredients": {
             "description": "Product ingredients (comma-separated or array)",
-            "example": [
-              "100% Pure Shea Butter",
-              "No additives"
-            ],
+            "example": ["100% Pure Shea Butter", "No additives"],
             "type": "array",
-            "items": {
-              "type": "string"
-            }
+            "items": { "type": "string" }
           },
           "weight": {
             "type": "string",
@@ -2540,19 +1921,19 @@
             "type": "string",
             "description": "Product category",
             "enum": [
-              "shea_butter",
-              "black_soap",
-              "cosmetics",
-              "shea_soap",
-              "powdered_soap",
-              "dawadawa_tea",
-              "essential_oils",
-              "hair_oil",
-              "grains",
-              "legumes",
+              "Shea Butter",
+              "Black Soap",
+              "Cosmetics",
+              "Shea Soap",
+              "Powdered Soap",
+              "Dawadawa Tea",
+              "Essential Oils",
+              "Hair Oil",
+              "Grains",
+              "Legumes",
               "other"
             ],
-            "example": "shea_butter"
+            "example": "Shea Butter"
           },
           "description": {
             "type": "string",
@@ -2562,12 +1943,7 @@
           "status": {
             "type": "string",
             "description": "Product status",
-            "enum": [
-              "active",
-              "inactive",
-              "out_of_stock",
-              "discontinued"
-            ],
+            "enum": ["active", "inactive", "out_of_stock", "discontinued"],
             "example": "active",
             "default": "active"
           },
@@ -2593,14 +1969,9 @@
           },
           "images": {
             "description": "Product images URLs",
-            "example": [
-              "https://example.com/image1.jpg",
-              "https://example.com/image2.jpg"
-            ],
+            "example": ["https://example.com/image1.jpg", "https://example.com/image2.jpg"],
             "type": "array",
-            "items": {
-              "type": "string"
-            }
+            "items": { "type": "string" }
           },
           "image": {
             "type": "string",
@@ -2612,21 +1983,13 @@
             "description": "Wholesale price in currency",
             "example": 45
           },
-          "retail": {
-            "type": "number",
-            "description": "Retail price in currency",
-            "example": 60
-          },
+          "retail": { "type": "number", "description": "Retail price in currency", "example": 60 },
           "stockQuantity": {
             "type": "number",
             "description": "Available stock quantity",
             "example": 150
           },
-          "inBoxPrice": {
-            "type": "number",
-            "description": "Price for a full box",
-            "example": 540
-          },
+          "inBoxPrice": { "type": "number", "description": "Price for a full box", "example": 540 },
           "quantityInBox": {
             "type": "number",
             "description": "Quantity of items in one box",
@@ -2635,13 +1998,7 @@
           "grade": {
             "type": "string",
             "description": "Product grade/quality",
-            "enum": [
-              "A",
-              "B",
-              "premium",
-              "standard",
-              "organic"
-            ],
+            "enum": ["A", "B", "premium", "standard", "organic"],
             "example": "A"
           },
           "isFeatured": {
@@ -2658,15 +2015,9 @@
           },
           "certifications": {
             "description": "Product certifications",
-            "example": [
-              "Ecocert",
-              "FDA",
-              "GSA"
-            ],
+            "example": ["Ecocert", "FDA", "GSA"],
             "type": "array",
-            "items": {
-              "type": "string"
-            }
+            "items": { "type": "string" }
           },
           "supplierReference": {
             "type": "string",
@@ -2678,11 +2029,7 @@
             "description": "Production date",
             "example": "2024-01-15"
           },
-          "expiryDate": {
-            "type": "string",
-            "description": "Expiry date",
-            "example": "2026-01-15"
-          },
+          "expiryDate": { "type": "string", "description": "Expiry date", "example": "2026-01-15" },
           "minOrderQuantity": {
             "type": "number",
             "description": "Minimum order quantity",
@@ -2693,11 +2040,6 @@
             "type": "number",
             "description": "Cost price for internal tracking",
             "example": 35
-          },
-          "batchId": {
-            "type": "string",
-            "description": "Batch ID for batch tracking",
-            "example": "123e4567-e89b-12d3-a456-426614174000"
           },
           "isMinorUpdate": {
             "type": "boolean",
@@ -2719,11 +2061,7 @@
             "description": "Production/manufacturing date",
             "example": "2024-01-15"
           },
-          "expiryDate": {
-            "type": "string",
-            "description": "Expiry date",
-            "example": "2026-01-15"
-          },
+          "expiryDate": { "type": "string", "description": "Expiry date", "example": "2026-01-15" },
           "manufacturingLocation": {
             "type": "string",
             "description": "Manufacturing location",
@@ -2740,10 +2078,10 @@
             "example": "Premium quality shea nuts sourced from Yendi"
           }
         },
-        "required": [
-          "batchNumber"
-        ]
+        "required": ["batchNumber"]
       },
+      "CreateIngredientDto": { "type": "object", "properties": {} },
+      "UpdateIngredientDto": { "type": "object", "properties": {} },
       "AddCartDto": {
         "type": "object",
         "properties": {
@@ -2753,9 +2091,7 @@
             "example": "550e8400-e29b-41d4-a716-446655440000"
           }
         },
-        "required": [
-          "id"
-        ]
+        "required": ["id"]
       },
       "AddQuantityDto": {
         "type": "object",
@@ -2767,27 +2103,18 @@
             "minimum": 1
           }
         },
-        "required": [
-          "quantity"
-        ]
+        "required": ["quantity"]
       },
-      "InitializeTransaction": {
+      "InitializeTransaction": { "type": "object", "properties": {} },
+      "OrderStatus": { "type": "object", "properties": {} },
+      "PaymentStatus": { "type": "object", "properties": {} },
+      "UploadResponseDto": {
         "type": "object",
         "properties": {
-
-        }
-      },
-      "OrderStatus": {
-        "type": "object",
-        "properties": {
-
-        }
-      },
-      "PaymentStatus": {
-        "type": "object",
-        "properties": {
-
-        }
+          "message": { "type": "string", "description": "Success message" },
+          "data": { "type": "string", "description": "The URL of the uploaded image" }
+        },
+        "required": ["message", "data"]
       }
     }
   }

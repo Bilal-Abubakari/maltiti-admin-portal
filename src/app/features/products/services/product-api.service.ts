@@ -101,4 +101,26 @@ export class ProductApiService {
   public toggleFavorite(id: string): Observable<Product> {
     return this.http.patch<Product>(`${this.baseUrl}/favorite/${id}`, {});
   }
+
+  /**
+   * Export products to Excel with optional filtering
+   * GET /products/export/excel
+   */
+  public exportProductsToExcel(params?: Partial<ProductQueryParams>): Observable<Blob> {
+    let httpParams = new HttpParams();
+
+    if (params) {
+      Object.keys(params).forEach((key) => {
+        const value = params[key as keyof ProductQueryParams];
+        if (value !== undefined && value !== null) {
+          httpParams = httpParams.set(key, String(value));
+        }
+      });
+    }
+
+    return this.http.get(`${this.baseUrl}/export/excel`, {
+      params: httpParams,
+      responseType: 'blob',
+    });
+  }
 }

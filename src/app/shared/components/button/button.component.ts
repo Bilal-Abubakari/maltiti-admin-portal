@@ -1,11 +1,12 @@
 import { ChangeDetectionStrategy, Component, input, output } from '@angular/core';
 import { ButtonModule } from 'primeng/button';
+import { Tooltip } from 'primeng/tooltip';
 
 @Component({
   selector: 'app-button',
   templateUrl: './button.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [ButtonModule],
+  imports: [ButtonModule, Tooltip],
 })
 export class ButtonComponent {
   public readonly label = input<string>('');
@@ -23,6 +24,8 @@ export class ButtonComponent {
   public readonly plain = input<boolean>(false);
   public readonly type = input<'button' | 'submit' | 'reset'>('button');
   public readonly styleClass = input<string>('');
+
+  public readonly tooltip = input<string>('');
 
   public readonly clicked = output<Event>();
 
