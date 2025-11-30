@@ -12,6 +12,9 @@ export interface BatchesState {
   selectedBatch: Batch | null;
   loading: boolean;
   error: string | null;
+  totalItems: number;
+  currentPage: number;
+  totalPages: number;
 }
 
 export const initialState: BatchesState = {
@@ -19,6 +22,9 @@ export const initialState: BatchesState = {
   selectedBatch: null,
   loading: false,
   error: null,
+  totalItems: 0,
+  currentPage: 1,
+  totalPages: 0,
 };
 
 export const batchesReducer = createReducer(
@@ -31,9 +37,12 @@ export const batchesReducer = createReducer(
     error: null,
   })),
 
-  on(BatchesActions.loadBatchesSuccess, (state, { batches }) => ({
+  on(BatchesActions.loadBatchesSuccess, (state, { response }) => ({
     ...state,
-    batches,
+    batches: response.data.items,
+    totalItems: response.data.totalItems,
+    currentPage: response.data.currentPage,
+    totalPages: response.data.totalPages,
     loading: false,
   })),
 
@@ -91,5 +100,5 @@ export const batchesReducer = createReducer(
   on(BatchesActions.clearError, (state) => ({
     ...state,
     error: null,
-  }))
+  })),
 );

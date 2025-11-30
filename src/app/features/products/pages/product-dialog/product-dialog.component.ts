@@ -17,12 +17,14 @@ import {
 import { CommonModule } from '@angular/common';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Store } from '@ngrx/store';
-import { forkJoin } from 'rxjs';
+import { first, forkJoin } from 'rxjs';
 import { Actions, ofType } from '@ngrx/effects';
 import { Dialog } from 'primeng/dialog';
 import { Button } from 'primeng/button';
 import { FileSelectEvent } from 'primeng/fileupload';
 import { MessageService } from 'primeng/api';
+import { TableModule } from 'primeng/table';
+import { TagModule } from 'primeng/tag';
 import * as ProductsActions from '../../store/products.actions';
 import { IngredientApiService } from '../../services/ingredient-api.service';
 import { UploadService } from '../../../../services/upload.service';
@@ -49,6 +51,8 @@ import { ImageSectionComponent } from '../../../../shared/components/image-secti
 import { ScrollToErrorDirective } from '../../../../shared/directives/scroll-to-error.directive';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { map } from 'rxjs/operators';
+import { BatchApiService } from '../../../batches/services/batch-api.service';
+import { Batch } from '../../../batches/models/batch.model';
 
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -63,6 +67,8 @@ import { map } from 'rxjs/operators';
     FieldRendererComponent,
     ImageSectionComponent,
     ScrollToErrorDirective,
+    TableModule,
+    TagModule,
   ],
   templateUrl: './product-dialog.component.html',
   styleUrl: './product-dialog.component.scss',
@@ -74,6 +80,7 @@ export class ProductDialogComponent {
   private readonly uploadService = inject(UploadService);
   private readonly actions$ = inject(Actions);
   private readonly messageService = inject(MessageService);
+  private readonly batchApiService = inject(BatchApiService);
 
   // Inputs
   public readonly visible = input.required<boolean>();
@@ -95,6 +102,7 @@ export class ProductDialogComponent {
       .pipe(map((ing) => ing.map(({ id, name }) => ({ label: name, value: id })))),
     { initialValue: [] },
   );
+  public readonly productBatches = signal<Batch[]>([]);
 
   // Form
   public readonly productForm: ProductFormGroup = this.fb.group({
@@ -168,6 +176,32 @@ export class ProductDialogComponent {
 
   constructor() {
     // Populate form when product changes
+    effect(() => {
+      const product = this.product();
+      const isView = this.viewMode();
+      if (product && isView) {
+        // Load batches for this product
+        this.batchApiService
+          .getAllBatches()
+          .pipe(first())
+          .subscribe({
+            next: (response) => {
+              // Filter batches that contain this product
+              const relatedBatches = response.data.items.filter((batch: Batch) =>
+                batch.products?.some((p) => p.id === product.id),
+              );
+              this.productBatches.set(relatedBatches);
+            },
+            error: (error) => {
+              console.error('Failed to load batches:', error);
+              this.productBatches.set([]);
+            },
+          });
+      } else {
+        this.productBatches.set([]);
+      }
+    });
+
     effect(() => {
       const product = this.product();
       if (product) {
@@ -363,5 +397,22 @@ export class ProductDialogComponent {
         },
       });
     }
+  }
+
+  public getQualityStatusSeverity(status?: string): 'success' | 'warn' | 'danger' | 'info' {
+    if (!status) {
+      return 'info';
+    }
+    const lowerStatus = status.toLowerCase();
+    if (lowerStatus.includes('pass')) {
+      return 'success';
+    }
+    if (lowerStatus.includes('pending')) {
+      return 'warn';
+    }
+    if (lowerStatus.includes('fail')) {
+      return 'danger';
+    }
+    return 'info';
   }
 }

@@ -33,7 +33,7 @@ export class DashboardComponent implements OnInit {
   public ngOnInit(): void {
     // Load initial data for dashboard metrics
     this.store.dispatch(ProductsActions.loadProducts({ params: { limit: 100 } }));
-    this.store.dispatch(BatchesActions.loadBatches());
+    this.store.dispatch(BatchesActions.loadBatches({ params: {} }));
   }
 
   public get activeProducts(): number {

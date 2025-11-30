@@ -15,7 +15,7 @@ import {
   ProductQueryParams,
   UpdateProductDto,
 } from '../models/product.model';
-import { IPaginationResponse } from '../../../models/response.model';
+import { IPaginationResponse, IResponse } from '../../../models/response.model';
 
 @Injectable({
   providedIn: 'root',
@@ -122,5 +122,13 @@ export class ProductApiService {
       params: httpParams,
       responseType: 'blob',
     });
+  }
+
+  /**
+   * Get all products (non-paginated)
+   * GET /products
+   */
+  public getAllProductsSimple(): Observable<IResponse<Product[]>> {
+    return this.http.get<IResponse<Product[]>>(`${this.baseUrl}/list`);
   }
 }

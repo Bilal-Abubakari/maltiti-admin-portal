@@ -4,9 +4,10 @@
  */
 import { Product } from '../../products/models/product.model';
 
-export type Batch = {
+export interface Batch {
   id: string;
   batchNumber: string;
+  quantity: number;
   productionDate?: string;
   expiryDate?: string;
   manufacturingLocation?: string;
@@ -15,31 +16,35 @@ export type Batch = {
   products?: Product[]; // Products associated with this batch
   createdAt: string;
   updatedAt: string;
-};
+}
 
-export type CreateBatchDto = {
+export interface CreateBatchDto {
   batchNumber: string;
+  productId: string;
+  quantity: number;
   productionDate?: string;
   expiryDate?: string;
   manufacturingLocation?: string;
   qualityCheckStatus?: string;
   notes?: string;
-};
+}
 
 export type UpdateBatchDto = {} & Partial<CreateBatchDto>;
 
-export type BatchQueryParams = {
+export interface BatchQueryParams {
   page?: number;
   limit?: number;
-  searchTerm?: string;
+  productId?: string;
+  batchNumber?: string;
   qualityCheckStatus?: string;
-  sortBy?: 'batchNumber' | 'productionDate' | 'expiryDate' | 'createdAt';
+  isActive?: boolean;
+  sortBy?: 'createdAt' | 'batchNumber' | 'productionDate' | 'expiryDate';
   sortOrder?: 'ASC' | 'DESC';
-};
+}
 
-export type BatchesPaginationResponse = {
+export interface BatchesPaginationResponse {
   totalItems: number;
   currentPage: number;
   totalPages: number;
   batches: Batch[];
-};
+}

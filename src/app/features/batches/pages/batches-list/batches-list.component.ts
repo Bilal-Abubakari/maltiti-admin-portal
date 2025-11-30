@@ -4,10 +4,19 @@
  * Uses Angular signals for reactive state management
  */
 
-import { ChangeDetectionStrategy, Component, inject, OnInit, signal } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  computed,
+  inject,
+  OnDestroy,
+  OnInit,
+  signal,
+} from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { FormsModule } from '@angular/forms';
+import { FormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { Store } from '@ngrx/store';
+import { Subscription } from 'rxjs';
 
 // PrimeNG Imports
 import { TableModule } from 'primeng/table';
@@ -24,7 +33,13 @@ import * as BatchesActions from '../../store/batches.actions';
 import { selectAllBatches, selectBatchesLoading } from '../../store/batches.selectors';
 
 // Models
-import { Batch } from '../../models/batch.model';
+import { Batch, BatchQueryParams, CreateBatchDto } from '../../models/batch.model';
+import { BatchDialogComponent } from '../batch-dialog/batch-dialog.component';
+import { ProductApiService } from '../../../products/services/product-api.service';
+import { Product } from '../../../products/models/product.model';
+import { SelectComponent } from '../../../../shared/components/select/select.component';
+import { InputComponent } from '../../../../shared/components/input/input.component';
+import { ButtonComponent } from '../../../../shared/components/button/button.component';
 
 @Component({
   selector: 'app-batches-list',
@@ -32,6 +47,7 @@ import { Batch } from '../../models/batch.model';
   imports: [
     CommonModule,
     FormsModule,
+    ReactiveFormsModule,
     TableModule,
     ButtonModule,
     InputTextModule,
@@ -40,13 +56,18 @@ import { Batch } from '../../models/batch.model';
     TooltipModule,
     SkeletonModule,
     CardModule,
+    SelectComponent,
+    InputComponent,
+    ButtonComponent,
+    BatchDialogComponent,
   ],
   templateUrl: './batches-list.component.html',
   styleUrl: './batches-list.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class BatchesListComponent implements OnInit {
+export class BatchesListComponent implements OnInit, OnDestroy {
   private store = inject(Store);
+  private productApiService = inject(ProductApiService);
 
   // Store signals
   public readonly batches = this.store.selectSignal(selectAllBatches);
@@ -56,12 +77,48 @@ export class BatchesListComponent implements OnInit {
   public readonly showBatchDialog = signal(false);
   public readonly selectedBatch = signal<Batch | null>(null);
 
+  // Filter signals
+  public readonly products = signal<Product[]>([]);
+  public readonly currentFilters = signal<BatchQueryParams>({});
+  public readonly productOptions = computed(() =>
+    this.products().map((product) => ({
+      label: product.name,
+      value: product.id,
+    })),
+  );
+
+  // Filter form controls
+  public readonly productFilterControl = new FormControl<string | null>(null);
+  public readonly batchNumberFilterControl = new FormControl<string>('');
+  public readonly qualityStatusFilterControl = new FormControl<string | null>(null);
+
+  // Subscriptions
+  private subscriptions: Subscription = new Subscription();
+
   public ngOnInit(): void {
+    this.loadProducts();
     this.loadBatches();
+    this.setupFilterSubscriptions();
   }
 
-  public loadBatches(): void {
-    this.store.dispatch(BatchesActions.loadBatches());
+  public ngOnDestroy(): void {
+    this.subscriptions.unsubscribe();
+  }
+
+  public loadProducts(): void {
+    this.productApiService.getAllProductsSimple().subscribe({
+      next: (response) => {
+        this.products.set(response.data);
+      },
+      error: (error) => {
+        console.error('Failed to load products:', error);
+        this.products.set([]);
+      },
+    });
+  }
+
+  public loadBatches(params?: BatchQueryParams): void {
+    this.store.dispatch(BatchesActions.loadBatches({ params: params || {} }));
   }
 
   public onCreateBatch(): void {
@@ -72,6 +129,18 @@ export class BatchesListComponent implements OnInit {
   public onViewBatch(batch: Batch): void {
     this.store.dispatch(BatchesActions.loadBatch({ id: batch.id }));
     this.selectedBatch.set(batch);
+    this.showBatchDialog.set(true);
+  }
+
+  public onSaveBatch(batchData: CreateBatchDto | Partial<CreateBatchDto>): void {
+    this.store.dispatch(BatchesActions.createBatch({ dto: batchData as CreateBatchDto }));
+  }
+
+  public onBatchDialogVisibleChange(visible: boolean): void {
+    this.showBatchDialog.set(visible);
+    if (!visible) {
+      this.selectedBatch.set(null);
+    }
   }
 
   public formatDate(dateString: string): string {
@@ -96,5 +165,50 @@ export class BatchesListComponent implements OnInit {
       return 'danger';
     }
     return 'info';
+  }
+
+  public onClearFilters(): void {
+    this.productFilterControl.setValue(null);
+    this.batchNumberFilterControl.setValue('');
+    this.qualityStatusFilterControl.setValue(null);
+    this.currentFilters.set({});
+    this.loadBatches();
+  }
+
+  private setupFilterSubscriptions(): void {
+    // Subscribe to product filter changes
+    this.subscriptions.add(
+      this.productFilterControl.valueChanges.subscribe((value) => {
+        this.updateFilters('productId', value);
+      }),
+    );
+
+    // Subscribe to batch number filter changes
+    this.subscriptions.add(
+      this.batchNumberFilterControl.valueChanges.subscribe((value) => {
+        this.updateFilters('batchNumber', value);
+      }),
+    );
+
+    // Subscribe to quality status filter changes
+    this.subscriptions.add(
+      this.qualityStatusFilterControl.valueChanges.subscribe((value) => {
+        this.updateFilters('qualityCheckStatus', value);
+      }),
+    );
+  }
+
+  private updateFilters(filterType: keyof BatchQueryParams, value: any): void {
+    const currentFilters = this.currentFilters();
+    const newFilters = { ...currentFilters };
+
+    if (value === null || value === undefined || value === '') {
+      delete newFilters[filterType];
+    } else {
+      newFilters[filterType] = value;
+    }
+
+    this.currentFilters.set(newFilters);
+    this.loadBatches(newFilters);
   }
 }

@@ -1,0 +1,162 @@
+<p-dialog
+  [closable]="true"
+  [closeOnEscape]="true"
+  [header]="isEdit() ? (viewMode() ? 'Batch Details' : 'Edit Batch') : 'Create New Batch'"
+  [modal]="true"
+  [style]="{ width: '800px' }"
+  [visible]="visible()"
+  (onHide)="onCancel()"
+  (visibleChange)="visibleChange.emit($event)"
+>
+  <ng-template pTemplate="content">
+    <form class="batch-form" [formGroup]="batchForm">
+      <!-- Batch Number -->
+      <div class="field">
+        <app-input
+          id="batchNumber"
+          [control]="batchForm.controls.batchNumber"
+          [label]="'Batch Number *'"
+          [placeholder]="'Enter batch number'"
+          [readonly]="viewMode()"
+        />
+      </div>
+
+      <!-- Product Selection -->
+      <div class="field">
+        <app-select
+          id="product"
+          [control]="batchForm.controls.productId"
+          [label]="'Product *'"
+          [options]="productOptions()"
+          [placeholder]="'Select a product'"
+          [showClear]="true"
+        />
+      </div>
+
+      <!-- Quantity -->
+      <div class="field">
+        <app-number-input
+          id="quantity"
+          [control]="batchForm.controls.quantity"
+          [disabled]="viewMode()"
+          [label]="'Quantity *'"
+          [min]="1"
+          [placeholder]="'Enter quantity'"
+        />
+      </div>
+
+      <!-- Production Date -->
+      <div class="field">
+        <label for="productionDate">Production Date</label>
+        <input
+          class="w-full"
+          formControlName="productionDate"
+          id="productionDate"
+          pInputText
+          type="date"
+          [readonly]="viewMode()"
+        />
+      </div>
+
+      <!-- Expiry Date -->
+      <div class="field">
+        <label for="expiryDate">Expiry Date</label>
+        <input
+          class="w-full"
+          formControlName="expiryDate"
+          id="expiryDate"
+          pInputText
+          type="date"
+          [readonly]="viewMode()"
+        />
+      </div>
+
+      <!-- Manufacturing Location -->
+      <div class="field">
+        <app-select
+          id="manufacturingLocation"
+          [control]="batchForm.controls.manufacturingLocation"
+          [label]="'Manufacturing Location'"
+          [options]="[
+            { label: 'Main Centre', value: 'Main Centre' },
+            { label: 'Gumo', value: 'Gumo' },
+            { label: 'Katariga', value: 'Katariga' },
+            { label: 'Malshegu', value: 'Malshegu' },
+            { label: 'Other', value: 'Other' }
+          ]"
+          [placeholder]="'Select manufacturing location'"
+          [showClear]="true"
+        />
+      </div>
+
+      <!-- Quality Check Status -->
+      <div class="field">
+        <app-input
+          id="qualityCheckStatus"
+          [control]="batchForm.controls.qualityCheckStatus"
+          [label]="'Quality Check Status'"
+          [placeholder]="'Enter quality check status'"
+          [readonly]="viewMode()"
+        />
+      </div>
+
+      <!-- Notes -->
+      <div class="field">
+        <app-textarea
+          id="notes"
+          [control]="batchForm.controls.notes"
+          [label]="'Notes'"
+          [placeholder]="'Enter additional notes'"
+          [rows]="3"
+        />
+      </div>
+
+      <!-- Associated Products (View Mode Only) -->
+      @if (viewMode() && selectedBatch()?.products?.length) {
+        <div class="field">
+          <span>Associated Products</span>
+          <p-table class="p-datatable-sm" [value]="selectedBatch()?.products || []">
+            <ng-template pTemplate="header">
+              <tr>
+                <th>Name</th>
+                <th>SKU</th>
+                <th>Category</th>
+                <th>Status</th>
+              </tr>
+            </ng-template>
+            <ng-template let-product pTemplate="body">
+              <tr>
+                <td>{{ product.name }}</td>
+                <td>{{ product.sku }}</td>
+                <td>{{ product.category }}</td>
+                <td>
+                  <p-tag
+                    [severity]="product.status === 'active' ? 'success' : 'warn'"
+                    [value]="product.status"
+                  />
+                </td>
+              </tr>
+            </ng-template>
+          </p-table>
+        </div>
+      }
+    </form>
+  </ng-template>
+
+  <ng-template pTemplate="footer">
+    <p-button
+      icon="pi pi-times"
+      label="Cancel"
+      severity="secondary"
+      (onClick)="onCancel()"
+    />
+    @if (!viewMode()) {
+      <p-button
+        icon="pi pi-check"
+        label="Save"
+        [loading]="loading()"
+        (onClick)="onSave()"
+      />
+    }
+  </ng-template>
+</p-dialog>
