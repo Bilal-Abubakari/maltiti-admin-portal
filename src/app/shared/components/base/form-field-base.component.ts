@@ -27,6 +27,8 @@ export class FormFieldBaseComponent {
     max: 'Must not exceed {max}',
     email: 'Please enter a valid email address',
     pattern: 'Please enter a valid value',
+    weakPassword:
+      'Password must contain at least 8 characters, 1 lowercase, 1 uppercase, 1 number, and 1 symbol',
   };
 
   protected getErrorMessage(key: string, value: unknown): string {

@@ -22,6 +22,8 @@ import { productsReducer } from './features/products/store/products.reducer';
 import { ProductsEffects } from './features/products/store/products.effects';
 import { batchesReducer } from './features/batches/store/batches.reducer';
 import { BatchesEffects } from './features/batches/store/batches.effects';
+import { usersReducer } from './features/users/store/users.reducer';
+import { UsersEffects } from './features/users/store/users.effects';
 import { MessageService } from 'primeng/api';
 
 const MaltitiPreset = definePreset(Aura, {
@@ -45,7 +47,7 @@ const MaltitiPreset = definePreset(Aura, {
         color: '{primary.500}',
         contrastColor: '{surface.0}',
         hoverColor: '{primary.600}',
-        activeColor: '{primary.700}',
+        activeColor: '{surface.0}',
       },
       highlight: {
         background: '{primary.500}',
@@ -105,8 +107,15 @@ export const appConfig: ApplicationConfig = {
       auth: authReducer,
       products: productsReducer,
       batches: batchesReducer,
+      users: usersReducer,
     }),
-    provideEffects([AuthEffects, AuthStorageEffects, ProductsEffects, BatchesEffects]),
+    provideEffects([
+      AuthEffects,
+      AuthStorageEffects,
+      ProductsEffects,
+      BatchesEffects,
+      UsersEffects,
+    ]),
     provideStoreDevtools({ maxAge: 25 }),
     MessageService,
   ],

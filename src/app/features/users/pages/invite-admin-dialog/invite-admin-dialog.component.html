@@ -1,0 +1,51 @@
+<p-dialog
+  header="Invite Admin"
+  [closable]="true"
+  [draggable]="false"
+  [modal]="true"
+  [resizable]="false"
+  [style]="{ width: '400px' }"
+  [visible]="visible()"
+  (onHide)="onHide()"
+  (visibleChange)="visibleChange.emit($event)"
+>
+  <form [formGroup]="inviteForm" (ngSubmit)="onSave()">
+    <div class="field">
+      <app-input
+        [control]="nameControl"
+        [id]="'name'"
+        [label]="'Name'"
+        [placeholder]="'Enter admin name'"
+        [required]="true"
+      />
+    </div>
+
+    <div class="field">
+      <app-input
+        [control]="emailControl"
+        [id]="'email'"
+        [label]="'Email'"
+        [placeholder]="'Enter admin email'"
+        [required]="true"
+        [type]="'email'"
+      />
+    </div>
+  </form>
+
+  <ng-template pTemplate="footer">
+    <app-button
+      [icon]="'pi pi-times'"
+      [label]="'Cancel'"
+      [severity]="'danger'"
+      (click)="onCancel()"
+    />
+    <app-button
+      [disabled]="inviteForm.invalid"
+      [icon]="'pi pi-check'"
+      [label]="'Invite'"
+      [loading]="loading()"
+      [severity]="'primary'"
+      (click)="onSave()"
+    />
+  </ng-template>
+</p-dialog>

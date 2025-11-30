@@ -1,4 +1,4 @@
-import { Injectable, inject } from '@angular/core';
+import { inject, Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
@@ -25,5 +25,17 @@ export class AuthService {
       .post<IResponse<void>>(`${this.apiUrl}/auth/logout`, {})
       .pipe(map(() => undefined));
   }
-}
 
+  public changePassword(
+    id: string,
+    currentPassword: string,
+    newPassword: string,
+    confirmPassword: string,
+  ): Observable<{ user: User }> {
+    return this.http
+      .post<
+        IResponse<User>
+      >(`${this.apiUrl}/authentication/change-password/${id}`, { currentPassword, newPassword, confirmPassword })
+      .pipe(map(({ data }) => ({ user: data })));
+  }
+}

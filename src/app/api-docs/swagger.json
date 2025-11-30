@@ -144,6 +144,204 @@
         "tags": ["Authentication"]
       }
     },
+    "/users": {
+      "get": {
+        "operationId": "UsersController_findAll",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Users retrieved successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": { "type": "string" },
+                    "data": { "type": "array", "items": { "$ref": "#/components/schemas/User" } }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "summary": "Get all users",
+        "tags": ["users"]
+      }
+    },
+    "/users/{id}": {
+      "get": {
+        "operationId": "UsersController_findOne",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "description": "User ID",
+            "schema": { "type": "string" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "User retrieved successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": { "type": "string" },
+                    "data": { "$ref": "#/components/schemas/User" }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "summary": "Get a user by ID",
+        "tags": ["users"]
+      },
+      "patch": {
+        "operationId": "UsersController_update",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "description": "User ID",
+            "schema": { "type": "string" }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": { "schema": { "$ref": "#/components/schemas/UpdateUserDto" } }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "User updated successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": { "type": "string" },
+                    "data": { "$ref": "#/components/schemas/User" }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "summary": "Update a user",
+        "tags": ["users"]
+      },
+      "delete": {
+        "operationId": "UsersController_remove",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "description": "User ID",
+            "schema": { "type": "string" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "User deleted successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": { "type": "string" },
+                    "data": { "type": "object", "properties": { "message": { "type": "string" } } }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "summary": "Delete a user",
+        "tags": ["users"]
+      }
+    },
+    "/users/{id}/status": {
+      "patch": {
+        "operationId": "UsersController_changeStatus",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "description": "User ID",
+            "schema": { "type": "string" }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": { "schema": { "$ref": "#/components/schemas/ChangeStatusDto" } }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "User status changed successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": { "type": "string" },
+                    "data": { "$ref": "#/components/schemas/User" }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "summary": "Change user status",
+        "tags": ["users"]
+      }
+    },
+    "/users/{id}/role": {
+      "patch": {
+        "operationId": "UsersController_changeRole",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "description": "User ID",
+            "schema": { "type": "string" }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": { "schema": { "$ref": "#/components/schemas/ChangeRoleDto" } }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "User role changed successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": { "type": "string" },
+                    "data": { "$ref": "#/components/schemas/User" }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "summary": "Change user role",
+        "tags": ["users"]
+      }
+    },
     "/cooperative/cooperatives": {
       "get": {
         "operationId": "CooperativeController_getAllCooperatives",
@@ -1191,6 +1389,9 @@
       "ResetPasswordDto": { "type": "object", "properties": {} },
       "CreateAdminDto": { "type": "object", "properties": {} },
       "ChangePasswordDto": { "type": "object", "properties": {} },
+      "UpdateUserDto": { "type": "object", "properties": {} },
+      "ChangeStatusDto": { "type": "object", "properties": {} },
+      "ChangeRoleDto": { "type": "object", "properties": {} },
       "AddCooperativeDto": {
         "type": "object",
         "properties": {
