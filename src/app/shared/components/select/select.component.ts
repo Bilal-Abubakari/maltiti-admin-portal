@@ -7,7 +7,7 @@ import { FormFieldBaseComponent } from '../base/form-field-base.component';
 
 interface SelectOption {
   label: string;
-  value: string;
+  value: string | null;
 }
 
 @Component({

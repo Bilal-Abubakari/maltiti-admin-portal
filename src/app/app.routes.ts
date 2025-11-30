@@ -16,7 +16,7 @@ export const routes: Routes = [
     path: APP_ROUTES.dashboard.path,
     loadComponent: () =>
       import('./layout/dashboard-layout/dashboard-layout.component').then(
-        (m) => m.DashboardLayoutComponent
+        (m) => m.DashboardLayoutComponent,
       ),
     canActivate: [authGuard],
     children: [
@@ -31,7 +31,7 @@ export const routes: Routes = [
     path: APP_ROUTES.products.path,
     loadComponent: () =>
       import('./layout/dashboard-layout/dashboard-layout.component').then(
-        (m) => m.DashboardLayoutComponent
+        (m) => m.DashboardLayoutComponent,
       ),
     canActivate: [authGuard],
     children: [
@@ -45,13 +45,27 @@ export const routes: Routes = [
     path: APP_ROUTES.batches.path,
     loadComponent: () =>
       import('./layout/dashboard-layout/dashboard-layout.component').then(
-        (m) => m.DashboardLayoutComponent
+        (m) => m.DashboardLayoutComponent,
       ),
     canActivate: [authGuard],
     children: [
       {
         path: '',
         loadChildren: () => import('./features/batches/routes').then((m) => m.BATCHES_ROUTES),
+      },
+    ],
+  },
+  {
+    path: APP_ROUTES.users.path,
+    loadComponent: () =>
+      import('./layout/dashboard-layout/dashboard-layout.component').then(
+        (m) => m.DashboardLayoutComponent,
+      ),
+    canActivate: [authGuard],
+    children: [
+      {
+        path: '',
+        loadChildren: () => import('./features/users/routes').then((m) => m.USERS_ROUTES),
       },
     ],
   },

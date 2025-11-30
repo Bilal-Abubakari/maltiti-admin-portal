@@ -1,6 +1,7 @@
 export enum Role {
   Admin = 'admin',
   User = 'user',
+  SuperAdmin = 'superadmin',
 }
 
 export enum Status {
@@ -24,4 +25,3 @@ export interface User {
   emailVerifiedAt?: string;
   updatedAt: string;
 }
-

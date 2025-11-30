@@ -1,0 +1,197 @@
+<div class="users-list-container">
+  <!-- Page Header -->
+  <div class="page-header">
+    <div class="page-title">
+      <h1>Users Management</h1>
+      <p class="page-description">Manage system users and administrators</p>
+    </div>
+    <div class="page-actions">
+      @if (isSuperAdmin()) {
+        <app-button
+          [icon]="'pi pi-plus'"
+          [label]="'Invite Admin'"
+          [severity]="'primary'"
+          (click)="onInviteAdmin()"
+        />
+      }
+    </div>
+  </div>
+
+  <!-- Filters Section -->
+  <div class="filters-section">
+    <div class="filters-row">
+      <!-- Search -->
+      <app-input
+        class="search-input"
+        [control]="searchControl"
+        [id]="'search'"
+        [placeholder]="'Search users...'"
+        [showPrefixAddon]="true"
+        [type]="'search'"
+        [useInputGroup]="true"
+        (keyup.enter)="onSearch()"
+      >
+        <i class="pi pi-search" prefixAddon></i>
+      </app-input>
+
+      <!-- Role Filter -->
+      <app-select
+        id="role"
+        [control]="roleControl"
+        [options]="roleOptions"
+        [placeholder]="'Role'"
+        [showClear]="true"
+        [styleClass]="'filter-dropdown'"
+      />
+
+      <!-- Status Filter -->
+      <app-select
+        id="status"
+        [control]="statusControl"
+        [options]="statusOptions"
+        [placeholder]="'Status'"
+        [showClear]="true"
+        [styleClass]="'filter-dropdown'"
+      />
+    </div>
+  </div>
+
+  <!-- Users Table -->
+  <div class="table-card">
+    <p-table
+      class="p-datatable-sm"
+      currentPageReportTemplate="Showing {first} to {last} of {totalRecords} users"
+      [loading]="loading()"
+      [paginator]="true"
+      [rows]="10"
+      [rowsPerPageOptions]="[10, 25, 50]"
+      [showCurrentPageReport]="true"
+      [totalRecords]="filteredUsers().length"
+      [value]="filteredUsers()"
+    >
+      <!-- Header -->
+      <ng-template #header>
+        <tr>
+          <th>Name</th>
+          <th>Email</th>
+          <th>Phone</th>
+          <th>Role</th>
+          <th>Status</th>
+          <th>Created At</th>
+          <th style="width: 200px">Actions</th>
+        </tr>
+      </ng-template>
+
+      <ng-template #body let-user>
+        <tr>
+          <!-- Name -->
+          <td>
+            <div class="user-name-cell">
+              <span class="user-name">{{ user.name }}</span>
+            </div>
+          </td>
+
+          <!-- Email -->
+          <td>
+            <span class="user-email">{{ user.email }}</span>
+          </td>
+
+          <!-- Phone -->
+          <td>
+            <span class="user-phone">{{ user.phoneNumber || 'N/A' }}</span>
+          </td>
+
+          <!-- Role -->
+          <td>
+            <p-tag
+              [severity]="getRoleSeverity(user.userType)"
+              [value]="user.userType | titlecase"
+            />
+          </td>
+
+          <!-- Status -->
+          <td>
+            <p-tag
+              [severity]="getStatusSeverity(user.status)"
+              [value]="user.status | titlecase"
+            />
+          </td>
+
+          <!-- Created At -->
+          <td>
+            <span class="created-at">{{ user.createdAt | date:'short' }}</span>
+          </td>
+
+          <!-- Actions -->
+          <td>
+            <div class="action-buttons">
+              <app-button
+                [icon]="'pi pi-pencil'"
+                [rounded]="true"
+                [severity]="'info'"
+                [text]="true"
+                [tooltip]="'Edit User'"
+                (click)="onEditUser(user)"
+              />
+              <app-button
+                [icon]="user.status === 'active' ? 'pi pi-ban' : 'pi pi-check-circle'"
+                [rounded]="true"
+                [severity]="user.status === 'active' ? 'warn' : 'success'"
+                [text]="true"
+                [tooltip]="user.status === 'active' ? 'Deactivate' : 'Activate'"
+                (click)="onChangeStatus(user)"
+              />
+              <app-button
+                [icon]="user.userType === 'admin' ? 'pi pi-user' : 'pi pi-shield'"
+                [rounded]="true"
+                [severity]="'secondary'"
+                [text]="true"
+                [tooltip]="user.userType === 'admin' ? 'Demote to User' : 'Promote to Admin'"
+                (click)="onChangeRole(user)"
+              />
+              <app-button
+                [icon]="'pi pi-trash'"
+                [rounded]="true"
+                [severity]="'danger'"
+                [text]="true"
+                [tooltip]="'Delete User'"
+                (click)="onDeleteUser(user)"
+              />
+            </div>
+          </td>
+        </tr>
+      </ng-template>
+
+      <!-- Loading Template -->
+      <ng-template pTemplate="loadingbody">
+        <tr>
+          @for (i of [1, 2, 3, 4, 5, 6, 7]; track i) {
+            <td>
+              <p-skeleton />
+            </td>
+          }
+        </tr>
+      </ng-template>
+
+      <!-- Empty State -->
+      <ng-template pTemplate="emptymessage">
+        <tr>
+          <td class="empty-state" colspan="7">
+            <div class="empty-state-content">
+              <i class="pi pi-users empty-icon"></i>
+              <h3>No users found</h3>
+              <p>No users match your current filters.</p>
+            </div>
+          </td>
+        </tr>
+      </ng-template>
+    </p-table>
+  </div>
+</div>
+
+<!-- Invite Admin Dialog -->
+<app-invite-admin-dialog
+  [visible]="showInviteAdminDialog()"
+  (adminInvited)="onAdminInvited()"
+  (visibleChange)="showInviteAdminDialog.set($event)"
+/>

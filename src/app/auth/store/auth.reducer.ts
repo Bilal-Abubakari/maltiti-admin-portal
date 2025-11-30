@@ -51,6 +51,21 @@ export const authReducer = createReducer(
   on(AuthActions.noUserInStorage, (state) => ({
     ...state,
     loading: false,
-  }))
+  })),
+  on(AuthActions.changePassword, (state) => ({
+    ...state,
+    loading: true,
+    error: null,
+  })),
+  on(AuthActions.changePasswordSuccess, (state, { user }) => ({
+    ...state,
+    user,
+    loading: false,
+    error: null,
+  })),
+  on(AuthActions.changePasswordFailure, (state, { error }) => ({
+    ...state,
+    loading: false,
+    error,
+  })),
 );
-

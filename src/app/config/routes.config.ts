@@ -39,6 +39,10 @@ export const APP_ROUTES = {
     path: 'settings',
     fullPath: '/settings',
   },
+  users: {
+    path: 'users',
+    fullPath: '/users',
+  },
   root: {
     path: '',
     fullPath: '/',
@@ -60,6 +64,7 @@ export function getRoutePath(route: keyof typeof APP_ROUTES, subRoute?: string):
   const routeConfig = APP_ROUTES[route];
 
   if (subRoute && routeConfig && typeof routeConfig === 'object' && subRoute in routeConfig) {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     return (routeConfig as any)[subRoute].fullPath;
   }
 
@@ -78,4 +83,3 @@ export class RouteHelper {
   public static readonly Dashboard = APP_ROUTES.dashboard.fullPath;
   public static readonly Root = APP_ROUTES.root.fullPath;
 }
-
