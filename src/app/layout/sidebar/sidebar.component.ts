@@ -17,10 +17,10 @@ import { RouterLink, RouterLinkActive } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { ButtonModule } from 'primeng/button';
 import { Drawer } from 'primeng/drawer';
-import { APP_ROUTES } from '../../config/routes.config';
+import { APP_ROUTES } from '@config/routes.config';
 import { Store } from '@ngrx/store';
-import { selectUser } from '../../auth/store/auth.selectors';
-import { Role } from '../../models/user.model';
+import { selectUser } from '@auth/store/auth.selectors';
+import { Role } from '@models/user.model';
 
 interface MenuItem {
   label: string;
@@ -75,6 +75,11 @@ export class SidebarComponent {
         label: 'Batches',
         icon: 'pi pi-tag',
         route: '/batches',
+      },
+      {
+        label: 'Sales',
+        icon: 'pi pi-shopping-bag',
+        route: APP_ROUTES.sales.fullPath,
       },
       {
         label: 'Orders',

@@ -36,10 +36,10 @@ import { selectAllBatches, selectBatchesLoading } from '../../store/batches.sele
 import { Batch, BatchQueryParams, CreateBatchDto } from '../../models/batch.model';
 import { BatchDialogComponent } from '../batch-dialog/batch-dialog.component';
 import { ProductApiService } from '../../../products/services/product-api.service';
-import { Product } from '../../../products/models/product.model';
-import { SelectComponent } from '../../../../shared/components/select/select.component';
-import { InputComponent } from '../../../../shared/components/input/input.component';
-import { ButtonComponent } from '../../../../shared/components/button/button.component';
+import { LightProduct } from '../../../products/models/product.model';
+import { SelectComponent } from '@shared/components/select/select.component';
+import { InputComponent } from '@shared/components/input/input.component';
+import { ButtonComponent } from '@shared/components/button/button.component';
 
 @Component({
   selector: 'app-batches-list',
@@ -78,7 +78,7 @@ export class BatchesListComponent implements OnInit, OnDestroy {
   public readonly selectedBatch = signal<Batch | null>(null);
 
   // Filter signals
-  public readonly products = signal<Product[]>([]);
+  public readonly products = signal<LightProduct[]>([]);
   public readonly currentFilters = signal<BatchQueryParams>({});
   public readonly productOptions = computed(() =>
     this.products().map((product) => ({
@@ -198,6 +198,7 @@ export class BatchesListComponent implements OnInit, OnDestroy {
     );
   }
 
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   private updateFilters(filterType: keyof BatchQueryParams, value: any): void {
     const currentFilters = this.currentFilters();
     const newFilters = { ...currentFilters };

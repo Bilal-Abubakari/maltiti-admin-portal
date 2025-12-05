@@ -2,7 +2,7 @@
  * Product domain models based on Swagger API documentation
  * These models represent the Product entity and its related DTOs
  */
-import { Ingredient } from '../../../models/ingredient.model';
+import { Ingredient } from '@models/ingredient.model';
 
 export type ProductCategory =
   | 'Shea Butter'
@@ -68,6 +68,8 @@ export interface Product {
   createdAt: string;
   updatedAt: string;
 }
+
+export type LightProduct = Pick<Product, 'id' | 'name' | 'wholesale' | 'retail'>;
 
 export interface CreateProductDto {
   sku?: string;
