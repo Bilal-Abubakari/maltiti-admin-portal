@@ -107,6 +107,40 @@
   }
 }
 
+// Filters Section
+.filters-section {
+  @include card;
+  margin-bottom: $spacing-lg;
+  padding: $spacing-lg;
+
+  .filters-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: $spacing-md;
+    align-items: end;
+  }
+
+  .filter-field {
+    label {
+      display: block;
+      margin-bottom: $spacing-xs;
+      font-weight: $font-weight-medium;
+      color: var(--text-color);
+      font-size: $font-size-sm;
+    }
+
+    ::ng-deep .p-dropdown,
+    ::ng-deep .p-inputtext {
+      width: 100%;
+    }
+  }
+
+  .filter-actions {
+    display: flex;
+    justify-content: flex-end;
+  }
+}
+
 // Responsive Design
 @include responsive(md) {
   .page-header {

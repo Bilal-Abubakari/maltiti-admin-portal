@@ -10,6 +10,7 @@ import { catchError, map, switchMap, tap } from 'rxjs/operators';
 import { BatchApiService } from '../services/batch-api.service';
 import * as BatchesActions from './batches.actions';
 import { MessageService } from 'primeng/api';
+import { SERVER_ERROR } from '../../../shared/constants';
 
 @Injectable()
 export class BatchesEffects {
@@ -20,9 +21,9 @@ export class BatchesEffects {
   public loadBatches$ = createEffect(() =>
     this.actions$.pipe(
       ofType(BatchesActions.loadBatches),
-      switchMap(() =>
-        this.batchApi.getAllBatches().pipe(
-          map((batches) => BatchesActions.loadBatchesSuccess({ batches })),
+      switchMap(({ params }) =>
+        this.batchApi.getAllBatches(params).pipe(
+          map((response) => BatchesActions.loadBatchesSuccess({ response })),
           catchError((error) => of(BatchesActions.loadBatchesFailure({ error: error.message }))),
         ),
       ),
@@ -47,7 +48,9 @@ export class BatchesEffects {
       switchMap(({ dto }) =>
         this.batchApi.createBatch(dto).pipe(
           map((batch) => BatchesActions.createBatchSuccess({ batch })),
-          catchError((error) => of(BatchesActions.createBatchFailure({ error: error.message }))),
+          catchError((error) =>
+            of(BatchesActions.createBatchFailure({ error: error.error.error ?? SERVER_ERROR })),
+          ),
         ),
       ),
     ),

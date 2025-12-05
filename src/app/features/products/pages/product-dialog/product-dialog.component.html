@@ -278,6 +278,37 @@
       </div>
     </div>
   </form>
+
+  <!-- Batches Section (View Mode Only) -->
+  @if (isViewMode() && productBatches().length > 0) {
+    <div class="batches-section">
+      <h3 class="section-title">Related Batches</h3>
+      <p-table class="p-datatable-sm" [value]="productBatches()">
+        <ng-template pTemplate="header">
+          <tr>
+            <th>Batch Number</th>
+            <th>Production Date</th>
+            <th>Expiry Date</th>
+            <th>Quality Status</th>
+          </tr>
+        </ng-template>
+        <ng-template let-batch pTemplate="body">
+          <tr>
+            <td>{{ batch.batchNumber }}</td>
+            <td>{{ batch.productionDate ? (batch.productionDate | date:'shortDate') : 'N/A' }}</td>
+            <td>{{ batch.expiryDate ? (batch.expiryDate | date:'shortDate') : 'N/A' }}</td>
+            <td>
+              <p-tag
+                [severity]="getQualityStatusSeverity(batch.qualityCheckStatus)"
+                [value]="batch.qualityCheckStatus || 'Pending'"
+              />
+            </td>
+          </tr>
+        </ng-template>
+      </p-table>
+    </div>
+  }
+
   <ng-template pTemplate="footer">
     @if (showFooterActions()) {
       <div class="dialog-footer">

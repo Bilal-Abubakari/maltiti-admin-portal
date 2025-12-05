@@ -658,6 +658,16 @@
         "tags": ["Products"]
       }
     },
+    "/products/list": {
+      "get": {
+        "description": "Retrieve all products with only id and name fields",
+        "operationId": "ProductsController_getAllProductsBasic",
+        "parameters": [],
+        "responses": { "200": { "description": "Products retrieved successfully" } },
+        "summary": "Get all products basic",
+        "tags": ["Products"]
+      }
+    },
     "/products/product/{id}": {
       "get": {
         "description": "Retrieve a single product by ID",
@@ -1010,10 +1020,159 @@
         "tags": ["Batches"]
       },
       "get": {
-        "description": "Retrieve all product batches",
+        "description": "Retrieve all product batches with pagination and filters",
         "operationId": "BatchesController_getAllBatches",
-        "parameters": [],
-        "responses": { "200": { "description": "Batches retrieved successfully" } },
+        "parameters": [
+          {
+            "name": "page",
+            "required": false,
+            "in": "query",
+            "description": "Page number for pagination",
+            "schema": { "minimum": 1, "default": 1, "example": 1, "type": "number" }
+          },
+          {
+            "name": "limit",
+            "required": false,
+            "in": "query",
+            "description": "Number of items per page",
+            "schema": {
+              "minimum": 1,
+              "maximum": 100,
+              "default": 10,
+              "example": 10,
+              "type": "number"
+            }
+          },
+          {
+            "name": "productId",
+            "required": false,
+            "in": "query",
+            "description": "Filter by product ID",
+            "schema": { "example": "123e4567-e89b-12d3-a456-426614174000", "type": "string" }
+          },
+          {
+            "name": "batchNumber",
+            "required": false,
+            "in": "query",
+            "description": "Search term for batch number",
+            "schema": { "example": "BATCH-2024-001", "type": "string" }
+          },
+          {
+            "name": "qualityCheckStatus",
+            "required": false,
+            "in": "query",
+            "description": "Filter by quality check status",
+            "schema": { "example": "Passed", "type": "string" }
+          },
+          {
+            "name": "isActive",
+            "required": false,
+            "in": "query",
+            "description": "Filter by active status",
+            "schema": { "example": true, "type": "boolean" }
+          },
+          {
+            "name": "sortBy",
+            "required": false,
+            "in": "query",
+            "description": "Sort field",
+            "schema": {
+              "example": "createdAt",
+              "enum": ["createdAt", "batchNumber", "productionDate", "expiryDate"],
+              "type": "string"
+            }
+          },
+          {
+            "name": "sortOrder",
+            "required": false,
+            "in": "query",
+            "description": "Sort order",
+            "schema": { "example": "DESC", "enum": ["ASC", "DESC"], "type": "string" }
+          },
+          {
+            "description": "Page number for pagination",
+            "required": false,
+            "name": "page",
+            "in": "query",
+            "schema": { "minimum": 1, "default": 1, "example": 1 }
+          },
+          {
+            "description": "Number of items per page",
+            "required": false,
+            "name": "limit",
+            "in": "query",
+            "schema": { "minimum": 1, "maximum": 100, "default": 10, "example": 10 }
+          },
+          {
+            "description": "Filter by product ID",
+            "required": false,
+            "name": "productId",
+            "in": "query",
+            "schema": { "example": "123e4567-e89b-12d3-a456-426614174000" }
+          },
+          {
+            "description": "Search term for batch number",
+            "required": false,
+            "name": "batchNumber",
+            "in": "query",
+            "schema": { "example": "BATCH-2024-001" }
+          },
+          {
+            "description": "Filter by quality check status",
+            "required": false,
+            "name": "qualityCheckStatus",
+            "in": "query",
+            "schema": { "example": "Passed" }
+          },
+          {
+            "description": "Filter by active status",
+            "required": false,
+            "name": "isActive",
+            "in": "query",
+            "schema": { "example": true }
+          },
+          {
+            "description": "Sort field",
+            "required": false,
+            "name": "sortBy",
+            "in": "query",
+            "schema": { "example": "createdAt" }
+          },
+          {
+            "description": "Sort order",
+            "required": false,
+            "name": "sortOrder",
+            "in": "query",
+            "schema": { "example": "DESC" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Batches retrieved successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": { "type": "string" },
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "batches": {
+                          "type": "array",
+                          "items": { "$ref": "#/components/schemas/Batch" }
+                        },
+                        "total": { "type": "number" },
+                        "page": { "type": "number" },
+                        "limit": { "type": "number" }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
         "summary": "Get all batches",
         "tags": ["Batches"]
       }
@@ -1036,6 +1195,27 @@
           "404": { "description": "Batch not found" }
         },
         "summary": "Get single batch",
+        "tags": ["Batches"]
+      }
+    },
+    "/products/batches/product/{productId}": {
+      "get": {
+        "description": "Retrieve all batches associated with a specific product",
+        "operationId": "BatchesController_getBatchesByProduct",
+        "parameters": [
+          {
+            "name": "productId",
+            "required": true,
+            "in": "path",
+            "description": "Product UUID",
+            "schema": { "example": "123e4567-e89b-12d3-a456-426614174000", "type": "string" }
+          }
+        ],
+        "responses": {
+          "200": { "description": "Batches retrieved successfully" },
+          "404": { "description": "Product not found" }
+        },
+        "summary": "Get batches for a product",
         "tags": ["Batches"]
       }
     },
@@ -1836,10 +2016,13 @@
             "items": { "type": "string" }
           },
           "image": { "type": "string", "example": "https://example.com/primary-image.jpg" },
-          "wholesale": { "type": "number", "example": 45 },
-          "retail": { "type": "number", "example": 60 },
-          "stockQuantity": { "type": "number", "example": 150 },
-          "inBoxPrice": { "type": "number", "example": 540 },
+          "wholesale": {
+            "type": "number",
+            "description": "Wholesale price per unit",
+            "example": 15
+          },
+          "retail": { "type": "number", "description": "Retail price per unit", "example": 20 },
+          "inBoxPrice": { "type": "number", "description": "Price for a full box", "example": 180 },
           "quantityInBox": { "type": "number", "example": 12 },
           "favorite": { "type": "boolean", "example": false },
           "rating": { "type": "number", "example": 4.5 },
@@ -1893,8 +2076,6 @@
           "image",
           "wholesale",
           "retail",
-          "stockQuantity",
-          "inBoxPrice",
           "quantityInBox",
           "favorite",
           "rating",
@@ -2022,16 +2203,11 @@
           },
           "wholesale": {
             "type": "number",
-            "description": "Wholesale price in currency",
-            "example": 45
+            "description": "Wholesale price per unit",
+            "example": 15
           },
-          "retail": { "type": "number", "description": "Retail price in currency", "example": 60 },
-          "stockQuantity": {
-            "type": "number",
-            "description": "Available stock quantity",
-            "example": 150
-          },
-          "inBoxPrice": { "type": "number", "description": "Price for a full box", "example": 540 },
+          "retail": { "type": "number", "description": "Retail price per unit", "example": 20 },
+          "inBoxPrice": { "type": "number", "description": "Price for a full box", "example": 180 },
           "quantityInBox": {
             "type": "number",
             "description": "Quantity of items in one box",
@@ -2084,15 +2260,7 @@
             "example": 35
           }
         },
-        "required": [
-          "name",
-          "ingredients",
-          "category",
-          "description",
-          "wholesale",
-          "retail",
-          "stockQuantity"
-        ]
+        "required": ["name", "ingredients", "category", "description", "wholesale", "retail"]
       },
       "UpdateProductDto": {
         "type": "object",
@@ -2181,16 +2349,11 @@
           },
           "wholesale": {
             "type": "number",
-            "description": "Wholesale price in currency",
-            "example": 45
+            "description": "Wholesale price per unit",
+            "example": 15
           },
-          "retail": { "type": "number", "description": "Retail price in currency", "example": 60 },
-          "stockQuantity": {
-            "type": "number",
-            "description": "Available stock quantity",
-            "example": 150
-          },
-          "inBoxPrice": { "type": "number", "description": "Price for a full box", "example": 540 },
+          "retail": { "type": "number", "description": "Retail price per unit", "example": 20 },
+          "inBoxPrice": { "type": "number", "description": "Price for a full box", "example": 180 },
           "quantityInBox": {
             "type": "number",
             "description": "Quantity of items in one box",
@@ -2257,6 +2420,16 @@
             "description": "Unique batch number",
             "example": "BATCH-2024-001"
           },
+          "productId": {
+            "type": "string",
+            "description": "ID of the product this batch belongs to",
+            "example": "123e4567-e89b-12d3-a456-426614174000"
+          },
+          "quantity": {
+            "type": "number",
+            "description": "Quantity of items in this batch",
+            "example": 100
+          },
           "productionDate": {
             "type": "string",
             "description": "Production/manufacturing date",
@@ -2279,7 +2452,7 @@
             "example": "Premium quality shea nuts sourced from Yendi"
           }
         },
-        "required": ["batchNumber"]
+        "required": ["batchNumber", "productId", "quantity"]
       },
       "CreateIngredientDto": { "type": "object", "properties": {} },
       "UpdateIngredientDto": { "type": "object", "properties": {} },

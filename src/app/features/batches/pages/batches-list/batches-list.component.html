@@ -5,12 +5,62 @@
       <h1>Batches Management</h1>
       <p class="page-description">Track product batches, quality checks, and production dates</p>
     </div>
-    <p-button
-      icon="pi pi-plus"
-      label="Create Batch"
-      styleClass="p-button-primary"
-      (onClick)="onCreateBatch()"
+    <app-button
+      [icon]="'pi pi-plus'"
+      [label]="'Create Batch'"
+      [severity]="'primary'"
+      (clicked)="onCreateBatch()"
     />
+  </div>
+
+  <!-- Filters Section -->
+  <div class="filters-section">
+    <div class="filters-grid">
+      <div class="filter-field">
+        <app-select
+          id="productFilter"
+          [control]="productFilterControl"
+          [label]="'Filter by Product'"
+          [options]="productOptions()"
+          [placeholder]="'Select product'"
+          [showClear]="true"
+        />
+      </div>
+
+      <div class="filter-field">
+        <app-input
+          id="batchNumberFilter"
+          [control]="batchNumberFilterControl"
+          [label]="'Search Batch Number'"
+          [placeholder]="'Enter batch number'"
+        />
+      </div>
+
+      <div class="filter-field">
+        <app-select
+          id="qualityStatusFilter"
+          [control]="qualityStatusFilterControl"
+          [label]="'Quality Status'"
+          [options]="[
+            { label: 'Passed', value: 'Passed' },
+            { label: 'Pending', value: 'Pending' },
+            { label: 'Failed', value: 'Failed' }
+          ]"
+          [placeholder]="'Select status'"
+          [showClear]="true"
+        />
+      </div>
+
+      <div class="filter-actions">
+        <app-button
+          [icon]="'pi pi-filter-slash'"
+          [label]="'Clear Filters'"
+          [severity]="'secondary'"
+          [size]="'small'"
+          (clicked)="onClearFilters()"
+        />
+      </div>
+    </div>
   </div>
 
   <!-- Batches Table -->
@@ -24,6 +74,9 @@
         <tr>
           <th pSortableColumn="batchNumber">
             Batch Number <p-sortIcon field="batchNumber" />
+          </th>
+          <th pSortableColumn="quantity">
+            Quantity <p-sortIcon field="quantity" />
           </th>
           <th pSortableColumn="productionDate">
             Production Date <p-sortIcon field="productionDate" />
@@ -43,6 +96,9 @@
           <td>
             <span class="batch-number">{{ batch.batchNumber }}</span>
           </td>
+
+          <!-- Quantity -->
+          <td>{{ batch.quantity }}</td>
 
           <!-- Production Date -->
           <td>{{ formatDate(batch.productionDate) }}</td>
@@ -80,7 +136,7 @@
       <!-- Loading Template -->
       <ng-template pTemplate="loadingbody">
         <tr>
-         @for (i of [1, 2, 3, 4, 5, 6]; track i) {
+         @for (i of [1, 2, 3, 4, 5, 6, 7]; track i) {
            <td>
              <p-skeleton />
            </td>
@@ -91,7 +147,7 @@
       <!-- Empty State -->
       <ng-template pTemplate="emptymessage">
         <tr>
-          <td class="empty-state" colspan="6">
+          <td class="empty-state" colspan="7">
             <div class="empty-state-content">
               <i class="pi pi-inbox empty-icon"></i>
               <h3>No Batches Found</h3>
@@ -104,3 +160,12 @@
     </p-table>
   </div>
 </div>
+
+<!-- Batch Dialog -->
+<app-batch-dialog
+  [batch]="selectedBatch()"
+  [viewMode]="!!selectedBatch()"
+  [visible]="showBatchDialog()"
+  (save)="onSaveBatch($event)"
+  (visibleChange)="onBatchDialogVisibleChange($event)"
+/>
