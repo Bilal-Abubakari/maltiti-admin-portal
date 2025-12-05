@@ -12,8 +12,8 @@ import { FormFieldBaseComponent } from '../base/form-field-base.component';
   imports: [ReactiveFormsModule, InputNumberModule, MessageModule],
 })
 export class NumberInputComponent extends FormFieldBaseComponent {
-  public readonly currency = input<string>('USD');
-  public readonly locale = input<string>('en-US');
+  public readonly currency = input<string>('GHS');
+  public readonly locale = input<string>('en-GH');
   public readonly max = input<number | undefined>(undefined);
   public readonly min = input<number | undefined>(undefined);
   public readonly mode = input<'decimal' | 'currency'>('decimal');

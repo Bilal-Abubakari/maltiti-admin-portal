@@ -7,15 +7,16 @@
 import { inject, Injectable } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { environment } from '../../../../environments/environment';
+import { environment } from '@environments/environment';
 import {
   BestProductsResponse,
   CreateProductDto,
+  LightProduct,
   Product,
   ProductQueryParams,
   UpdateProductDto,
 } from '../models/product.model';
-import { IPaginationResponse, IResponse } from '../../../models/response.model';
+import { IPaginationResponse, IResponse } from '@models/response.model';
 
 @Injectable({
   providedIn: 'root',
@@ -128,7 +129,7 @@ export class ProductApiService {
    * Get all products (non-paginated)
    * GET /products
    */
-  public getAllProductsSimple(): Observable<IResponse<Product[]>> {
+  public getAllProductsSimple(): Observable<IResponse<LightProduct[]>> {
     return this.http.get<IResponse<Product[]>>(`${this.baseUrl}/list`);
   }
 }

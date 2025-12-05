@@ -31,11 +31,11 @@ import * as BatchesActions from '../../store/batches.actions';
 import { selectSelectedBatch } from '../../store/batches.selectors';
 import { Batch, CreateBatchDto, UpdateBatchDto } from '../../models/batch.model';
 import { ProductApiService } from '../../../products/services/product-api.service';
-import { Product } from '../../../products/models/product.model';
-import { SelectComponent } from '../../../../shared/components/select/select.component';
-import { NumberInputComponent } from '../../../../shared/components/number-input/number-input.component';
-import { InputComponent } from '../../../../shared/components/input/input.component';
-import { TextareaComponent } from '../../../../shared/components/textarea/textarea.component';
+import { LightProduct } from '../../../products/models/product.model';
+import { SelectComponent } from '@shared/components/select/select.component';
+import { NumberInputComponent } from '@shared/components/number-input/number-input.component';
+import { InputComponent } from '@shared/components/input/input.component';
+import { TextareaComponent } from '@shared/components/textarea/textarea.component';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 @Component({
@@ -81,7 +81,7 @@ export class BatchDialogComponent {
   public readonly loading = signal(false);
   public readonly isEdit = computed(() => !!this.batch());
   public readonly selectedBatch = this.store.selectSignal(selectSelectedBatch);
-  public readonly products = signal<Product[]>([]);
+  public readonly products = signal<LightProduct[]>([]);
   public readonly productOptions = computed(() =>
     this.products().map((product) => ({
       label: product.name,
@@ -193,20 +193,20 @@ export class BatchDialogComponent {
     return new Date(dateString).toLocaleDateString('en-GB');
   }
 
-  public getQualityStatusSeverity(status?: string): 'success' | 'warn' | 'danger' | 'info' {
-    if (!status) {
-      return 'info';
-    }
-    const lowerStatus = status.toLowerCase();
-    if (lowerStatus.includes('pass')) {
-      return 'success';
-    }
-    if (lowerStatus.includes('pending')) {
-      return 'warn';
-    }
-    if (lowerStatus.includes('fail')) {
-      return 'danger';
-    }
-    return 'info';
-  }
+  // public getQualityStatusSeverity(status?: string): 'success' | 'warn' | 'danger' | 'info' {
+  //   if (!status) {
+  //     return 'info';
+  //   }
+  //   const lowerStatus = status.toLowerCase();
+  //   if (lowerStatus.includes('pass')) {
+  //     return 'success';
+  //   }
+  //   if (lowerStatus.includes('pending')) {
+  //     return 'warn';
+  //   }
+  //   if (lowerStatus.includes('fail')) {
+  //     return 'danger';
+  //   }
+  //   return 'info';
+  // }
 }

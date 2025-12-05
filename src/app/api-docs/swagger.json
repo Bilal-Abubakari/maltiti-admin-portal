@@ -1528,6 +1528,284 @@
         "summary": "Upload an image",
         "tags": ["Upload"]
       }
+    },
+    "/sales": {
+      "post": {
+        "operationId": "SalesController_createSale",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": { "schema": { "$ref": "#/components/schemas/CreateSaleDto" } }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "",
+            "content": { "application/json": { "schema": { "$ref": "#/components/schemas/Sale" } } }
+          }
+        },
+        "summary": "Create a new sale",
+        "tags": ["Sales"]
+      },
+      "get": {
+        "operationId": "SalesController_listSales",
+        "parameters": [
+          {
+            "name": "status",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "enum": [
+                "invoice_requested",
+                "pending_payment",
+                "paid",
+                "packaging",
+                "in_transit",
+                "delivered"
+              ],
+              "type": "string"
+            }
+          },
+          {
+            "name": "customer_id",
+            "required": false,
+            "in": "query",
+            "schema": { "type": "string" }
+          },
+          {
+            "name": "page",
+            "required": false,
+            "in": "query",
+            "schema": { "default": 1, "type": "number" }
+          },
+          {
+            "name": "limit",
+            "required": false,
+            "in": "query",
+            "schema": { "default": 10, "type": "number" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": { "application/json": { "schema": { "type": "object" } } }
+          }
+        },
+        "summary": "List sales",
+        "tags": ["Sales"]
+      }
+    },
+    "/sales/{id}": {
+      "patch": {
+        "operationId": "SalesController_updateSale",
+        "parameters": [
+          { "name": "id", "required": true, "in": "path", "schema": { "type": "string" } }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": { "schema": { "$ref": "#/components/schemas/UpdateSaleDto" } }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": { "application/json": { "schema": { "$ref": "#/components/schemas/Sale" } } }
+          }
+        },
+        "summary": "Edit sale details",
+        "tags": ["Sales"]
+      },
+      "get": {
+        "operationId": "SalesController_getSaleDetails",
+        "parameters": [
+          { "name": "id", "required": true, "in": "path", "schema": { "type": "string" } }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": { "application/json": { "schema": { "$ref": "#/components/schemas/Sale" } } }
+          }
+        },
+        "summary": "Get sale details",
+        "tags": ["Sales"]
+      },
+      "delete": {
+        "operationId": "SalesController_cancelSale",
+        "parameters": [
+          { "name": "id", "required": true, "in": "path", "schema": { "type": "string" } }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": { "application/json": { "schema": { "$ref": "#/components/schemas/Sale" } } }
+          }
+        },
+        "summary": "Cancel sale",
+        "tags": ["Sales"]
+      }
+    },
+    "/sales/{id}/status": {
+      "put": {
+        "operationId": "SalesController_updateSaleStatus",
+        "parameters": [
+          { "name": "id", "required": true, "in": "path", "schema": { "type": "string" } }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": { "schema": { "$ref": "#/components/schemas/UpdateSaleStatusDto" } }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": { "application/json": { "schema": { "$ref": "#/components/schemas/Sale" } } }
+          }
+        },
+        "summary": "Update sale status",
+        "tags": ["Sales"]
+      }
+    },
+    "/sales/{id}/line-items": {
+      "post": {
+        "operationId": "SalesController_addLineItem",
+        "parameters": [
+          { "name": "id", "required": true, "in": "path", "schema": { "type": "string" } }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": { "schema": { "$ref": "#/components/schemas/AddLineItemDto" } }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": { "application/json": { "schema": { "$ref": "#/components/schemas/Sale" } } }
+          }
+        },
+        "summary": "Add line item to sale",
+        "tags": ["Sales"]
+      }
+    },
+    "/sales/{id}/batches": {
+      "put": {
+        "operationId": "SalesController_assignBatches",
+        "parameters": [
+          { "name": "id", "required": true, "in": "path", "schema": { "type": "string" } }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": { "schema": { "$ref": "#/components/schemas/AssignBatchesDto" } }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": { "application/json": { "schema": { "$ref": "#/components/schemas/Sale" } } }
+          }
+        },
+        "summary": "Assign batches to line item",
+        "tags": ["Sales"]
+      }
+    },
+    "/customers": {
+      "get": {
+        "operationId": "CustomerController_getAllCustomers",
+        "parameters": [
+          {
+            "name": "page",
+            "required": false,
+            "in": "query",
+            "description": "Page number",
+            "schema": { "type": "number" }
+          },
+          {
+            "name": "limit",
+            "required": false,
+            "in": "query",
+            "description": "Items per page",
+            "schema": { "type": "number" }
+          }
+        ],
+        "responses": { "200": { "description": "Customers retrieved successfully" } },
+        "summary": "Get all customers with pagination",
+        "tags": ["customers"]
+      },
+      "post": {
+        "operationId": "CustomerController_createCustomer",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": { "schema": { "$ref": "#/components/schemas/CreateCustomerDto" } }
+          }
+        },
+        "responses": {
+          "201": { "description": "Customer created successfully" },
+          "409": { "description": "Customer with email already exists" }
+        },
+        "summary": "Create a new customer",
+        "tags": ["customers"]
+      },
+      "patch": {
+        "operationId": "CustomerController_updateCustomer",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": { "schema": { "$ref": "#/components/schemas/UpdateCustomerDto" } }
+          }
+        },
+        "responses": {
+          "200": { "description": "Customer updated successfully" },
+          "404": { "description": "Customer not found" },
+          "409": { "description": "Customer with email already exists" }
+        },
+        "summary": "Update an existing customer",
+        "tags": ["customers"]
+      }
+    },
+    "/customers/{id}": {
+      "get": {
+        "operationId": "CustomerController_getCustomer",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "description": "Customer ID",
+            "schema": { "type": "string" }
+          }
+        ],
+        "responses": {
+          "200": { "description": "Customer retrieved successfully" },
+          "404": { "description": "Customer not found" }
+        },
+        "summary": "Get a customer by ID",
+        "tags": ["customers"]
+      },
+      "delete": {
+        "operationId": "CustomerController_deleteCustomer",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "description": "Customer ID",
+            "schema": { "type": "string" }
+          }
+        ],
+        "responses": {
+          "200": { "description": "Customer deleted successfully" },
+          "404": { "description": "Customer not found" }
+        },
+        "summary": "Delete a customer (soft delete)",
+        "tags": ["customers"]
+      }
     }
   },
   "info": {
@@ -2489,6 +2767,172 @@
           "data": { "type": "string", "description": "The URL of the uploaded image" }
         },
         "required": ["message", "data"]
+      },
+      "BatchAllocationDto": {
+        "type": "object",
+        "properties": { "batch_id": { "type": "string" }, "quantity": { "type": "number" } },
+        "required": ["batch_id", "quantity"]
+      },
+      "SaleLineItemDto": {
+        "type": "object",
+        "properties": {
+          "product_id": { "type": "string" },
+          "batch_allocations": {
+            "type": "array",
+            "items": { "$ref": "#/components/schemas/BatchAllocationDto" }
+          },
+          "requested_quantity": { "type": "number" },
+          "custom_price": { "type": "number" }
+        },
+        "required": ["product_id", "batch_allocations", "requested_quantity"]
+      },
+      "CreateSaleDto": {
+        "type": "object",
+        "properties": {
+          "customer_id": { "type": "string" },
+          "status": {
+            "type": "string",
+            "enum": [
+              "invoice_requested",
+              "pending_payment",
+              "paid",
+              "packaging",
+              "in_transit",
+              "delivered"
+            ],
+            "default": "invoice_requested"
+          },
+          "line_items": {
+            "type": "array",
+            "items": { "$ref": "#/components/schemas/SaleLineItemDto" }
+          }
+        },
+        "required": ["customer_id", "line_items"]
+      },
+      "Sale": { "type": "object", "properties": {} },
+      "UpdateSaleLineItemDto": {
+        "type": "object",
+        "properties": {
+          "product_id": { "type": "string" },
+          "batch_allocations": {
+            "type": "array",
+            "items": { "$ref": "#/components/schemas/BatchAllocationDto" }
+          },
+          "requested_quantity": { "type": "number" },
+          "custom_price": { "type": "number" }
+        }
+      },
+      "UpdateSaleDto": {
+        "type": "object",
+        "properties": {
+          "customer_id": { "type": "string" },
+          "line_items": {
+            "type": "array",
+            "items": { "$ref": "#/components/schemas/UpdateSaleLineItemDto" }
+          }
+        }
+      },
+      "UpdateSaleStatusDto": {
+        "type": "object",
+        "properties": {
+          "status": {
+            "type": "string",
+            "enum": [
+              "invoice_requested",
+              "pending_payment",
+              "paid",
+              "packaging",
+              "in_transit",
+              "delivered"
+            ]
+          }
+        },
+        "required": ["status"]
+      },
+      "AddLineItemDto": {
+        "type": "object",
+        "properties": {
+          "product_id": { "type": "string" },
+          "batch_allocations": {
+            "type": "array",
+            "items": { "$ref": "#/components/schemas/BatchAllocationDto" }
+          },
+          "requested_quantity": { "type": "number" },
+          "custom_price": { "type": "number" }
+        },
+        "required": ["product_id", "batch_allocations", "requested_quantity"]
+      },
+      "AssignBatchesDto": {
+        "type": "object",
+        "properties": {
+          "product_id": { "type": "string" },
+          "batch_allocations": {
+            "type": "array",
+            "items": { "$ref": "#/components/schemas/BatchAllocationDto" }
+          }
+        },
+        "required": ["product_id", "batch_allocations"]
+      },
+      "CreateCustomerDto": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "description": "The name of the customer",
+            "example": "John Doe",
+            "minLength": 1,
+            "maxLength": 200
+          },
+          "phone": {
+            "type": "string",
+            "description": "The phone number of the customer",
+            "example": "+233123456789"
+          },
+          "email": {
+            "type": "string",
+            "description": "The email address of the customer",
+            "example": "john.doe@example.com"
+          },
+          "address": {
+            "type": "string",
+            "description": "The address of the customer",
+            "example": "123 Main St, Accra"
+          }
+        },
+        "required": ["name"]
+      },
+      "UpdateCustomerDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "The ID of the customer to update",
+            "example": "123e4567-e89b-12d3-a456-426614174000"
+          },
+          "name": {
+            "type": "string",
+            "description": "The name of the customer",
+            "example": "John Doe",
+            "minLength": 1,
+            "maxLength": 200
+          },
+          "phone": {
+            "type": "string",
+            "description": "The phone number of the customer",
+            "example": "+233123456789"
+          },
+          "email": {
+            "type": "string",
+            "description": "The email address of the customer",
+            "example": "john.doe@example.com"
+          },
+          "address": {
+            "type": "string",
+            "description": "The address of the customer",
+            "example": "123 Main St, Accra"
+          }
+        },
+        "required": ["id"]
       }
     }
   }

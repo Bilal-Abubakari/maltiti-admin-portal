@@ -14,16 +14,20 @@ import Aura from '@primeng/themes/aura';
 import { definePreset } from '@primeng/themes';
 
 import { routes } from './app.routes';
-import { authReducer } from './auth/store/auth.reducer';
-import { AuthEffects } from './auth/store/auth.effects';
-import { AuthStorageEffects } from './auth/store/auth-storage.effects';
-import { authInterceptor } from './interceptors/auth.interceptor';
-import { productsReducer } from './features/products/store/products.reducer';
-import { ProductsEffects } from './features/products/store/products.effects';
-import { batchesReducer } from './features/batches/store/batches.reducer';
-import { BatchesEffects } from './features/batches/store/batches.effects';
-import { usersReducer } from './features/users/store/users.reducer';
-import { UsersEffects } from './features/users/store/users.effects';
+import { authReducer } from '@auth/store/auth.reducer';
+import { AuthEffects } from '@auth/store/auth.effects';
+import { AuthStorageEffects } from '@auth/store/auth-storage.effects';
+import { authInterceptor } from '@interceptors/auth.interceptor';
+import { productsReducer } from '@features/products/store/products.reducer';
+import { ProductsEffects } from '@features/products/store/products.effects';
+import { batchesReducer } from '@features/batches/store/batches.reducer';
+import { BatchesEffects } from '@features/batches/store/batches.effects';
+import { usersReducer } from '@features/users/store/users.reducer';
+import { UsersEffects } from '@features/users/store/users.effects';
+import { salesReducer } from '@features/sales/store/sales.reducer';
+import { SalesEffects } from '@features/sales/store/sales.effects';
+import { customersReducer } from '@features/sales/store/customers.reducer';
+import { CustomersEffects } from '@features/sales/store/customers.effects';
 import { MessageService } from 'primeng/api';
 
 const MaltitiPreset = definePreset(Aura, {
@@ -108,6 +112,8 @@ export const appConfig: ApplicationConfig = {
       products: productsReducer,
       batches: batchesReducer,
       users: usersReducer,
+      sales: salesReducer,
+      customers: customersReducer,
     }),
     provideEffects([
       AuthEffects,
@@ -115,6 +121,8 @@ export const appConfig: ApplicationConfig = {
       ProductsEffects,
       BatchesEffects,
       UsersEffects,
+      SalesEffects,
+      CustomersEffects,
     ]),
     provideStoreDevtools({ maxAge: 25 }),
     MessageService,

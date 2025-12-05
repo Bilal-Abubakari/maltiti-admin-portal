@@ -22,6 +22,7 @@ You are an expert in TypeScript, Angular, and scalable web application developme
 - Let's avoid use of `any` type by all means unless impossible
 - let's use IResponse type for Api Response but if it is paginated list then use IPaginatedResponse<T> type.
 - Let's always unsubscribe from observables that we subscribe to mostly using takeUntilDestroyed() or if possible take(1), first()
+- Don't use array methods in template, it should all be in the component.
 
 ## Components
 

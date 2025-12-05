@@ -1,0 +1,117 @@
+<!-- Customer Creation Modal -->
+<app-customer-creation-modal #customerModal (customerCreated)="onCustomerSelected($event)" />
+
+<!-- Page Header -->
+<div class="page-header">
+  <div class="page-title">
+    <h1>{{ isEditMode ? 'Edit Sale' : 'Create New Sale' }}</h1>
+    <p class="page-description">
+      {{
+        isEditMode
+          ? 'Update sale details, customer, and line items'
+          : 'Create a new sale with customer and products'
+      }}
+    </p>
+  </div>
+  <div class="page-actions">
+    <app-button label="Cancel" severity="secondary" [outlined]="true" (click)="onCancel()" />
+    <app-button
+      label="{{ isEditMode ? 'Update Sale' : 'Create Sale' }}"
+      severity="primary"
+      [loading]="loading()"
+      (click)="onSubmit()"
+    />
+  </div>
+</div>
+
+<!-- Main Form -->
+<form class="sales-form" [formGroup]="salesForm">
+  <!-- Customer Section -->
+  <p-card header="Customer Information">
+    <div class="form-row">
+      <div class="form-field">
+        <label for="customer">Customer *</label>
+        <app-customer-select
+          [control]="customerControl"
+          [placeholder]="'Select a customer'"
+          [showClear]="true"
+          [styleClass]="'customer-select'"
+        />
+        <small class="form-help">Select an existing customer or create a new one</small>
+      </div>
+      <div class="non-form-field">
+        <app-button
+          icon="pi pi-plus"
+          label="Create Customer"
+          severity="contrast"
+          type="button"
+          [outlined]="true"
+          (click)="openCustomerDialog()"
+        />
+      </div>
+    </div>
+  </p-card>
+
+  <!-- Sale Details -->
+  <p-card header="Sale Details">
+    <div class="form-row sales-details">
+      <div class="form-field">
+        <app-select
+          id="status"
+          label="Status*"
+          [control]="statusControl"
+          [options]="statusOptions"
+          [placeholder]="'Select status'"
+          [styleClass]="'status-select'"
+        />
+      </div>
+      <div class="total-wrapper">
+        <div>Total Amount</div>
+        <div class="total-amount">
+          {{ totalPrice() | currency: 'GH₵ ' }}
+        </div>
+      </div>
+    </div>
+  </p-card>
+
+  <!-- Line Items Section -->
+  <p-card header="Line Items">
+    <div class="line-items-header">
+      <h3>Products</h3>
+      <app-button
+        icon="pi pi-plus"
+        label="Add Product"
+        severity="primary"
+        [outlined]="true"
+        (click)="addLineItem()"
+      />
+    </div>
+
+    <div class="line-items-container">
+      @for (lineItem of lineItems.controls; track $index; let i = $index) {
+        <app-line-item-editor
+          [isBatchRequired]="isBatchRequired"
+          [lineItem]="lineItem.value"
+          [products]="products()"
+          (lineItemChange)="onLineItemChange(i, $event)"
+          (remove)="removeLineItem(i)"
+        />
+      }
+    </div>
+
+    @if (lineItems.length === 0) {
+      <div class="empty-state">
+        <p>No products added yet. Click "Add Product" to get started.</p>
+      </div>
+    }
+  </p-card>
+</form>
+
+<!-- Error Message -->
+@if (error(); as error) {
+  <div class="error-message">
+    <p>{{ error }}</p>
+  </div>
+}
+
+<p-confirmDialog />

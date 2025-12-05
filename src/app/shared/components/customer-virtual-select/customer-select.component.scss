@@ -1,0 +1,9 @@
+.customers-wrapper {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+::ng-deep .p-virtualscroller {
+  min-height: 200px;
+}

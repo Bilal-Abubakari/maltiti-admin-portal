@@ -4,7 +4,45 @@
  * with full TypeScript support for route parameters and navigation
  */
 
-export const APP_ROUTES = {
+/**
+ * Interface for a route configuration entry
+ */
+export interface IRouteConfig {
+  path: string;
+  fullPath: string;
+}
+
+/**
+ * Interface for nested route configuration (e.g., auth.login)
+ */
+export interface INestedRouteConfig {
+  [key: string]: IRouteConfig;
+}
+
+/**
+ * Interface for the main APP_ROUTES configuration
+ */
+export interface IAppRoutes {
+  auth: {
+    login: IRouteConfig;
+  };
+  dashboard: IRouteConfig;
+  products: IRouteConfig;
+  batches: IRouteConfig;
+  orders: IRouteConfig;
+  cooperatives: IRouteConfig;
+  reports: IRouteConfig;
+  settings: IRouteConfig;
+  users: IRouteConfig;
+  sales: IRouteConfig & {
+    list: IRouteConfig;
+    create: IRouteConfig;
+    edit: (id: string) => string;
+  };
+  root: IRouteConfig;
+}
+
+export const APP_ROUTES: IAppRoutes = {
   auth: {
     login: {
       path: 'login',
@@ -43,11 +81,24 @@ export const APP_ROUTES = {
     path: 'users',
     fullPath: '/users',
   },
+  sales: {
+    path: 'sales',
+    fullPath: '/sales',
+    list: {
+      path: '',
+      fullPath: '/sales',
+    },
+    create: {
+      path: 'create',
+      fullPath: '/sales/create',
+    },
+    edit: (id: string) => `/sales/${id}`,
+  },
   root: {
     path: '',
     fullPath: '/',
   },
-} as const;
+};
 
 /**
  * Type-safe route paths extracted from APP_ROUTES
