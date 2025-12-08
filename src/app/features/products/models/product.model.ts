@@ -4,15 +4,21 @@
  */
 import { Ingredient } from '@models/ingredient.model';
 
+export enum UnitOfMeasurement {
+  KILOGRAM = 'kilogram',
+  GRAM = 'gram',
+  LITRE = 'litre',
+  MILLILITRE = 'millilitre',
+}
+
 export type ProductCategory =
   | 'Shea Butter'
   | 'Black Soap'
   | 'Cosmetics'
   | 'Shea Soap'
   | 'Powdered Soap'
-  | 'Dawadawa Tea'
+  | 'Dawadawa'
   | 'Essential Oils'
-  | 'Hair Oil'
   | 'Grains'
   | 'Legumes'
   | 'Other';
@@ -21,36 +27,20 @@ export type ProductStatus = 'active' | 'inactive' | 'out_of_stock' | 'discontinu
 
 export type ProductGrade = 'A' | 'B' | 'premium' | 'standard' | 'organic';
 
-export type PackagingSize =
-  | '100g'
-  | '250g'
-  | '500g'
-  | '1kg'
-  | '5kg'
-  | '12kg'
-  | '25kg'
-  | '50kg'
-  | '100ml'
-  | '250ml'
-  | '500ml'
-  | '1L'
-  | 'custom';
-
 export interface Product {
   id: string;
   sku: string;
   name: string;
   ingredients: Ingredient[];
   weight: string;
+  unitOfMeasurement: UnitOfMeasurement;
   category: ProductCategory;
   description: string;
   status: ProductStatus;
-  size: PackagingSize;
   images: string[];
   image: string;
   wholesale: number;
   retail: number;
-  stockQuantity: number;
   inBoxPrice: number;
   quantityInBox: number;
   favorite: boolean;
@@ -76,15 +66,14 @@ export interface CreateProductDto {
   name: string;
   ingredients: string[];
   weight?: string;
+  unitOfMeasurement?: UnitOfMeasurement;
   category: ProductCategory;
   description: string;
   status?: ProductStatus;
-  size?: PackagingSize;
   images?: string[];
   image?: string;
   wholesale: number;
   retail: number;
-  stockQuantity: number;
   inBoxPrice?: number;
   quantityInBox?: number;
   grade?: ProductGrade;
@@ -107,12 +96,12 @@ export interface ProductQueryParams {
   category?: ProductCategory;
   status?: ProductStatus;
   grade?: ProductGrade;
-  packagingSize?: PackagingSize;
+  unitOfMeasurement?: UnitOfMeasurement;
   isFeatured?: boolean;
   isOrganic?: boolean;
   minPrice?: number;
   maxPrice?: number;
-  sortBy?: 'name' | 'retail' | 'createdAt' | 'rating' | 'stockQuantity';
+  sortBy?: 'name' | 'retail' | 'createdAt' | 'rating';
   sortOrder?: 'ASC' | 'DESC';
 }
 

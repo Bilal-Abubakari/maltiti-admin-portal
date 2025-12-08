@@ -546,27 +546,13 @@
             }
           },
           {
-            "name": "packagingSize",
+            "name": "unitOfMeasurement",
             "required": false,
             "in": "query",
-            "description": "Filter by packaging size",
+            "description": "Filter by unit of measurement",
             "schema": {
-              "example": "1kg",
-              "enum": [
-                "100g",
-                "250g",
-                "500g",
-                "1kg",
-                "5kg",
-                "12kg",
-                "25kg",
-                "50kg",
-                "100ml",
-                "250ml",
-                "500ml",
-                "1L",
-                "custom"
-              ],
+              "example": "kilogram",
+              "enum": ["kilogram", "gram", "litre", "millilitre"],
               "type": "string"
             }
           },
@@ -903,27 +889,13 @@
             }
           },
           {
-            "name": "packagingSize",
+            "name": "unitOfMeasurement",
             "required": false,
             "in": "query",
-            "description": "Filter by packaging size",
+            "description": "Filter by unit of measurement",
             "schema": {
-              "example": "1kg",
-              "enum": [
-                "100g",
-                "250g",
-                "500g",
-                "1kg",
-                "5kg",
-                "12kg",
-                "25kg",
-                "50kg",
-                "100ml",
-                "250ml",
-                "500ml",
-                "1L",
-                "custom"
-              ],
+              "example": "kilogram",
+              "enum": ["kilogram", "gram", "litre", "millilitre"],
               "type": "string"
             }
           },
@@ -1712,6 +1684,23 @@
         "tags": ["Sales"]
       }
     },
+    "/sales/{id}/invoice": {
+      "post": {
+        "operationId": "SalesController_generateInvoice",
+        "parameters": [
+          { "name": "id", "required": true, "in": "path", "schema": { "type": "string" } }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": { "schema": { "$ref": "#/components/schemas/GenerateInvoiceDto" } }
+          }
+        },
+        "responses": { "200": { "description": "Invoice PDF generated successfully" } },
+        "summary": "Generate invoice PDF for a sale",
+        "tags": ["Sales"]
+      }
+    },
     "/customers": {
       "get": {
         "operationId": "CustomerController_getAllCustomers",
@@ -2243,6 +2232,11 @@
             "items": { "type": "string" }
           },
           "weight": { "type": "string", "example": "1kg" },
+          "unitOfMeasurement": {
+            "type": "string",
+            "enum": ["kilogram", "gram", "litre", "millilitre"],
+            "example": "kilogram"
+          },
           "category": {
             "type": "string",
             "enum": [
@@ -2268,25 +2262,6 @@
             "type": "string",
             "enum": ["active", "inactive", "out_of_stock", "discontinued"],
             "example": "active"
-          },
-          "size": {
-            "type": "string",
-            "enum": [
-              "100g",
-              "250g",
-              "500g",
-              "1kg",
-              "5kg",
-              "12kg",
-              "25kg",
-              "50kg",
-              "100ml",
-              "250ml",
-              "500ml",
-              "1L",
-              "custom"
-            ],
-            "example": "1kg"
           },
           "images": {
             "example": ["https://example.com/image1.jpg", "https://example.com/image2.jpg"],
@@ -2346,10 +2321,10 @@
           "name",
           "ingredients",
           "weight",
+          "unitOfMeasurement",
           "category",
           "description",
           "status",
-          "size",
           "images",
           "image",
           "wholesale",
@@ -2416,7 +2391,13 @@
           "weight": {
             "type": "string",
             "description": "Product weight description",
-            "example": "1kg"
+            "example": "1"
+          },
+          "unitOfMeasurement": {
+            "type": "string",
+            "description": "Unit of measurement for the product weight",
+            "enum": ["kilogram", "gram", "litre", "millilitre"],
+            "example": "kilogram"
           },
           "category": {
             "type": "string",
@@ -2447,26 +2428,6 @@
             "enum": ["active", "inactive", "out_of_stock", "discontinued"],
             "example": "active",
             "default": "active"
-          },
-          "size": {
-            "type": "string",
-            "description": "Packaging size",
-            "enum": [
-              "100g",
-              "250g",
-              "500g",
-              "1kg",
-              "5kg",
-              "12kg",
-              "25kg",
-              "50kg",
-              "100ml",
-              "250ml",
-              "500ml",
-              "1L",
-              "custom"
-            ],
-            "example": "1kg"
           },
           "images": {
             "description": "Product images URLs",
@@ -2562,7 +2523,13 @@
           "weight": {
             "type": "string",
             "description": "Product weight description",
-            "example": "1kg"
+            "example": "1"
+          },
+          "unitOfMeasurement": {
+            "type": "string",
+            "description": "Unit of measurement for the product weight",
+            "enum": ["kilogram", "gram", "litre", "millilitre"],
+            "example": "kilogram"
           },
           "category": {
             "type": "string",
@@ -2593,26 +2560,6 @@
             "enum": ["active", "inactive", "out_of_stock", "discontinued"],
             "example": "active",
             "default": "active"
-          },
-          "size": {
-            "type": "string",
-            "description": "Packaging size",
-            "enum": [
-              "100g",
-              "250g",
-              "500g",
-              "1kg",
-              "5kg",
-              "12kg",
-              "25kg",
-              "50kg",
-              "100ml",
-              "250ml",
-              "500ml",
-              "1L",
-              "custom"
-            ],
-            "example": "1kg"
           },
           "images": {
             "description": "Product images URLs",
@@ -2872,6 +2819,13 @@
           }
         },
         "required": ["product_id", "batch_allocations"]
+      },
+      "GenerateInvoiceDto": {
+        "type": "object",
+        "properties": {
+          "discount": { "type": "number", "description": "Discount amount", "default": 0 },
+          "transportation": { "type": "number", "description": "Transportation cost", "default": 0 }
+        }
       },
       "CreateCustomerDto": {
         "type": "object",

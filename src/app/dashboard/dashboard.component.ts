@@ -9,9 +9,9 @@ import { RouterLink } from '@angular/router';
 import { Store } from '@ngrx/store';
 import { CardModule } from 'primeng/card';
 import { ButtonModule } from 'primeng/button';
-import { selectUser } from '../auth/store/auth.selectors';
-import { selectAllProducts } from '../features/products/store/products.selectors';
-import { selectAllBatches } from '../features/batches/store/batches.selectors';
+import { selectUser } from '@auth/store/auth.selectors';
+import { selectAllProducts } from '@features/products/store/products.selectors';
+import { selectAllBatches } from '@features/batches/store/batches.selectors';
 import * as ProductsActions from '../features/products/store/products.actions';
 import * as BatchesActions from '../features/batches/store/batches.actions';
 
@@ -40,8 +40,8 @@ export class DashboardComponent implements OnInit {
     return this.products().filter((p) => p.status === 'active').length;
   }
 
-  public get lowStockProducts(): number {
-    return this.products().filter((p) => p.stockQuantity < 10).length;
+  public get lowStockBatches(): number {
+    return this.batches().filter((b) => b.quantity < 10).length;
   }
 
   public get totalBatches(): number {

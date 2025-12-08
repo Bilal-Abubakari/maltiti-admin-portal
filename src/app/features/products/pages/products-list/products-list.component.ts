@@ -42,10 +42,11 @@ import {
   ProductCategory,
   ProductQueryParams,
   ProductStatus,
+  UnitOfMeasurement,
 } from '../../models/product.model';
-import { InputComponent } from '../../../../shared/components/input/input.component';
-import { ButtonComponent } from '../../../../shared/components/button/button.component';
-import { SelectComponent } from '../../../../shared/components/select/select.component';
+import { InputComponent } from '@shared/components/input/input.component';
+import { ButtonComponent } from '@shared/components/button/button.component';
+import { SelectComponent } from '@shared/components/select/select.component';
 import { ProductDialogComponent } from '../product-dialog/product-dialog.component';
 import { ProductApiService } from '../../services/product-api.service';
 import { PRODUCT_CATEGORIES } from '../../constants/product-options.constants';
@@ -79,6 +80,14 @@ export class ProductsListComponent {
   private readonly store = inject(Store);
   private readonly confirmationService = inject(ConfirmationService);
   private readonly productApiService = inject(ProductApiService);
+
+  // Unit of measurement symbols
+  public readonly unitSymbols: Record<UnitOfMeasurement, string> = {
+    [UnitOfMeasurement.KILOGRAM]: 'kg',
+    [UnitOfMeasurement.GRAM]: 'g',
+    [UnitOfMeasurement.LITRE]: 'L',
+    [UnitOfMeasurement.MILLILITRE]: 'mL',
+  };
 
   // Store signals
   public readonly products = this.store.selectSignal(selectAllProducts);
@@ -150,19 +159,22 @@ export class ProductsListComponent {
   }
 
   public onCreateProduct(): void {
+    console.log('Create new product');
     this.selectedProduct.set(null);
     this.viewMode.set(false);
     this.showProductDialog.set(true);
   }
 
   public onEditProduct(product: Product): void {
-    this.selectedProduct.set(product);
+    console.log('Edit product:', product);
+    this.selectedProduct.set({ ...product });
     this.viewMode.set(false);
     this.showProductDialog.set(true);
   }
 
   public onViewProduct(product: Product): void {
-    this.selectedProduct.set(product);
+    console.log('View product:', product);
+    this.selectedProduct.set({ ...product });
     this.viewMode.set(true);
     this.showProductDialog.set(true);
   }
@@ -247,6 +259,10 @@ export class ProductsListComponent {
       default:
         return 'secondary';
     }
+  }
+
+  public getUnitSymbol(unit: UnitOfMeasurement): string {
+    return this.unitSymbols[unit] || '';
   }
 
   public formatCurrency(value: number): string {

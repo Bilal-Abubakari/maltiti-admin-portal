@@ -1,10 +1,10 @@
 // filepath: c:\Users\BilalAbubakari\Desktop\PROJECTS\maltiti-admin-portal\src\app\features\products\types\product-form-value.type.ts
 
 import {
-  PackagingSize,
   ProductCategory,
   ProductGrade,
   ProductStatus,
+  UnitOfMeasurement,
 } from '../models/product.model';
 import { FormControl, FormGroup } from '@angular/forms';
 
@@ -18,10 +18,9 @@ export interface ProductFormValue {
   retail: number | null;
   inBoxPrice: number | null;
   costPrice: number | null;
-  stockQuantity: number | null;
   quantityInBox: number | null;
   minOrderQuantity: number | null;
-  size: PackagingSize | null;
+  unitOfMeasurement: UnitOfMeasurement | null;
   grade: ProductGrade | null;
   weight: string | null;
   ingredients: string[] | null;
@@ -39,16 +38,15 @@ export type ProductFormGroup = FormGroup<{
   name: FormControl<string | null>;
   sku: FormControl<string | null>;
   description: FormControl<string | null>;
-  category: FormControl<ProductCategory | null>;
+  category: FormControl<string | null>;
   status: FormControl<ProductStatus | null>;
   wholesale: FormControl<number | null>;
   retail: FormControl<number | null>;
   inBoxPrice: FormControl<number | null>;
   costPrice: FormControl<number | null>;
-  stockQuantity: FormControl<number | null>;
   quantityInBox: FormControl<number | null>;
   minOrderQuantity: FormControl<number | null>;
-  size: FormControl<PackagingSize | null>;
+  unitOfMeasurement: FormControl<UnitOfMeasurement | null>;
   grade: FormControl<ProductGrade | null>;
   weight: FormControl<string | null>;
   ingredients: FormControl<string[] | null>;

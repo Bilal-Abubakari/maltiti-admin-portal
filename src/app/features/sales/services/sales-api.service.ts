@@ -12,6 +12,7 @@ import {
   AddLineItemDto,
   AssignBatchesDto,
   CreateSaleDto,
+  GenerateInvoiceDto,
   Sale,
   SaleStatus,
   UpdateSaleDto,
@@ -102,5 +103,15 @@ export class SalesApiService {
    */
   public cancelSale(id: string): Observable<Sale> {
     return this.http.delete<Sale>(`${this.baseUrl}/${id}`);
+  }
+
+  /**
+   * Generate invoice PDF for a sale
+   * POST /sales/{id}/invoice
+   */
+  public generateInvoice(id: string, dto: GenerateInvoiceDto): Observable<Blob> {
+    return this.http.post(`${this.baseUrl}/${id}/invoice`, dto, {
+      responseType: 'blob',
+    });
   }
 }

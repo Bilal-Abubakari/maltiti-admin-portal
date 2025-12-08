@@ -10,7 +10,7 @@ export const PRODUCT_CATEGORIES = [
   { label: 'Cosmetics', value: 'Cosmetics' },
   { label: 'Shea Soap', value: 'Shea Soap' },
   { label: 'Powdered Soap', value: 'Powdered Soap' },
-  { label: 'Dawadawa Tea', value: 'Dawadawa Tea' },
+  { label: 'Dawadawa', value: 'Dawadawa' },
   { label: 'Essential Oils', value: 'Essential Oils' },
   { label: 'Hair Oil', value: 'Hair Oil' },
   { label: 'Grains', value: 'Grains' },
@@ -35,21 +35,12 @@ export const PRODUCT_GRADE_OPTIONS = [
   { label: 'Organic', value: 'organic' },
 ];
 
-// Packaging Size Options
-export const PACKAGING_SIZE_OPTIONS = [
-  { label: '100g', value: '100g' },
-  { label: '250g', value: '250g' },
-  { label: '500g', value: '500g' },
-  { label: '1kg', value: '1kg' },
-  { label: '5kg', value: '5kg' },
-  { label: '12kg', value: '12kg' },
-  { label: '25kg', value: '25kg' },
-  { label: '50kg', value: '50kg' },
-  { label: '100ml', value: '100ml' },
-  { label: '250ml', value: '250ml' },
-  { label: '500ml', value: '500ml' },
-  { label: '1L', value: '1L' },
-  { label: 'Custom', value: 'custom' },
+// Unit of Measurement Options
+export const UNIT_OF_MEASUREMENT_OPTIONS = [
+  { label: 'Kilogram', value: 'kilogram' },
+  { label: 'Gram', value: 'gram' },
+  { label: 'Litre', value: 'litre' },
+  { label: 'Millilitre', value: 'millilitre' },
 ];
 
 // Ingredient Options
@@ -86,6 +77,6 @@ export const CERTIFICATION_OPTIONS = [
 export type ProductCategoryOption = (typeof PRODUCT_CATEGORIES)[number];
 export type ProductStatusOption = (typeof PRODUCT_STATUS_OPTIONS)[number];
 export type ProductGradeOption = (typeof PRODUCT_GRADE_OPTIONS)[number];
-export type PackagingSizeOption = (typeof PACKAGING_SIZE_OPTIONS)[number];
+export type UnitOfMeasurementOption = (typeof UNIT_OF_MEASUREMENT_OPTIONS)[number];
 export type IngredientOption = (typeof INGREDIENT_OPTIONS)[number];
 export type CertificationOption = (typeof CERTIFICATION_OPTIONS)[number];

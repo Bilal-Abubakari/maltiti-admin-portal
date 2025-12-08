@@ -56,6 +56,11 @@ export interface AssignBatchesDto {
   batch_allocations: BatchAllocationDto[];
 }
 
+export interface GenerateInvoiceDto {
+  discount?: number;
+  transportation?: number;
+}
+
 export interface SaleLineItem {
   id: string;
   product_id: string;

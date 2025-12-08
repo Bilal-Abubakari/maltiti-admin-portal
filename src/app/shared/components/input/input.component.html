@@ -6,7 +6,6 @@
     <input
       pInputText
       [class]="styleClass()"
-      [disabled]="disabled()"
       [formControl]="control()"
       [id]="id()"
       [invalid]="this.control()?.touched && this.control()?.invalid"
@@ -26,7 +25,6 @@
       @if (type() === 'number') {
         <p-input-number
           [class]="styleClass()"
-          [disabled]="disabled()"
           [formControl]="control()"
           [id]="id()"
           [placeholder]="placeholder()"
@@ -37,7 +35,6 @@
         <input
           pInputText
           [class]="styleClass()"
-          [disabled]="disabled()"
           [formControl]="control()"
           [id]="id()"
           [placeholder]="placeholder()"

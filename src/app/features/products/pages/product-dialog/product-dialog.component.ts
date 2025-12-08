@@ -27,28 +27,28 @@ import { TableModule } from 'primeng/table';
 import { TagModule } from 'primeng/tag';
 import * as ProductsActions from '../../store/products.actions';
 import { IngredientApiService } from '../../services/ingredient-api.service';
-import { UploadService } from '../../../../services/upload.service';
+import { UploadService } from '@services/upload.service';
 import {
   CreateProductDto,
-  PackagingSize,
   Product,
   ProductCategory,
   ProductGrade,
   ProductStatus,
+  UnitOfMeasurement,
   UpdateProductDto,
 } from '../../models/product.model';
 import {
   CERTIFICATION_OPTIONS,
-  PACKAGING_SIZE_OPTIONS,
   PRODUCT_CATEGORIES,
   PRODUCT_GRADE_OPTIONS,
   PRODUCT_STATUS_OPTIONS,
+  UNIT_OF_MEASUREMENT_OPTIONS,
 } from '../../constants/product-options.constants';
 import { PrimeTemplate } from 'primeng/api';
-import { ProductFormGroup, ProductFormValue } from '../../types/product-form-value.type';
-import { FieldRendererComponent } from '../../../../shared/components/field-renderer/field-renderer.component';
-import { ImageSectionComponent } from '../../../../shared/components/image-section/image-section.component';
-import { ScrollToErrorDirective } from '../../../../shared/directives/scroll-to-error.directive';
+import { ProductFormValue } from '../../types/product-form-value.type';
+import { FieldRendererComponent } from '@shared/components/field-renderer/field-renderer.component';
+import { ImageSectionComponent } from '@shared/components/image-section/image-section.component';
+import { ScrollToErrorDirective } from '@shared/directives/scroll-to-error.directive';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { map } from 'rxjs/operators';
 import { BatchApiService } from '../../../batches/services/batch-api.service';
@@ -105,7 +105,7 @@ export class ProductDialogComponent {
   public readonly productBatches = signal<Batch[]>([]);
 
   // Form
-  public readonly productForm: ProductFormGroup = this.fb.group({
+  public readonly productForm = this.fb.group({
     // Basic Info
     name: this.fb.control('', {
       validators: [Validators.required, Validators.minLength(2), Validators.maxLength(100)],
@@ -126,12 +126,11 @@ export class ProductDialogComponent {
     costPrice: this.fb.control(0, { validators: [Validators.min(0)] }),
 
     // Inventory
-    stockQuantity: this.fb.control(0, { validators: [Validators.required, Validators.min(0)] }),
     quantityInBox: this.fb.control(1, { validators: [Validators.min(1)] }),
     minOrderQuantity: this.fb.control(1, { validators: [Validators.required, Validators.min(1)] }),
 
     // Product Details
-    size: this.fb.control<PackagingSize | null>(null),
+    unitOfMeasurement: this.fb.control<UnitOfMeasurement | null>(null),
     grade: this.fb.control<ProductGrade | null>(null),
     weight: this.fb.control(''),
     ingredients: this.fb.control<string[]>([], {
@@ -159,7 +158,7 @@ export class ProductDialogComponent {
   public readonly categoryOptions = PRODUCT_CATEGORIES;
   public readonly statusOptions = PRODUCT_STATUS_OPTIONS;
   public readonly gradeOptions = PRODUCT_GRADE_OPTIONS;
-  public readonly sizeOptions = PACKAGING_SIZE_OPTIONS;
+  public readonly unitOfMeasurementOptions = UNIT_OF_MEASUREMENT_OPTIONS;
   public readonly certificationOptions = CERTIFICATION_OPTIONS.map((option) => ({
     label: option,
     value: option,
@@ -178,6 +177,7 @@ export class ProductDialogComponent {
     // Populate form when product changes
     effect(() => {
       const product = this.product();
+      console.log('Product changed:', product);
       const isView = this.viewMode();
       if (product && isView) {
         // Load batches for this product
@@ -202,39 +202,46 @@ export class ProductDialogComponent {
       }
     });
 
+    this.productForm.controls.category.valueChanges.subscribe((category) => {
+      console.log('Category changed:', category);
+    });
+
     effect(() => {
-      const product = this.product();
-      if (product) {
-        this.productForm.patchValue({
-          name: product.name,
-          sku: product.sku,
-          description: product.description,
-          // category: product.category,
-          status: product.status,
-          wholesale: product.wholesale,
-          retail: product.retail,
-          inBoxPrice: product.inBoxPrice,
-          stockQuantity: product.stockQuantity,
-          quantityInBox: product.quantityInBox,
-          minOrderQuantity: product.minOrderQuantity,
-          size: product.size,
-          grade: product.grade,
-          weight: product.weight,
-          ingredients: product.ingredients.map(({ id }) => id),
-          isFeatured: product.isFeatured,
-          isOrganic: product.isOrganic,
-          producedAt: product.producedAt ? new Date(product.producedAt) : null,
-          expiryDate: product.expiryDate ? new Date(product.expiryDate) : null,
-          supplierReference: product.supplierReference,
-          certifications: product.certifications,
-          images: product.images,
-          image: product.image,
-          costPrice: product.costPrice,
-        });
+      const selectedProduct = this.product();
+      console.log('Selected product:', selectedProduct);
+      if (selectedProduct) {
+        const product = JSON.parse(JSON.stringify(selectedProduct)) as Product;
+        this.productForm.patchValue(
+          {
+            name: product.name,
+            sku: product.sku,
+            description: product.description,
+            category: product.category,
+            status: product.status,
+            wholesale: product.wholesale,
+            retail: product.retail,
+            inBoxPrice: product.inBoxPrice,
+            quantityInBox: product.quantityInBox,
+            minOrderQuantity: product.minOrderQuantity,
+            unitOfMeasurement: product.unitOfMeasurement,
+            grade: product.grade,
+            weight: product.weight,
+            ingredients: product.ingredients.map(({ id }) => id),
+            isFeatured: product.isFeatured,
+            isOrganic: product.isOrganic,
+            producedAt: product.producedAt ? new Date(product.producedAt) : null,
+            expiryDate: product.expiryDate ? new Date(product.expiryDate) : null,
+            supplierReference: product.supplierReference,
+            certifications: product.certifications,
+            images: product.images,
+            image: product.image,
+            costPrice: product.costPrice ?? null,
+          },
+          { emitEvent: false, onlySelf: true },
+        );
       } else {
         this.productForm.reset({
           status: 'active',
-          stockQuantity: 0,
           wholesale: 0,
           retail: 0,
           inBoxPrice: 0,
@@ -257,7 +264,6 @@ export class ProductDialogComponent {
     this.errorMessage.set(null); // Clear error message
     this.productForm.reset({
       status: 'active',
-      stockQuantity: 0,
       wholesale: 0,
       retail: 0,
       inBoxPrice: 0,
@@ -291,10 +297,9 @@ export class ProductDialogComponent {
       category: formValue.category!,
       wholesale: formValue.wholesale!,
       retail: formValue.retail!,
-      stockQuantity: formValue.stockQuantity!,
       sku: formValue.sku || undefined,
       status: formValue.status as ProductStatus,
-      size: formValue.size || undefined,
+      unitOfMeasurement: formValue.unitOfMeasurement || undefined,
       grade: formValue.grade || undefined,
       weight: formValue.weight || undefined,
       ingredients: formValue.ingredients || [],

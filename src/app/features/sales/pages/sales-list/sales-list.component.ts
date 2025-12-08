@@ -8,13 +8,14 @@ import { ChangeDetectionStrategy, Component, inject, OnInit, signal } from '@ang
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
 import { FormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { first } from 'rxjs';
 
 // PrimeNG Imports
 import { TableModule, TablePageEvent } from 'primeng/table';
 import { ButtonModule } from 'primeng/button';
 import { TagModule } from 'primeng/tag';
 import { ConfirmDialogModule } from 'primeng/confirmdialog';
-import { ConfirmationService, MenuItem } from 'primeng/api';
+import { ConfirmationService, MenuItem, MessageService } from 'primeng/api';
 import { TooltipModule } from 'primeng/tooltip';
 import { MenuModule } from 'primeng/menu';
 
@@ -35,6 +36,7 @@ import { ButtonComponent } from '@shared/components/button/button.component';
 import { SelectComponent } from '@shared/components/select/select.component';
 import { lineItemsTotalPrice } from '@shared/utils/totalPriceCalculator';
 import { APP_ROUTES } from '@config/routes.config';
+import { SalesApiService } from '../../services/sales-api.service';
 
 @Component({
   selector: 'app-sales-list',
@@ -61,6 +63,8 @@ export class SalesListComponent implements OnInit {
   private readonly store = inject(Store);
   private readonly router = inject(Router);
   private readonly confirmationService = inject(ConfirmationService);
+  private readonly salesApiService = inject(SalesApiService);
+  private readonly messageService = inject(MessageService);
 
   // Signals from store
   public readonly sales = this.store.selectSignal(selectSales);
@@ -125,6 +129,36 @@ export class SalesListComponent implements OnInit {
     });
   }
 
+  public onGenerateInvoice(sale: Sale): void {
+    this.salesApiService
+      .generateInvoice(sale.id, { discount: 0, transportation: 0 })
+      .pipe(first())
+      .subscribe({
+        next: (blob: Blob) => {
+          // Create a download link for the PDF
+          const url = window.URL.createObjectURL(blob);
+          const link = document.createElement('a');
+          link.href = url;
+          link.download = `invoice-${sale.id}.pdf`;
+          link.click();
+          window.URL.revokeObjectURL(url);
+
+          this.messageService.add({
+            severity: 'success',
+            summary: 'Success',
+            detail: 'Invoice generated successfully',
+          });
+        },
+        error: () => {
+          this.messageService.add({
+            severity: 'error',
+            summary: 'Error',
+            detail: 'Failed to generate invoice',
+          });
+        },
+      });
+  }
+
   public getStatusSeverity(status: SaleStatus): 'success' | 'info' | 'warn' | 'danger' {
     switch (status) {
       case SaleStatus.Delivered:
@@ -184,6 +218,11 @@ export class SalesListComponent implements OnInit {
             label: 'View',
             icon: 'pi pi-eye',
             command: (): void => this.onEditSale(sale),
+          },
+          {
+            label: 'Generate Invoice',
+            icon: 'pi pi-file-pdf',
+            command: (): void => this.onGenerateInvoice(sale),
           },
         ],
       },
