@@ -1,6 +1,6 @@
 import { Routes } from '@angular/router';
-import { authGuard } from './guards/auth.guard';
-import { APP_ROUTES } from './config/routes.config';
+import { authGuard } from '@guards/auth.guard';
+import { APP_ROUTES } from '@config/routes.config';
 
 export const routes: Routes = [
   {
@@ -66,6 +66,20 @@ export const routes: Routes = [
       {
         path: '',
         loadChildren: () => import('./features/users/routes').then((m) => m.USERS_ROUTES),
+      },
+    ],
+  },
+  {
+    path: APP_ROUTES.sales.path,
+    loadComponent: () =>
+      import('./layout/dashboard-layout/dashboard-layout.component').then(
+        (m) => m.DashboardLayoutComponent,
+      ),
+    canActivate: [authGuard],
+    children: [
+      {
+        path: '',
+        loadChildren: () => import('./features/sales/routes').then((m) => m.SALES_ROUTES),
       },
     ],
   },

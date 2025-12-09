@@ -87,9 +87,6 @@
           <th pSortableColumn="retail">
             Retail Price <p-sortIcon field="retail" />
           </th>
-          <th pSortableColumn="stockQuantity">
-            Stock <p-sortIcon field="stockQuantity" />
-          </th>
           <th>Status</th>
           <th style="width: 150px">Actions</th>
         </tr>
@@ -109,7 +106,7 @@
           <!-- Name -->
           <td>
             <div class="product-name-cell">
-              <span class="product-name">{{ product.name }}</span>
+              <span class="product-name">{{ product.name }} ({{ product.weight }}{{ getUnitSymbol(product.unitOfMeasurement) }})</span>
               @if (product.isFeatured) {
                 <i class="pi pi-star-fill featured-icon" pTooltip="Featured Product"></i>
               }
@@ -127,17 +124,6 @@
           <!-- Retail Price -->
           <td>
             <span class="price">{{ formatCurrency(product.retail) }}</span>
-          </td>
-
-          <!-- Stock -->
-          <td>
-            <span
-              class="stock-badge"
-              [class.low-stock]="product.stockQuantity < 10"
-              [class.out-of-stock]="product.stockQuantity === 0"
-            >
-              {{ product.stockQuantity }}
-            </span>
           </td>
 
           <!-- Status -->

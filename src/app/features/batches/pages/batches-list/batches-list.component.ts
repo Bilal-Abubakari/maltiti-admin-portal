@@ -36,10 +36,11 @@ import { selectAllBatches, selectBatchesLoading } from '../../store/batches.sele
 import { Batch, BatchQueryParams, CreateBatchDto } from '../../models/batch.model';
 import { BatchDialogComponent } from '../batch-dialog/batch-dialog.component';
 import { ProductApiService } from '../../../products/services/product-api.service';
-import { Product } from '../../../products/models/product.model';
-import { SelectComponent } from '../../../../shared/components/select/select.component';
-import { InputComponent } from '../../../../shared/components/input/input.component';
-import { ButtonComponent } from '../../../../shared/components/button/button.component';
+import { LightProduct } from '../../../products/models/product.model';
+import { SelectComponent } from '@shared/components/select/select.component';
+import { InputComponent } from '@shared/components/input/input.component';
+import { ButtonComponent } from '@shared/components/button/button.component';
+import { getQualityStatusSeverity } from '@shared/utils/quality-status.util';
 
 @Component({
   selector: 'app-batches-list',
@@ -78,7 +79,7 @@ export class BatchesListComponent implements OnInit, OnDestroy {
   public readonly selectedBatch = signal<Batch | null>(null);
 
   // Filter signals
-  public readonly products = signal<Product[]>([]);
+  public readonly products = signal<LightProduct[]>([]);
   public readonly currentFilters = signal<BatchQueryParams>({});
   public readonly productOptions = computed(() =>
     this.products().map((product) => ({
@@ -150,23 +151,6 @@ export class BatchesListComponent implements OnInit, OnDestroy {
     return new Date(dateString).toLocaleDateString('en-GB');
   }
 
-  public getQualityStatusSeverity(status?: string): 'success' | 'warn' | 'danger' | 'info' {
-    if (!status) {
-      return 'info';
-    }
-    const lowerStatus = status.toLowerCase();
-    if (lowerStatus.includes('pass')) {
-      return 'success';
-    }
-    if (lowerStatus.includes('pending')) {
-      return 'warn';
-    }
-    if (lowerStatus.includes('fail')) {
-      return 'danger';
-    }
-    return 'info';
-  }
-
   public onClearFilters(): void {
     this.productFilterControl.setValue(null);
     this.batchNumberFilterControl.setValue('');
@@ -198,6 +182,7 @@ export class BatchesListComponent implements OnInit, OnDestroy {
     );
   }
 
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   private updateFilters(filterType: keyof BatchQueryParams, value: any): void {
     const currentFilters = this.currentFilters();
     const newFilters = { ...currentFilters };
@@ -211,4 +196,6 @@ export class BatchesListComponent implements OnInit, OnDestroy {
     this.currentFilters.set(newFilters);
     this.loadBatches(newFilters);
   }
+
+  protected readonly getQualityStatusSeverity = getQualityStatusSeverity;
 }

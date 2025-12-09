@@ -24,6 +24,7 @@
       <h3 class="section-title">Basic Information</h3>
       <div class="form-grid">
         <app-field-renderer
+          id="name"
           [control]="productForm.controls.name"
           [label]="'Product Name *'"
           [mode]="isViewMode() ? 'view' : 'edit'"
@@ -34,6 +35,7 @@
         />
 
         <app-field-renderer
+          id="sku"
           [control]="productForm.controls.sku"
           [label]="'SKU'"
           [mode]="isViewMode() ? 'view' : 'edit'"
@@ -43,6 +45,7 @@
         />
 
         <app-field-renderer
+          id="description"
           [control]="productForm.controls.description"
           [label]="'Description *'"
           [mode]="isViewMode() ? 'view' : 'edit'"
@@ -52,16 +55,17 @@
         />
 
         <app-field-renderer
+          id="category"
           [control]="productForm.controls.category"
           [label]="'Category *'"
           [mode]="isViewMode() ? 'view' : 'edit'"
           [options]="categoryOptions"
           [placeholder]="'Select category'"
           [type]="'select'"
-          [value]="productForm.value.category"
         />
 
         <app-field-renderer
+          id="status"
           [control]="productForm.controls.status"
           [label]="'Status *'"
           [mode]="isViewMode() ? 'view' : 'edit'"
@@ -78,6 +82,7 @@
       <h3 class="section-title">Pricing</h3>
       <div class="form-grid">
         <app-field-renderer
+          id="wholesale"
           numberMode="currency"
           [control]="productForm.controls.wholesale"
           [label]="'Wholesale Price (GHS) *'"
@@ -89,6 +94,7 @@
         />
 
         <app-field-renderer
+          id="retail"
           numberMode="currency"
           [control]="productForm.controls.retail"
           [label]="'Retail Price (GHS) *'"
@@ -100,6 +106,7 @@
         />
 
         <app-field-renderer
+          id="inBoxPrice"
           numberMode="currency"
           [control]="productForm.controls.inBoxPrice"
           [label]="'In-Box Price (GHS)'"
@@ -111,6 +118,7 @@
         />
 
         <app-field-renderer
+          id="costPrice"
           numberMode="currency"
           [control]="productForm.controls.costPrice"
           [label]="'Cost Price (GHS)'"
@@ -127,17 +135,9 @@
     <div class="form-section">
       <h3 class="section-title">Inventory</h3>
       <div class="form-grid">
-        <app-field-renderer
-          [control]="productForm.controls.stockQuantity"
-          [label]="'Stock Quantity *'"
-          [min]="0"
-          [mode]="isViewMode() ? 'view' : 'edit'"
-          [placeholder]="'0'"
-          [type]="'number'"
-          [value]="productForm.value.stockQuantity"
-        />
 
         <app-field-renderer
+          id="quantityInBox"
           [control]="productForm.controls.quantityInBox"
           [label]="'Quantity per Box'"
           [min]="1"
@@ -148,6 +148,7 @@
         />
 
         <app-field-renderer
+          id="minOrderQuantity"
           [control]="productForm.controls.minOrderQuantity"
           [label]="'Minimum Order Quantity'"
           [min]="1"
@@ -164,17 +165,19 @@
       <h3 class="section-title">Product Details</h3>
       <div class="form-grid">
         <app-field-renderer
-          [control]="productForm.controls.size"
-          [label]="'Packaging Size'"
+          id="unitOfMeasurement"
+          [control]="productForm.controls.unitOfMeasurement"
+          [label]="'Unit of Measurement'"
           [mode]="isViewMode() ? 'view' : 'edit'"
-          [options]="sizeOptions"
-          [placeholder]="'Select size'"
+          [options]="unitOfMeasurementOptions"
+          [placeholder]="'Select unit'"
           [showClear]="true"
           [type]="'select'"
-          [value]="productForm.value.size"
+          [value]="productForm.value.unitOfMeasurement"
         />
 
         <app-field-renderer
+          id="grade"
           [control]="productForm.controls.grade"
           [label]="'Grade'"
           [mode]="isViewMode() ? 'view' : 'edit'"
@@ -186,6 +189,7 @@
         />
 
         <app-field-renderer
+          id="weight"
           [control]="productForm.controls.weight"
           [label]="'Weight'"
           [mode]="isViewMode() ? 'view' : 'edit'"
@@ -195,6 +199,7 @@
         />
 
         <app-field-renderer
+          id="ingredients"
           [control]="productForm.controls.ingredients"
           [label]="'Ingredients'"
           [mode]="isViewMode() ? 'view' : 'edit'"
@@ -211,6 +216,7 @@
       <h3 class="section-title">Features & Certifications</h3>
       <div class="form-grid">
         <app-field-renderer
+          id="isFeatured"
           [control]="productForm.controls.isFeatured"
           [label]="'Featured Product'"
           [mode]="isViewMode() ? 'view' : 'edit'"
@@ -219,6 +225,7 @@
         />
 
         <app-field-renderer
+          id="isOrganic"
           [control]="productForm.controls.isOrganic"
           [label]="'Organic Certified'"
           [mode]="isViewMode() ? 'view' : 'edit'"
@@ -227,6 +234,7 @@
         />
 
         <app-field-renderer
+          id="certifications"
           [control]="productForm.controls.certifications"
           [label]="'Certifications'"
           [maxSelectedLabels]="3"
@@ -245,6 +253,7 @@
       <h3 class="section-title">Production & Expiry</h3>
       <div class="form-grid">
         <app-field-renderer
+          id="producedAt"
           [control]="productForm.controls.producedAt"
           [label]="'Production Date'"
           [maxDate]="today"
@@ -256,6 +265,7 @@
         />
 
         <app-field-renderer
+          id="expiryDate"
           [control]="productForm.controls.expiryDate"
           [label]="'Expiry Date'"
           [minDate]="today"
@@ -268,6 +278,7 @@
 
         <app-field-renderer
           class="supplier-reference-input"
+          id="supplierReference"
           [control]="productForm.controls.supplierReference"
           [label]="'Supplier Reference'"
           [mode]="isViewMode() ? 'view' : 'edit'"

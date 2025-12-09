@@ -1,0 +1,28 @@
+@import '../../../../../styles/mixins';
+
+.customer-form {
+  .form-field {
+    margin-bottom: $spacing-lg;
+
+    label {
+      display: block;
+      font-weight: $font-weight-medium;
+      margin-bottom: $spacing-xs;
+      color: var(--text-color);
+    }
+
+    .error-message {
+      color: var(--red-600);
+      font-size: $font-size-sm;
+      margin-top: $spacing-xs;
+      display: block;
+    }
+
+    .form-help {
+      color: var(--text-color-secondary);
+      font-size: $font-size-sm;
+      margin-top: $spacing-xs;
+      display: block;
+    }
+  }
+}

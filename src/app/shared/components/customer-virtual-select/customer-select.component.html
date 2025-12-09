@@ -1,0 +1,32 @@
+<p-select
+  optionLabel="name"
+  optionValue="id"
+  [class]="styleClass()"
+  [disabled]="disabled()"
+  [filter]="true"
+  [formControl]="control()"
+  [loading]="loading()"
+  [options]="customers()"
+  [placeholder]="placeholder()"
+  [showClear]="true"
+  [virtualScroll]="true"
+  [virtualScrollItemSize]="100"
+  (onFilter)="onFilter($event)"
+>
+  <ng-template #item let-customer>
+    <div class="customers-wrapper">
+      <div>{{ customer.name }}</div>
+    </div>
+  </ng-template>
+  <ng-template #emptyFilter>
+    <div class="customers-wrapper">
+      No customers found
+    </div>
+  </ng-template>
+  <ng-template #empty >
+    <div class="customers-wrapper">
+      No customers found
+    </div>
+  </ng-template>
+</p-select>
+

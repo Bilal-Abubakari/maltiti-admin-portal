@@ -21,9 +21,12 @@
       [formControl]="control()"
       [id]="id()"
       [invalid]="this.control()?.touched && this.control()?.invalid"
+      [optionLabel]="optionLabel()"
+      [optionValue]="optionValue()"
       [options]="options()"
       [placeholder]="placeholder()"
       [showClear]="showClear()"
+
     />
   }
   @if (this.control()?.touched && this.control()?.invalid) {

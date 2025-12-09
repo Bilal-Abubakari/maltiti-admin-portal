@@ -1,0 +1,65 @@
+<p-dialog
+  header="Create New Customer"
+  [closable]="true"
+  [modal]="true"
+  [style]="{'width': '500px'}"
+  [(visible)]="visible"
+  (onHide)="close()"
+>
+  <form class="customer-form" [formGroup]="customerForm">
+    <div class="form-field">
+      <label for="name">Full Name *</label>
+      <app-input
+        id="name"
+        placeholder="Enter customer's full name"
+        [control]="customerForm.controls.name"
+        [required]="true"
+      />
+    </div>
+
+    <div class="form-field">
+      <label for="phone">Phone Number</label>
+      <app-input
+        id="phone"
+        placeholder="Enter phone number"
+        [control]="customerForm.controls.phone"
+      />
+    </div>
+
+    <div class="form-field">
+      <label for="email">Email Address</label>
+      <app-input
+        id="email"
+        placeholder="Enter customer's email address"
+        type="email"
+        [control]="customerForm.controls.email"
+      />
+    </div>
+
+    <div class="form-field">
+      <label for="address">Address</label>
+      <app-textarea
+        id="address"
+        placeholder="Enter customer's address"
+        [control]="customerForm.controls.address"
+        [rows]="3"
+      />
+    </div>
+  </form>
+
+  <ng-template pTemplate="footer">
+    <app-button
+      label="Cancel"
+      severity="secondary"
+      type="button"
+      [outlined]="true"
+      (click)="close()"
+    />
+    <app-button
+      label="Create Customer"
+      severity="primary"
+      [loading]="loading()"
+      (click)="onSubmit()"
+    />
+  </ng-template>
+</p-dialog>
