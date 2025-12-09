@@ -50,7 +50,7 @@ import { FieldRendererComponent } from '@shared/components/field-renderer/field-
 import { ImageSectionComponent } from '@shared/components/image-section/image-section.component';
 import { ScrollToErrorDirective } from '@shared/directives/scroll-to-error.directive';
 import { toSignal } from '@angular/core/rxjs-interop';
-import { map } from 'rxjs/operators';
+import { map, take } from 'rxjs/operators';
 import { BatchApiService } from '../../../batches/services/batch-api.service';
 import { Batch } from '../../../batches/models/batch.model';
 
@@ -104,7 +104,6 @@ export class ProductDialogComponent {
   );
   public readonly productBatches = signal<Batch[]>([]);
 
-  // Form
   public readonly productForm = this.fb.group({
     // Basic Info
     name: this.fb.control('', {
@@ -177,8 +176,8 @@ export class ProductDialogComponent {
     // Populate form when product changes
     effect(() => {
       const product = this.product();
-      console.log('Product changed:', product);
       const isView = this.viewMode();
+
       if (product && isView) {
         // Load batches for this product
         this.batchApiService
@@ -202,59 +201,28 @@ export class ProductDialogComponent {
       }
     });
 
-    this.productForm.controls.category.valueChanges.subscribe((category) => {
-      console.log('Category changed:', category);
-    });
+    // Track the last processed product for form patching
+    let lastPatchedProductId: string | null = null;
 
     effect(() => {
-      const selectedProduct = this.product();
-      console.log('Selected product:', selectedProduct);
-      if (selectedProduct) {
-        const product = JSON.parse(JSON.stringify(selectedProduct)) as Product;
-        this.productForm.patchValue(
-          {
-            name: product.name,
-            sku: product.sku,
-            description: product.description,
-            category: product.category,
-            status: product.status,
-            wholesale: product.wholesale,
-            retail: product.retail,
-            inBoxPrice: product.inBoxPrice,
-            quantityInBox: product.quantityInBox,
-            minOrderQuantity: product.minOrderQuantity,
-            unitOfMeasurement: product.unitOfMeasurement,
-            grade: product.grade,
-            weight: product.weight,
-            ingredients: product.ingredients.map(({ id }) => id),
-            isFeatured: product.isFeatured,
-            isOrganic: product.isOrganic,
-            producedAt: product.producedAt ? new Date(product.producedAt) : null,
-            expiryDate: product.expiryDate ? new Date(product.expiryDate) : null,
-            supplierReference: product.supplierReference,
-            certifications: product.certifications,
-            images: product.images,
-            image: product.image,
-            costPrice: product.costPrice ?? null,
-          },
-          { emitEvent: false, onlySelf: true },
-        );
-      } else {
-        this.productForm.reset({
-          status: 'active',
-          wholesale: 0,
-          retail: 0,
-          inBoxPrice: 0,
-          quantityInBox: 1,
-          minOrderQuantity: 1,
-          isFeatured: false,
-          isOrganic: false,
-          ingredients: [],
-          certifications: [],
-          images: [],
-          image: '',
-          costPrice: 0,
+      const product = this.product();
+      // Only patch form if product actually changed
+      // This is a workaround to avoid duplicate form patching when product changes
+      if (product?.id === lastPatchedProductId && product !== null) {
+        return;
+      }
+
+      lastPatchedProductId = product?.id ?? null;
+      if (product) {
+        this.productForm.patchValue({
+          ...product,
+          ingredients: product.ingredients.map(({ id }) => id),
+          producedAt: product.producedAt ? new Date(product.producedAt) : null,
+          expiryDate: product.expiryDate ? new Date(product.expiryDate) : null,
+          costPrice: product.costPrice ?? null,
         });
+      } else {
+        this.resetForm();
       }
     });
   }
@@ -262,30 +230,14 @@ export class ProductDialogComponent {
   public onHide(): void {
     this.visibleChange.emit(false);
     this.errorMessage.set(null); // Clear error message
-    this.productForm.reset({
-      status: 'active',
-      wholesale: 0,
-      retail: 0,
-      inBoxPrice: 0,
-      quantityInBox: 1,
-      minOrderQuantity: 1,
-      isFeatured: false,
-      isOrganic: false,
-      ingredients: [],
-      certifications: [],
-      images: [],
-      image: '',
-      costPrice: 0,
-    });
+    this.resetForm();
   }
 
   public onSave(): void {
-    console.log('Product form', this.productForm);
     if (this.productForm.invalid) {
       this.productForm.markAllAsTouched();
       return;
     }
-
     const productData = this.buildProductData(this.productForm.value as ProductFormValue);
     this.performSave(productData);
   }
@@ -320,9 +272,8 @@ export class ProductDialogComponent {
 
   private performSave(productData: CreateProductDto | UpdateProductDto): void {
     this.loading.set(true);
-    this.errorMessage.set(null); // Clear previous error message
+    this.errorMessage.set(null);
 
-    // Listen for success actions to close dialog
     const successAction = this.isEdit()
       ? ProductsActions.updateProductSuccess
       : ProductsActions.createProductSuccess;
@@ -331,23 +282,25 @@ export class ProductDialogComponent {
       : ProductsActions.createProductFailure;
 
     // Subscribe to success action
-    this.actions$.pipe(ofType(successAction)).subscribe(() => {
-      this.loading.set(false);
-      this.onHide();
-      this.saveSuccess.emit(); // Emit save success event
-    });
+    this.actions$
+      .pipe(ofType(successAction))
+      .pipe(take(1))
+      .subscribe(() => {
+        this.loading.set(false);
+        this.onHide();
+        this.saveSuccess.emit(); // Emit save success event
+      });
 
     // Subscribe to failure action
-    this.actions$.pipe(ofType(failureAction)).subscribe((action) => {
-      this.loading.set(false);
-      console.error('Product save failed:', action.error);
-
-      // Extract error message from backend response
-      const errorMsg = action.error ?? 'Failed to save product. Please try again.';
-
-      this.errorMessage.set(errorMsg);
-      // Dialog stays open on error
-    });
+    this.actions$
+      .pipe(ofType(failureAction))
+      .pipe(take(1))
+      .subscribe((action) => {
+        this.loading.set(false);
+        console.error('Product save failed:', action.error);
+        const errorMsg = action.error ?? 'Failed to save product. Please try again.';
+        this.errorMessage.set(errorMsg);
+      });
 
     if (this.isEdit()) {
       this.store.dispatch(
@@ -365,9 +318,7 @@ export class ProductDialogComponent {
     const file = event.files[0];
     if (file) {
       this.uploadService.uploadImage(file).subscribe({
-        next: (response) => {
-          this.productForm.patchValue({ image: response.data });
-        },
+        next: ({ data }) => this.productForm.patchValue({ image: data }),
         error: (error) => {
           console.error('Upload failed:', error);
           this.messageService.add({
@@ -404,20 +355,21 @@ export class ProductDialogComponent {
     }
   }
 
-  public getQualityStatusSeverity(status?: string): 'success' | 'warn' | 'danger' | 'info' {
-    if (!status) {
-      return 'info';
-    }
-    const lowerStatus = status.toLowerCase();
-    if (lowerStatus.includes('pass')) {
-      return 'success';
-    }
-    if (lowerStatus.includes('pending')) {
-      return 'warn';
-    }
-    if (lowerStatus.includes('fail')) {
-      return 'danger';
-    }
-    return 'info';
+  private resetForm(): void {
+    this.productForm.reset({
+      status: 'active',
+      wholesale: 0,
+      retail: 0,
+      inBoxPrice: 0,
+      quantityInBox: 1,
+      minOrderQuantity: 1,
+      isFeatured: false,
+      isOrganic: false,
+      ingredients: [],
+      certifications: [],
+      images: [],
+      image: '',
+      costPrice: 0,
+    });
   }
 }

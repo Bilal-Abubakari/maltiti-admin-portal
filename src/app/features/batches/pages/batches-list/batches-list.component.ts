@@ -40,6 +40,7 @@ import { LightProduct } from '../../../products/models/product.model';
 import { SelectComponent } from '@shared/components/select/select.component';
 import { InputComponent } from '@shared/components/input/input.component';
 import { ButtonComponent } from '@shared/components/button/button.component';
+import { getQualityStatusSeverity } from '@shared/utils/quality-status.util';
 
 @Component({
   selector: 'app-batches-list',
@@ -150,23 +151,6 @@ export class BatchesListComponent implements OnInit, OnDestroy {
     return new Date(dateString).toLocaleDateString('en-GB');
   }
 
-  public getQualityStatusSeverity(status?: string): 'success' | 'warn' | 'danger' | 'info' {
-    if (!status) {
-      return 'info';
-    }
-    const lowerStatus = status.toLowerCase();
-    if (lowerStatus.includes('pass')) {
-      return 'success';
-    }
-    if (lowerStatus.includes('pending')) {
-      return 'warn';
-    }
-    if (lowerStatus.includes('fail')) {
-      return 'danger';
-    }
-    return 'info';
-  }
-
   public onClearFilters(): void {
     this.productFilterControl.setValue(null);
     this.batchNumberFilterControl.setValue('');
@@ -212,4 +196,6 @@ export class BatchesListComponent implements OnInit, OnDestroy {
     this.currentFilters.set(newFilters);
     this.loadBatches(newFilters);
   }
+
+  protected readonly getQualityStatusSeverity = getQualityStatusSeverity;
 }

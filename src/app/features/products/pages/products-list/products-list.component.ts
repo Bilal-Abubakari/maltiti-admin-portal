@@ -159,22 +159,19 @@ export class ProductsListComponent {
   }
 
   public onCreateProduct(): void {
-    console.log('Create new product');
     this.selectedProduct.set(null);
     this.viewMode.set(false);
     this.showProductDialog.set(true);
   }
 
   public onEditProduct(product: Product): void {
-    console.log('Edit product:', product);
-    this.selectedProduct.set({ ...product });
+    this.selectedProduct.set(product);
     this.viewMode.set(false);
     this.showProductDialog.set(true);
   }
 
   public onViewProduct(product: Product): void {
-    console.log('View product:', product);
-    this.selectedProduct.set({ ...product });
+    this.selectedProduct.set(product);
     this.viewMode.set(true);
     this.showProductDialog.set(true);
   }
