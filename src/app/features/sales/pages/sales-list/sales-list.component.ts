@@ -4,7 +4,14 @@
  * Uses Angular signals for reactive state management
  */
 
-import { ChangeDetectionStrategy, Component, inject, OnInit, signal } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  DestroyRef,
+  inject,
+  OnInit,
+  signal,
+} from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
 import { FormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
@@ -37,6 +44,7 @@ import { SelectComponent } from '@shared/components/select/select.component';
 import { lineItemsTotalPrice } from '@shared/utils/totalPriceCalculator';
 import { APP_ROUTES } from '@config/routes.config';
 import { SalesApiService } from '../../services/sales-api.service';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 @Component({
   selector: 'app-sales-list',
@@ -60,6 +68,7 @@ import { SalesApiService } from '../../services/sales-api.service';
   providers: [ConfirmationService],
 })
 export class SalesListComponent implements OnInit {
+  private destroyRef = inject(DestroyRef);
   private readonly store = inject(Store);
   private readonly router = inject(Router);
   private readonly confirmationService = inject(ConfirmationService);
@@ -94,9 +103,11 @@ export class SalesListComponent implements OnInit {
   public ngOnInit(): void {
     this.loadSales();
     // Subscribe to status filter changes
-    this.statusFilterControl.valueChanges.subscribe((status) => {
-      this.onStatusFilterChange(status);
-    });
+    this.statusFilterControl.valueChanges
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe((status) => {
+        this.onStatusFilterChange(status);
+      });
   }
 
   public onStatusFilterChange(status: SaleStatus | null): void {
@@ -114,7 +125,6 @@ export class SalesListComponent implements OnInit {
   }
 
   public onEditSale(sale: Sale): void {
-    console.log('Hey there');
     void this.router.navigate([APP_ROUTES.sales.edit(sale.id)]);
   }
 
@@ -123,9 +133,7 @@ export class SalesListComponent implements OnInit {
       message: `Are you sure you want to change the status to ${newStatus.replace('_', ' ')}?`,
       header: 'Confirm Status Change',
       icon: 'pi pi-exclamation-triangle',
-      accept: () => {
-        this.store.dispatch(updateSaleStatus({ id: sale.id, status: newStatus }));
-      },
+      accept: () => this.store.dispatch(updateSaleStatus({ id: sale.id, status: newStatus })),
     });
   }
 
@@ -149,13 +157,12 @@ export class SalesListComponent implements OnInit {
             detail: 'Invoice generated successfully',
           });
         },
-        error: () => {
+        error: () =>
           this.messageService.add({
             severity: 'error',
             summary: 'Error',
             detail: 'Failed to generate invoice',
-          });
-        },
+          }),
       });
   }
 

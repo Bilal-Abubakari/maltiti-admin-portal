@@ -192,21 +192,4 @@ export class BatchDialogComponent {
     }
     return new Date(dateString).toLocaleDateString('en-GB');
   }
-
-  // public getQualityStatusSeverity(status?: string): 'success' | 'warn' | 'danger' | 'info' {
-  //   if (!status) {
-  //     return 'info';
-  //   }
-  //   const lowerStatus = status.toLowerCase();
-  //   if (lowerStatus.includes('pass')) {
-  //     return 'success';
-  //   }
-  //   if (lowerStatus.includes('pending')) {
-  //     return 'warn';
-  //   }
-  //   if (lowerStatus.includes('fail')) {
-  //     return 'danger';
-  //   }
-  //   return 'info';
-  // }
 }

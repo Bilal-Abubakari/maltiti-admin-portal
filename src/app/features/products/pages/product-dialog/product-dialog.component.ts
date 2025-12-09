@@ -53,6 +53,7 @@ import { toSignal } from '@angular/core/rxjs-interop';
 import { map, take } from 'rxjs/operators';
 import { BatchApiService } from '../../../batches/services/batch-api.service';
 import { Batch } from '../../../batches/models/batch.model';
+import { getQualityStatusSeverity } from '@shared/utils/quality-status.util';
 
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -372,4 +373,6 @@ export class ProductDialogComponent {
       costPrice: 0,
     });
   }
+
+  protected readonly getQualityStatusSeverity = getQualityStatusSeverity;
 }
