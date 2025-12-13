@@ -92,19 +92,11 @@ export class LineItemEditorComponent implements OnInit {
   private batchControls = new Map<number, FormControl>();
 
   constructor() {
-    console.log('[LineItemEditor] Constructor initialized');
-
     // Watch for product changes to load batches
     this.lineItemForm
       .get('product_id')
       ?.valueChanges.pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe((productId) => {
-        console.log(
-          '[LineItemEditor] product_id valueChanges:',
-          productId,
-          'type:',
-          typeof productId,
-        );
         if (productId) {
           this.onProductChange(String(productId));
         }
