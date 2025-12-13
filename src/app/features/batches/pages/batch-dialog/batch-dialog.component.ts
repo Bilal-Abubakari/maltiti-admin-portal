@@ -26,6 +26,7 @@ import { MessageService } from 'primeng/api';
 import { TableModule } from 'primeng/table';
 import { TagModule } from 'primeng/tag';
 import { CardModule } from 'primeng/card';
+import { DatePicker } from 'primeng/datepicker';
 
 import * as BatchesActions from '../../store/batches.actions';
 import { selectSelectedBatch } from '../../store/batches.selectors';
@@ -51,6 +52,7 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
     TableModule,
     TagModule,
     CardModule,
+    DatePicker,
     SelectComponent,
     NumberInputComponent,
     InputComponent,
@@ -91,7 +93,6 @@ export class BatchDialogComponent {
 
   // Form
   public readonly batchForm = this.fb.group({
-    batchNumber: ['', [Validators.required]],
     productId: ['', [Validators.required]],
     quantity: [0, [Validators.required, Validators.min(1)]],
     productionDate: [''],
@@ -117,7 +118,6 @@ export class BatchDialogComponent {
       const batch = this.batch();
       if (batch && this.visible()) {
         this.batchForm.patchValue({
-          batchNumber: batch.batchNumber,
           productId: batch.products?.[0]?.id || '',
           quantity: batch.quantity || 0,
           productionDate: batch.productionDate || '',
@@ -169,7 +169,6 @@ export class BatchDialogComponent {
     this.loading.set(true);
     const formValue = this.batchForm.value;
     const batchData: CreateBatchDto = {
-      batchNumber: formValue.batchNumber!,
       productId: formValue.productId!,
       quantity: formValue.quantity ?? 0,
       productionDate: formValue.productionDate || undefined,

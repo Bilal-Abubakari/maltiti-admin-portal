@@ -8,15 +8,14 @@ import {
   ChangeDetectionStrategy,
   Component,
   computed,
+  DestroyRef,
   inject,
-  OnDestroy,
   OnInit,
   signal,
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { Store } from '@ngrx/store';
-import { Subscription } from 'rxjs';
 
 // PrimeNG Imports
 import { TableModule } from 'primeng/table';
@@ -41,6 +40,8 @@ import { SelectComponent } from '@shared/components/select/select.component';
 import { InputComponent } from '@shared/components/input/input.component';
 import { ButtonComponent } from '@shared/components/button/button.component';
 import { getQualityStatusSeverity } from '@shared/utils/quality-status.util';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { ProductNamePipe } from '@shared/pipes/product-name.pipe';
 
 @Component({
   selector: 'app-batches-list',
@@ -61,14 +62,16 @@ import { getQualityStatusSeverity } from '@shared/utils/quality-status.util';
     InputComponent,
     ButtonComponent,
     BatchDialogComponent,
+    ProductNamePipe,
   ],
   templateUrl: './batches-list.component.html',
   styleUrl: './batches-list.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class BatchesListComponent implements OnInit, OnDestroy {
-  private store = inject(Store);
-  private productApiService = inject(ProductApiService);
+export class BatchesListComponent implements OnInit {
+  private readonly destroyRef = inject(DestroyRef);
+  private readonly store = inject(Store);
+  private readonly productApiService = inject(ProductApiService);
 
   // Store signals
   public readonly batches = this.store.selectSignal(selectAllBatches);
@@ -93,17 +96,10 @@ export class BatchesListComponent implements OnInit, OnDestroy {
   public readonly batchNumberFilterControl = new FormControl<string>('');
   public readonly qualityStatusFilterControl = new FormControl<string | null>(null);
 
-  // Subscriptions
-  private subscriptions: Subscription = new Subscription();
-
   public ngOnInit(): void {
     this.loadProducts();
     this.loadBatches();
     this.setupFilterSubscriptions();
-  }
-
-  public ngOnDestroy(): void {
-    this.subscriptions.unsubscribe();
   }
 
   public loadProducts(): void {
@@ -160,26 +156,23 @@ export class BatchesListComponent implements OnInit, OnDestroy {
   }
 
   private setupFilterSubscriptions(): void {
-    // Subscribe to product filter changes
-    this.subscriptions.add(
-      this.productFilterControl.valueChanges.subscribe((value) => {
+    this.productFilterControl.valueChanges
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe((value) => {
         this.updateFilters('productId', value);
-      }),
-    );
+      });
 
-    // Subscribe to batch number filter changes
-    this.subscriptions.add(
-      this.batchNumberFilterControl.valueChanges.subscribe((value) => {
+    this.batchNumberFilterControl.valueChanges
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe((value) => {
         this.updateFilters('batchNumber', value);
-      }),
-    );
+      });
 
-    // Subscribe to quality status filter changes
-    this.subscriptions.add(
-      this.qualityStatusFilterControl.valueChanges.subscribe((value) => {
+    this.qualityStatusFilterControl.valueChanges
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe((value) => {
         this.updateFilters('qualityCheckStatus', value);
-      }),
-    );
+      });
   }
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
