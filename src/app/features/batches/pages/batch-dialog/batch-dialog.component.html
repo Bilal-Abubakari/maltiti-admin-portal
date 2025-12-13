@@ -10,16 +10,6 @@
 >
   <ng-template pTemplate="content">
     <form class="batch-form" [formGroup]="batchForm">
-      <!-- Batch Number -->
-      <div class="field">
-        <app-input
-          id="batchNumber"
-          [control]="batchForm.controls.batchNumber"
-          [label]="'Batch Number *'"
-          [placeholder]="'Enter batch number'"
-          [readonly]="viewMode()"
-        />
-      </div>
 
       <!-- Product Selection -->
       <div class="field">
@@ -48,26 +38,24 @@
       <!-- Production Date -->
       <div class="field">
         <label for="productionDate">Production Date</label>
-        <input
-          class="w-full"
-          formControlName="productionDate"
-          id="productionDate"
-          pInputText
-          type="date"
-          [readonly]="viewMode()"
+        <p-date-picker
+          class="form-calendar w-full"
+          [formControl]="batchForm.controls.productionDate"
+          [id]="'productionDate'"
+          [placeholder]="'Select production date'"
+          [showIcon]="true"
         />
       </div>
 
       <!-- Expiry Date -->
       <div class="field">
         <label for="expiryDate">Expiry Date</label>
-        <input
-          class="w-full"
-          formControlName="expiryDate"
-          id="expiryDate"
-          pInputText
-          type="date"
-          [readonly]="viewMode()"
+        <p-date-picker
+          class="form-calendar w-full"
+          [formControl]="batchForm.controls.expiryDate"
+          [id]="'expiryDate'"
+          [placeholder]="'Select expiry date'"
+          [showIcon]="true"
         />
       </div>
 

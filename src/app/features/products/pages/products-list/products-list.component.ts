@@ -50,6 +50,7 @@ import { SelectComponent } from '@shared/components/select/select.component';
 import { ProductDialogComponent } from '../product-dialog/product-dialog.component';
 import { ProductApiService } from '../../services/product-api.service';
 import { PRODUCT_CATEGORIES } from '../../constants/product-options.constants';
+import { ProductNamePipe } from '@shared/pipes/product-name.pipe';
 
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -71,6 +72,7 @@ import { PRODUCT_CATEGORIES } from '../../constants/product-options.constants';
     ButtonComponent,
     SelectComponent,
     ProductDialogComponent,
+    ProductNamePipe,
   ],
   providers: [ConfirmationService],
   templateUrl: './products-list.component.html',

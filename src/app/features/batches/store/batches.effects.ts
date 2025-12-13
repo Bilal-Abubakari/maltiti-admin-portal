@@ -10,7 +10,8 @@ import { catchError, map, switchMap, tap } from 'rxjs/operators';
 import { BatchApiService } from '../services/batch-api.service';
 import * as BatchesActions from './batches.actions';
 import { MessageService } from 'primeng/api';
-import { SERVER_ERROR } from '../../../shared/constants';
+import { SERVER_ERROR } from '@shared/constants';
+import { BatchQueryParams } from '@features/batches/models/batch.model';
 
 @Injectable()
 export class BatchesEffects {
@@ -20,13 +21,17 @@ export class BatchesEffects {
 
   public loadBatches$ = createEffect(() =>
     this.actions$.pipe(
-      ofType(BatchesActions.loadBatches),
-      switchMap(({ params }) =>
-        this.batchApi.getAllBatches(params).pipe(
+      ofType(BatchesActions.createBatchSuccess, BatchesActions.loadBatches),
+      switchMap((data) => {
+        let params: BatchQueryParams | undefined;
+        if (data.type === BatchesActions.loadBatches.type) {
+          params = data.params;
+        }
+        return this.batchApi.getAllBatches(params).pipe(
           map((response) => BatchesActions.loadBatchesSuccess({ response })),
           catchError((error) => of(BatchesActions.loadBatchesFailure({ error: error.message }))),
-        ),
-      ),
+        );
+      }),
     ),
   );
 

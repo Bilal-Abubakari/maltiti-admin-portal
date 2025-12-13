@@ -19,7 +19,6 @@ export interface Batch {
 }
 
 export interface CreateBatchDto {
-  batchNumber: string;
   productId: string;
   quantity: number;
   productionDate?: string;

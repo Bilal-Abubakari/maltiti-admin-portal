@@ -78,9 +78,8 @@ export const batchesReducer = createReducer(
     error: null,
   })),
 
-  on(BatchesActions.createBatchSuccess, (state, { batch }) => ({
+  on(BatchesActions.createBatchSuccess, (state) => ({
     ...state,
-    batches: [batch, ...state.batches],
     loading: false,
   })),
 

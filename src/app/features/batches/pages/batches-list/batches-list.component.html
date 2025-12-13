@@ -75,6 +75,7 @@
           <th pSortableColumn="batchNumber">
             Batch Number <p-sortIcon field="batchNumber" />
           </th>
+          <th>Product</th>
           <th pSortableColumn="quantity">
             Quantity <p-sortIcon field="quantity" />
           </th>
@@ -96,6 +97,9 @@
           <td>
             <span class="batch-number">{{ batch.batchNumber }}</span>
           </td>
+
+          <!-- Product -->
+          <td>{{ batch.product | productName }}</td>
 
           <!-- Quantity -->
           <td>{{ batch.quantity }}</td>
@@ -136,7 +140,7 @@
       <!-- Loading Template -->
       <ng-template pTemplate="loadingbody">
         <tr>
-         @for (i of [1, 2, 3, 4, 5, 6, 7]; track i) {
+         @for (i of [1, 2, 3, 4, 5, 6, 7, 8]; track i) {
            <td>
              <p-skeleton />
            </td>
@@ -147,7 +151,7 @@
       <!-- Empty State -->
       <ng-template pTemplate="emptymessage">
         <tr>
-          <td class="empty-state" colspan="7">
+          <td class="empty-state" colspan="8">
             <div class="empty-state-content">
               <i class="pi pi-inbox empty-icon"></i>
               <h3>No Batches Found</h3>
