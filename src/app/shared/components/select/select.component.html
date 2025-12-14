@@ -18,6 +18,7 @@
   } @else {
     <p-select
       [class]="styleClass()"
+      [filter]="true"
       [formControl]="control()"
       [id]="id()"
       [invalid]="this.control()?.touched && this.control()?.invalid"
