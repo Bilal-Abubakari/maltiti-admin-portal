@@ -3,29 +3,26 @@
  * Component for editing individual sale line items with batch selection and pricing
  * Handles product selection, quantity, custom pricing, and batch allocation
  */
-
 import {
   ChangeDetectionStrategy,
   Component,
   computed,
   DestroyRef,
+  effect,
   inject,
   input,
   OnInit,
   output,
   Signal,
+  signal,
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormControl, ReactiveFormsModule, Validators } from '@angular/forms';
-
-// PrimeNG Imports
 import { InputNumberModule } from 'primeng/inputnumber';
 import { CardModule } from 'primeng/card';
 import { MessageService } from 'primeng/api';
 import { RadioButtonModule } from 'primeng/radiobutton';
-
-// Local imports
-import { BatchAllocationDto, SaleLineItemDto } from '../../models/sale.model';
+import { SaleLineItemDto } from '../../models/sale.model';
 import { ButtonComponent } from '@shared/components/button/button.component';
 import { NumberInputComponent } from '@shared/components/number-input/number-input.component';
 import { SelectComponent } from '@shared/components/select/select.component';
@@ -34,6 +31,9 @@ import { Batch } from '../../../batches/models/batch.model';
 import { TooltipModule } from 'primeng/tooltip';
 import { takeUntilDestroyed, toSignal } from '@angular/core/rxjs-interop';
 import { BatchApiService } from '../../../batches/services/batch-api.service';
+import { combineLatest, EMPTY, merge, Subject, switchMap } from 'rxjs';
+import { Message } from 'primeng/message';
+import { filter, map, startWith } from 'rxjs/operators';
 
 type PriceType = 'wholesale' | 'retail';
 
@@ -52,6 +52,7 @@ type PriceType = 'wholesale' | 'retail';
     NumberInputComponent,
     SelectComponent,
     TooltipModule,
+    Message,
   ],
   changeDetection: ChangeDetectionStrategy.OnPush,
   providers: [MessageService],
@@ -61,81 +62,104 @@ export class LineItemEditorComponent implements OnInit {
   private readonly messageService = inject(MessageService);
   private readonly destroyRef = inject(DestroyRef);
   private readonly batchApiService = inject(BatchApiService);
-
-  // Inputs
+  private readonly availableBatches = signal<Batch[]>([]);
+  private readonly allocationBehavior = new Subject<void>();
   public readonly lineItem = input<SaleLineItemDto | null>(null);
   public readonly products = input<LightProduct[]>([]);
   public readonly isBatchRequired = input<boolean>(false);
-
-  // Outputs
   public readonly lineItemChange = output<SaleLineItemDto>();
   public readonly remove = output<void>();
+  public readonly validationError = output<boolean>();
 
-  // Form
   public lineItemForm = this.fb.group({
-    product_id: ['', Validators.required],
-    requested_quantity: [1, [Validators.required, Validators.min(1)]],
-    custom_price: [undefined as number | undefined, Validators.min(0)],
-    price_type: ['wholesale' as PriceType],
+    productId: ['', Validators.required],
+    requestedQuantity: [1, [Validators.required, Validators.min(1)]],
+    customPrice: [undefined as number | undefined, Validators.min(0)],
+    priceType: ['wholesale' as PriceType],
   });
 
-  // Local state
-  public readonly productId = toSignal(this.lineItemForm.controls.product_id.valueChanges, {
+  public readonly productId = toSignal(this.lineItemForm.controls.productId.valueChanges, {
     initialValue: null,
   });
   public readonly selectedProduct: Signal<LightProduct | null> = computed(() => {
     return this.products().find((p) => p.id === this.productId()) || null;
   });
-  public availableBatches: Batch[] = [];
-  public totalAllocatedQuantity = 0;
+  public readonly totalAllocatedQuantity = computed(
+    () =>
+      this.lineItem()
+        ?.batchAllocations?.map(({ quantity }) => quantity)
+        .reduce((a, b) => a + b, 0) ?? 0,
+  );
+  public readonly batchOptions = computed(() =>
+    this.availableBatches().map((b) => ({ label: b.batchNumber, value: b.id })),
+  );
   public priceType: PriceType = 'wholesale';
-  private batchControls = new Map<number, FormControl>();
+  public readonly batchControls = signal(new Map<number, FormControl<string | null>>());
+  public readonly quantityControls = signal(new Map<number, FormControl<number | null>>());
 
   constructor() {
-    // Watch for product changes to load batches
+    effect(() => this.validateBatchAllocations());
     this.lineItemForm
-      .get('product_id')
+      .get('productId')
       ?.valueChanges.pipe(takeUntilDestroyed(this.destroyRef))
-      .subscribe((productId) => {
-        if (productId) {
-          this.onProductChange(String(productId));
-        }
-      });
-
-    // Watch for quantity changes to validate batch allocations
+      .subscribe((productId) => productId && this.onProductChange(String(productId)));
     this.lineItemForm
-      .get('requested_quantity')
+      .get('requestedQuantity')
       ?.valueChanges.pipe(takeUntilDestroyed(this.destroyRef))
-      .subscribe(() => {
-        this.validateBatchAllocations();
-      });
-
-    // Watch for price type changes to update custom price
+      .subscribe(() => this.validateBatchAllocations());
     this.lineItemForm
-      .get('price_type')
+      .get('priceType')
       ?.valueChanges.pipe(takeUntilDestroyed(this.destroyRef))
-      .subscribe((priceType) => {
-        this.onPriceTypeChange(priceType as PriceType);
-      });
+      .subscribe((priceType) => this.onPriceTypeChange(priceType as PriceType));
   }
 
   public ngOnInit(): void {
+    this.setUpBatchAllocationChanges();
     if (this.lineItem()) {
       this.loadLineItem(this.lineItem()!);
     }
+    this.validateBatchAllocations();
   }
 
   private loadLineItem(item: SaleLineItemDto): void {
     this.lineItemForm.patchValue({
-      product_id: item.product_id,
-      requested_quantity: item.requested_quantity,
-      custom_price: item.custom_price ? Number(item.custom_price) : undefined,
-      price_type: 'wholesale', // Default to wholesale
+      productId: item.productId,
+      requestedQuantity: item.requestedQuantity,
+      customPrice: item.customPrice ? Number(item.customPrice) : undefined,
+      priceType: 'wholesale', // Default to wholesale
     });
 
     const selectedProduct = this.selectedProduct();
     if (selectedProduct) {
       this.loadBatchesForProduct(selectedProduct.id);
+    }
+
+    if (item.batchAllocations && item.batchAllocations.length > 0) {
+      this.batchControls.update((batchMap) => {
+        const newMap = new Map(batchMap);
+        newMap.clear();
+        item.batchAllocations.forEach((allocation, index) => {
+          const batchControl = new FormControl(allocation.batchId, {
+            validators: Validators.required,
+          });
+          newMap.set(index, batchControl);
+        });
+        return newMap;
+      });
+
+      this.quantityControls.update((quantityMap) => {
+        const newMap = new Map(quantityMap);
+        newMap.clear();
+        item.batchAllocations.forEach((allocation, index) => {
+          const quantityControl = new FormControl(allocation.quantity, {
+            validators: Validators.required,
+          });
+          newMap.set(index, quantityControl);
+        });
+        return newMap;
+      });
+
+      this.allocationBehavior.next();
     }
   }
 
@@ -144,34 +168,27 @@ export class LineItemEditorComponent implements OnInit {
     if (productId) {
       this.loadBatchesForProduct(productId);
     }
-    if (selectedProduct) {
-      // Set default price based on price type if no custom price
-      if (!this.lineItemForm.get('custom_price')?.value) {
-        const priceType = this.lineItemForm.get('price_type')?.value || 'wholesale';
-        const price =
-          priceType === 'wholesale' ? selectedProduct.wholesale : selectedProduct.retail;
-        this.lineItemForm.patchValue({ custom_price: price });
-      }
-
-      // Load available batches
-    } else {
-      this.availableBatches = [];
+    if (selectedProduct && !this.lineItemForm.get('customPrice')?.value) {
+      const priceType = this.lineItemForm.get('priceType')?.value || 'wholesale';
+      const price = priceType === 'wholesale' ? selectedProduct.wholesale : selectedProduct.retail;
+      this.lineItemForm.patchValue({ customPrice: price });
+    } else if (!selectedProduct) {
+      this.availableBatches.set([]);
     }
-
     this.emitChange();
   }
 
   private loadBatchesForProduct(productId: string): void {
     if (!productId) {
-      console.warn('No productId provided to loadBatchesForProduct');
       return;
     }
-
     this.batchApiService
       .getBatchesByProduct(productId)
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe({
-        next: ({ data }) => (this.availableBatches = data),
+        next: ({ data }) => {
+          this.availableBatches.set(data);
+        },
         error: (error) => {
           console.error('Error loading batches for product', productId, error);
           this.messageService.add({
@@ -179,7 +196,7 @@ export class LineItemEditorComponent implements OnInit {
             summary: 'Error',
             detail: 'Failed to load batches for product',
           });
-          this.availableBatches = [];
+          this.availableBatches.set([]);
         },
       });
   }
@@ -189,7 +206,7 @@ export class LineItemEditorComponent implements OnInit {
     const selectedProduct = this.selectedProduct();
     if (selectedProduct) {
       const price = priceType === 'wholesale' ? selectedProduct.wholesale : selectedProduct.retail;
-      this.lineItemForm.patchValue({ custom_price: price });
+      this.lineItemForm.patchValue({ customPrice: price });
       this.emitChange();
     }
   }
@@ -203,108 +220,150 @@ export class LineItemEditorComponent implements OnInit {
       });
       return;
     }
-
-    const currentAllocations = this.lineItem()?.batch_allocations || [];
-    const newAllocation: BatchAllocationDto = {
-      batch_id: '',
-      quantity: 0,
-    };
-
-    const updatedItem: SaleLineItemDto = {
-      ...(this.lineItemForm.value as SaleLineItemDto),
-      batch_allocations: [...currentAllocations, newAllocation],
-    };
-
-    this.batchControls.set(this.batchControls.size + 1, new FormControl(newAllocation.batch_id));
-
-    this.lineItemChange.emit(updatedItem);
-  }
-
-  public updateBatchAllocation(index: number, allocation: BatchAllocationDto): void {
-    const currentAllocations = [...(this.lineItem()?.batch_allocations || [])];
-    currentAllocations[index] = allocation;
-
-    // const updatedItem: SaleLineItemDto = {
-    //   ...this.lineItemForm.value,
-    //   batch_allocations: currentAllocations,
-    // };
-    //
-    // this.lineItemChange.emit(updatedItem);
-    this.validateBatchAllocations();
+    this.batchControls.update((batchMap) => {
+      const newMap = new Map(batchMap);
+      newMap.set(newMap.size, new FormControl('', { validators: Validators.required }));
+      return newMap;
+    });
+    this.quantityControls.update((quantityMap) => {
+      const newMap = new Map(quantityMap);
+      newMap.set(newMap.size, new FormControl(null, { validators: Validators.required }));
+      return newMap;
+    });
+    this.allocationBehavior.next();
   }
 
   public removeBatchAllocation(index: number): void {
-    const currentAllocations = [...(this.lineItem()?.batch_allocations || [])];
+    const currentAllocations = [...(this.lineItem()?.batchAllocations || [])];
     currentAllocations.splice(index, 1);
 
-    // const updatedItem: SaleLineItemDto = {
-    //   ...this.lineItemForm.value,
-    //   batch_allocations: currentAllocations,
-    // };
-    //
-    // this.lineItemChange.emit(updatedItem);
+    this.reindexControlMaps(index);
+
+    const updatedItem: SaleLineItemDto = {
+      ...(this.lineItemForm.value as SaleLineItemDto),
+      batchAllocations: currentAllocations,
+    };
+    this.lineItemChange.emit(updatedItem);
     this.validateBatchAllocations();
   }
 
-  private validateBatchAllocations(): void {
-    const requestedQuantity = this.lineItemForm.get('requested_quantity')?.value || 0;
-    const allocations = this.lineItem()?.batch_allocations || [];
-    this.totalAllocatedQuantity = allocations.reduce(
-      (sum, alloc) => sum + (alloc.quantity || 0),
-      0,
-    );
+  private setUpBatchAllocationChanges(): void {
+    this.allocationBehavior
+      .pipe(
+        switchMap(() => {
+          const streams = Array.from(this.batchControls().entries()).map((_, batchIndex) => {
+            const quantityControl = this.quantityControls().get(batchIndex);
+            const batchControl = this.batchControls().get(batchIndex);
 
-    if (this.isBatchRequired() && this.totalAllocatedQuantity !== requestedQuantity) {
-      this.lineItemForm.get('requested_quantity')?.setErrors({
-        batchAllocationMismatch: true,
+            if (!quantityControl || !batchControl) {
+              return EMPTY;
+            }
+
+            return combineLatest([
+              quantityControl.valueChanges.pipe(startWith(quantityControl.value)),
+              batchControl.valueChanges.pipe(startWith(batchControl.value)),
+            ]).pipe(
+              filter(([quantity, batchId]) => !!quantity && !!batchId),
+              map(([quantity, batchId]) => ({ quantity, batchId })),
+            );
+          });
+
+          return merge(...streams);
+        }),
+        takeUntilDestroyed(this.destroyRef),
+      )
+      .subscribe(({ quantity, batchId }) => {
+        this.updateBatchAllocations(quantity!, batchId!);
       });
-    } else {
-      const errors = this.lineItemForm.get('requested_quantity')?.errors;
-      if (errors) {
-        delete errors['batchAllocationMismatch'];
-        this.lineItemForm
-          .get('requested_quantity')
-          ?.setErrors(Object.keys(errors).length ? errors : null);
+  }
+
+  private updateBatchAllocations(quantity: number, batchId: string): void {
+    const currentAllocations = this.lineItem()?.batchAllocations ?? [];
+    const allocationIndex = currentAllocations.findIndex((a) => a.batchId === batchId);
+
+    const updatedAllocations =
+      allocationIndex > -1
+        ? currentAllocations.map((a, i) => (i === allocationIndex ? { ...a, quantity } : a))
+        : [...currentAllocations, { batchId, quantity }];
+
+    this.lineItemChange.emit({
+      ...(this.lineItemForm.value as SaleLineItemDto),
+      batchAllocations: updatedAllocations,
+    });
+    this.validateBatchAllocations();
+  }
+
+  private reindexControlMaps(removedIndex: number): void {
+    const reindexMap = <T>(controlMap: Map<number, T>): Map<number, T> => {
+      const result = new Map<number, T>();
+      controlMap.forEach((value, key) => {
+        if (key < removedIndex) {
+          result.set(key, value);
+        } else if (key > removedIndex) {
+          result.set(key - 1, value);
+        }
+      });
+      return result;
+    };
+    this.batchControls.update((controls) => reindexMap(controls));
+    this.quantityControls.update((controls) => reindexMap(controls));
+  }
+
+  private validateBatchAllocations(): void {
+    const requestedQuantity = this.lineItemForm.get('requestedQuantity')?.value || 0;
+    const totalAllocated = this.totalAllocatedQuantity();
+    const quantityControl = this.lineItemForm.get('requestedQuantity') as FormControl;
+    let hasError = false;
+
+    if (this.isBatchRequired()) {
+      if (totalAllocated > requestedQuantity) {
+        quantityControl?.setErrors({ batchOverAllocated: true });
+        hasError = true;
+      } else if (totalAllocated !== requestedQuantity) {
+        quantityControl?.setErrors({ batchAllocationMismatch: true });
+        hasError = true;
+      } else {
+        this.clearBatchErrors(quantityControl);
       }
+    } else {
+      this.clearBatchErrors(quantityControl);
     }
+
+    this.validationError.emit(hasError);
   }
 
-  public getAllocatedQuantityForBatch(batchId: string): number {
-    return (this.lineItem()?.batch_allocations || [])
-      .filter((alloc) => alloc.batch_id === batchId)
-      .reduce((sum, alloc) => sum + (alloc.quantity || 0), 0);
-  }
-
-  public getRemainingQuantityForBatch(batch: Batch): number {
-    const allocated = this.getAllocatedQuantityForBatch(batch.id);
-    return Math.max(0, batch.quantity - allocated);
+  private clearBatchErrors(control: FormControl | null): void {
+    const errors = control?.errors;
+    if (errors) {
+      delete errors['batchAllocationMismatch'];
+      delete errors['batchOverAllocated'];
+      control?.setErrors(Object.keys(errors).length ? errors : null);
+    }
   }
 
   public getTotalPrice(): number {
-    const quantity = this.lineItemForm.get('requested_quantity')?.value || 0;
-    const customPrice = this.lineItemForm.get('custom_price')?.value;
+    const quantity = this.lineItemForm.get('requestedQuantity')?.value || 0;
+    const customPrice = this.lineItemForm.get('customPrice')?.value;
     const selectedProduct = this.selectedProduct();
-
     let price = customPrice || 0;
     if (!customPrice && selectedProduct) {
-      const priceType = this.lineItemForm.get('price_type')?.value || 'wholesale';
+      const priceType = this.lineItemForm.get('priceType')?.value || 'wholesale';
       price = priceType === 'wholesale' ? selectedProduct.wholesale : selectedProduct.retail;
     }
-
     return quantity * price;
   }
 
   private emitChange(): void {
-    if (this.lineItemForm.valid) {
-      const lineItemForm = this.lineItemForm.value as SaleLineItemDto & { priceType?: PriceType };
-      delete lineItemForm.priceType;
-
-      const lineItem: SaleLineItemDto = {
-        ...lineItemForm,
-        batch_allocations: this.lineItem()?.batch_allocations || [],
-      };
-      this.lineItemChange.emit(lineItem);
+    if (!this.lineItemForm.valid) {
+      return;
     }
+    const lineItemForm = this.lineItemForm.value as SaleLineItemDto & { priceType?: PriceType };
+    delete lineItemForm.priceType;
+    const lineItem: SaleLineItemDto = {
+      ...lineItemForm,
+      batchAllocations: this.lineItem()?.batchAllocations || [],
+    };
+    this.lineItemChange.emit(lineItem);
   }
 
   public onRemove(): void {
@@ -312,76 +371,30 @@ export class LineItemEditorComponent implements OnInit {
   }
 
   public getBatchControl(index: number): FormControl {
-    const allocation = this.lineItem()?.batch_allocations?.[index];
-    let control = this.batchControls.get(index);
-
-    if (!control) {
-      control = new FormControl(allocation?.batch_id || '');
-      // Subscribe to value changes to update the allocation
-      control.valueChanges.pipe(takeUntilDestroyed(this.destroyRef)).subscribe((value) => {
-        const currentAllocation = this.lineItem()?.batch_allocations?.[index];
-        if (currentAllocation) {
-          this.updateBatchAllocation(index, { ...currentAllocation, batch_id: value });
-        }
-      });
-      this.batchControls.set(index, control);
-    } else {
-      // Update the control value if allocation changed
-      const currentBatchId = allocation?.batch_id || '';
-      if (control.value !== currentBatchId) {
-        control.setValue(currentBatchId, { emitEvent: false });
-      }
-    }
-
-    return control;
+    const control = this.batchControls().get(index);
+    return control || new FormControl('', { nonNullable: true });
   }
 
-  public getBatchInfo({
-    batch_id,
-  }: BatchAllocationDto): { remainingQuantity: number; expiryDate: string } | null {
-    if (!batch_id) {
-      return null;
-    }
+  public getQuantityControl(index: number): FormControl {
+    const control = this.quantityControls().get(index);
+    return control || new FormControl(1, { nonNullable: true });
+  }
 
-    const batch = this.availableBatches.find(({ id }) => id === batch_id);
+  public getBatchInfo(
+    batchId: string,
+  ): { availableQuantity: number; expiryDate: string | null } | null {
+    const batch = this.availableBatches().find((b) => b.id === batchId);
     if (!batch) {
       return null;
     }
 
     return {
-      remainingQuantity: this.getRemainingQuantityForBatch(batch),
-      expiryDate: batch.expiryDate || '',
+      availableQuantity: batch.quantity,
+      expiryDate: batch.expiryDate || null,
     };
-  }
-
-  public getQuantityControl(index: number): FormControl {
-    const allocation = this.lineItem()?.batch_allocations?.[index];
-    const control = new FormControl(allocation?.quantity || 0);
-
-    control.valueChanges.pipe(takeUntilDestroyed(this.destroyRef)).subscribe((value) => {
-      if (allocation) {
-        this.updateBatchAllocation(index, { ...allocation, quantity: Number(value) });
-      }
-    });
-
-    return control;
-  }
-
-  public getMaxQuantity(index: number): number {
-    const allocation = this.lineItem()?.batch_allocations?.[index];
-    if (!allocation?.batch_id) {
-      return 0;
-    }
-
-    const batch = this.availableBatches.find((b) => b.id === allocation.batch_id);
-    return batch ? this.getRemainingQuantityForBatch(batch) : 0;
   }
 
   public get productOptions(): { label: string; value: string }[] {
     return this.products().map(({ id, name }) => ({ label: name, value: id }));
-  }
-
-  public get batchOptions(): { label: string; value: string }[] {
-    return this.availableBatches.map((b) => ({ label: b.batchNumber, value: b.id }));
   }
 }

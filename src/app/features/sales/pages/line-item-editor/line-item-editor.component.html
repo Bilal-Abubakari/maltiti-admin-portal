@@ -20,7 +20,7 @@
         <app-select
           id="product"
           label="Product *"
-          [control]="lineItemForm.controls.product_id"
+          [control]="lineItemForm.controls.productId"
           [options]="productOptions"
           [placeholder]="'Select a product'"
           [showClear]="true"
@@ -35,7 +35,7 @@
               <p-radioButton
                 inputId="wholesale"
                 value="wholesale"
-                [formControl]="lineItemForm.controls.price_type"
+                [formControl]="lineItemForm.controls.priceType"
               />
               <label class="radio-label" for="wholesale">
                 Wholesale
@@ -48,7 +48,7 @@
               <p-radioButton
                 inputId="retail"
                 value="retail"
-                [formControl]="lineItemForm.controls.price_type"
+                [formControl]="lineItemForm.controls.priceType"
               />
               <label class="radio-label" for="retail">
                 Retail
@@ -69,13 +69,17 @@
           <app-number-input
             id="quantity"
             label="Quantity *"
-            [control]="lineItemForm.controls.requested_quantity"
+            [control]="lineItemForm.controls.requestedQuantity"
             [min]="1"
           />
-          @if (lineItemForm.get('requested_quantity')?.hasError('batchAllocationMismatch')) {
-            <small class="error-message">
+          @if (lineItemForm.get('requestedQuantity')?.hasError('batchOverAllocated')) {
+            <p-message severity="error" size="small" variant="simple">
+              Batch allocation ({{ totalAllocatedQuantity() }}) exceeds requested quantity ({{ lineItemForm.get('requestedQuantity')?.value || 0 }})
+            </p-message>
+          } @else if (lineItemForm.get('requestedQuantity')?.hasError('batchAllocationMismatch')) {
+            <p-message severity="error" size="small" variant="simple">
               Batch allocations must equal requested quantity
-            </small>
+            </p-message>
           }
         </div>
       </div>
@@ -85,7 +89,7 @@
           id="price"
           label="Custom Price (Optional)"
           placeholder="Override with custom price"
-          [control]="lineItemForm.controls.custom_price"
+          [control]="lineItemForm.controls.customPrice"
           [min]="0"
           [mode]="'currency'"
           [style]="{'width': '100%'}"
@@ -102,7 +106,7 @@
     </div>
 
     <!-- Batch Allocations -->
-    @if (product && (isBatchRequired() || (lineItem()?.batch_allocations?.length ?? 0) > 0)) {
+    @if (product && (isBatchRequired() || (lineItem()?.batchAllocations?.length ?? 0) > 0)) {
       <div class="batch-section">
         <div class="batch-header">
           <h5>Batch Allocations {{ isBatchRequired() ? '*' : '' }}</h5>
@@ -117,7 +121,7 @@
         </div>
 
         <div class="batch-allocations">
-          @if (lineItem()?.batch_allocations?.length === 0) {
+          @if (batchControls().size === 0) {
             <div class="empty-batches">
               <p>No batches allocated yet.</p>
               @if (isBatchRequired()) {
@@ -125,12 +129,14 @@
               }
             </div>
           } @else {
-            @for (allocation of lineItem()?.batch_allocations || []; track $index; let i = $index) {
+            @for (_ of this.batchControls().keys() || []; track $index; let i = $index) {
+              @let batchId = getBatchControl(i).value;
+              @let batchInfo = batchId ? getBatchInfo(batchId) : null;
               <div class="batch-allocation">
                 <app-select
                   id="batch-{{i}}"
-                  [control]="getBatchControl(i)"
-                  [options]="batchOptions"
+                  [control]="batchControls().get(i)!"
+                  [options]="batchOptions()"
                   [placeholder]="'Select batch'"
                   [showClear]="true"
                   [styleClass]="'batch-select'"
@@ -139,19 +145,20 @@
                 <app-number-input
                   id="quantity-{{i}}"
                   [control]="getQuantityControl(i)"
-                  [max]="getMaxQuantity(i)"
                   [min]="1"
                   [style]="{'width': '30%'}"
                 />
 
-                <div class="batch-info">
-                  @if (allocation.batch_id && getBatchInfo(allocation)) {
+                @if (batchInfo) {
+                  <div class="batch-info">
                     <small class="batch-details">
-                      Available: {{ getBatchInfo(allocation)!.remainingQuantity }}
-                      | Expires: {{ getBatchInfo(allocation)!.expiryDate | date }}
+                      Available: {{ batchInfo.availableQuantity }}
+                      @if (batchInfo.expiryDate) {
+                        | Expires: {{ batchInfo.expiryDate | date }}
+                      }
                     </small>
-                  }
-                </div>
+                  </div>
+                }
 
                 <app-button
                   icon="pi pi-minus"
@@ -165,14 +172,14 @@
           }
         </div>
 
-        @if (isBatchRequired() && totalAllocatedQuantity !== (lineItemForm.get('requested_quantity')?.value || 0)) {
+        @if (isBatchRequired()) {
           <div class="allocation-summary">
             <small>
-              Allocated: {{ totalAllocatedQuantity }} / {{ lineItemForm.get('requested_quantity')?.value || 0 }}
-              @if (totalAllocatedQuantity < (lineItemForm.get('requested_quantity')?.value || 0)) {
-                ({{ (lineItemForm.get('requested_quantity')?.value || 0) - totalAllocatedQuantity }} remaining)
-              } @else if (totalAllocatedQuantity > (lineItemForm.get('requested_quantity')?.value || 0)) {
-                ({{ totalAllocatedQuantity - (lineItemForm.get('requested_quantity')?.value || 0) }} over-allocated)
+              Allocated: {{ totalAllocatedQuantity() }} / {{ lineItemForm.get('requestedQuantity')?.value || 0 }}
+              @if (totalAllocatedQuantity() < (lineItemForm.get('requestedQuantity')?.value || 0)) {
+                ({{ (lineItemForm.get('requestedQuantity')?.value || 0) - totalAllocatedQuantity() }} remaining)
+              } @else if (totalAllocatedQuantity() > (lineItemForm.get('requestedQuantity')?.value || 0)) {
+                ({{ totalAllocatedQuantity() - (lineItemForm.get('requestedQuantity')?.value || 0) }} over-allocated)
               }
             </small>
           </div>

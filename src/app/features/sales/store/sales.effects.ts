@@ -1,14 +1,19 @@
 import { inject, Injectable } from '@angular/core';
 import { Actions, createEffect, ofType } from '@ngrx/effects';
-import { catchError, map, mergeMap } from 'rxjs/operators';
+import { catchError, map, mergeMap, tap } from 'rxjs/operators';
 import { of } from 'rxjs';
 import { SalesApiService } from '../services/sales-api.service';
 import * as SalesActions from './sales.actions';
+import { MessageService } from 'primeng/api';
+import { APP_ROUTES } from '@config/routes.config';
+import { Router } from '@angular/router';
 
 @Injectable()
 export class SalesEffects {
   private readonly salesApi = inject(SalesApiService);
   private readonly actions$ = inject(Actions);
+  private readonly messageService = inject(MessageService);
+  private readonly router = inject(Router);
 
   public loadSales$ = createEffect(() =>
     this.actions$.pipe(
@@ -17,7 +22,11 @@ export class SalesEffects {
         this.salesApi.getSales(status, customerId, page, limit).pipe(
           map((response) => SalesActions.loadSalesSuccess({ response })),
           catchError((error) =>
-            of(SalesActions.loadSalesFailure({ error: error.message || 'Failed to load sales' })),
+            of(
+              SalesActions.loadSalesFailure({
+                error: error.error.message || 'Failed to load sales',
+              }),
+            ),
           ),
         ),
       ),
@@ -31,7 +40,9 @@ export class SalesEffects {
         this.salesApi.getSale(id).pipe(
           map((sale) => SalesActions.loadSaleSuccess({ sale })),
           catchError((error) =>
-            of(SalesActions.loadSaleFailure({ error: error.message || 'Failed to load sale' })),
+            of(
+              SalesActions.loadSaleFailure({ error: error.error.message || 'Failed to load sale' }),
+            ),
           ),
         ),
       ),
@@ -45,7 +56,11 @@ export class SalesEffects {
         this.salesApi.createSale(saleData).pipe(
           map((sale) => SalesActions.createSaleSuccess({ sale })),
           catchError((error) =>
-            of(SalesActions.createSaleFailure({ error: error.message || 'Failed to create sale' })),
+            of(
+              SalesActions.createSaleFailure({
+                error: error.error.message || 'Failed to create sale',
+              }),
+            ),
           ),
         ),
       ),
@@ -59,7 +74,11 @@ export class SalesEffects {
         this.salesApi.updateSale(id, saleData).pipe(
           map((sale) => SalesActions.updateSaleSuccess({ sale })),
           catchError((error) =>
-            of(SalesActions.updateSaleFailure({ error: error.message || 'Failed to update sale' })),
+            of(
+              SalesActions.updateSaleFailure({
+                error: error.error.message || 'Failed to update sale',
+              }),
+            ),
           ),
         ),
       ),
@@ -75,12 +94,106 @@ export class SalesEffects {
           catchError((error) =>
             of(
               SalesActions.updateSaleStatusFailure({
-                error: error.message || 'Failed to update sale status',
+                error: error.error.message || 'Failed to update sale status',
               }),
             ),
           ),
         ),
       ),
     ),
+  );
+
+  // Success message effects
+  public createSaleSuccess$ = createEffect(
+    () =>
+      this.actions$.pipe(
+        ofType(SalesActions.createSaleSuccess),
+        map(() => {
+          this.messageService.add({
+            severity: 'success',
+            summary: 'Success',
+            detail: 'Sale created successfully',
+          });
+        }),
+      ),
+    { dispatch: false },
+  );
+
+  public updateSaleSuccess$ = createEffect(
+    () =>
+      this.actions$.pipe(
+        ofType(SalesActions.updateSaleSuccess),
+        map(() => {
+          this.messageService.add({
+            severity: 'success',
+            summary: 'Success',
+            detail: 'Sale updated successfully',
+          });
+        }),
+      ),
+    { dispatch: false },
+  );
+
+  public updateSaleStatusSuccess$ = createEffect(
+    () =>
+      this.actions$.pipe(
+        ofType(SalesActions.updateSaleStatusSuccess),
+        tap(() => {
+          this.messageService.add({
+            severity: 'success',
+            summary: 'Success',
+            detail: 'Sale status updated successfully',
+          });
+          void this.router.navigate([APP_ROUTES.sales.list.fullPath]);
+        }),
+      ),
+    { dispatch: false },
+  );
+
+  // Error message effects
+  public createSaleFailure$ = createEffect(
+    () =>
+      this.actions$.pipe(
+        ofType(SalesActions.createSaleFailure),
+        tap(({ error }) => {
+          this.messageService.add({
+            severity: 'error',
+            summary: 'Error',
+            detail: error || 'Failed to create sale',
+          });
+          void this.router.navigate([APP_ROUTES.sales.list.fullPath]);
+        }),
+      ),
+    { dispatch: false },
+  );
+
+  public updateSaleFailure$ = createEffect(
+    () =>
+      this.actions$.pipe(
+        ofType(SalesActions.updateSaleFailure),
+        map(({ error }) => {
+          this.messageService.add({
+            severity: 'error',
+            summary: 'Error',
+            detail: error || 'Failed to update sale',
+          });
+        }),
+      ),
+    { dispatch: false },
+  );
+
+  public updateSaleStatusFailure$ = createEffect(
+    () =>
+      this.actions$.pipe(
+        ofType(SalesActions.updateSaleStatusFailure),
+        map(({ error }) => {
+          this.messageService.add({
+            severity: 'error',
+            summary: 'Error',
+            detail: error || 'Failed to update sale status',
+          });
+        }),
+      ),
+    { dispatch: false },
   );
 }
