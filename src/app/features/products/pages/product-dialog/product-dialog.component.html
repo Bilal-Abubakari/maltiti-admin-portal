@@ -248,33 +248,10 @@
       </div>
     </div>
 
-    <!-- Dates Section -->
+    <!-- Additional Information Section -->
     <div class="form-section">
-      <h3 class="section-title">Production & Expiry</h3>
+      <h3 class="section-title">Additional Information</h3>
       <div class="form-grid">
-        <app-field-renderer
-          id="producedAt"
-          [control]="productForm.controls.producedAt"
-          [label]="'Production Date'"
-          [maxDate]="today"
-          [mode]="isViewMode() ? 'view' : 'edit'"
-          [placeholder]="'Select production date'"
-          [showIcon]="true"
-          [type]="'date'"
-          [value]="productForm.value.producedAt"
-        />
-
-        <app-field-renderer
-          id="expiryDate"
-          [control]="productForm.controls.expiryDate"
-          [label]="'Expiry Date'"
-          [minDate]="today"
-          [mode]="isViewMode() ? 'view' : 'edit'"
-          [placeholder]="'Select expiry date'"
-          [showIcon]="true"
-          [type]="'date'"
-          [value]="productForm.value.expiryDate"
-        />
 
         <app-field-renderer
           class="supplier-reference-input"

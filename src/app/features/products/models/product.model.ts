@@ -51,8 +51,6 @@ export interface Product {
   isOrganic: boolean;
   certifications: string[];
   supplierReference: string;
-  producedAt: string;
-  expiryDate: string;
   minOrderQuantity: number;
   costPrice?: number;
   createdAt: string;
@@ -81,8 +79,6 @@ export interface CreateProductDto {
   isOrganic?: boolean;
   certifications?: string[];
   supplierReference?: string;
-  producedAt?: string;
-  expiryDate?: string;
   minOrderQuantity?: number;
   costPrice?: number;
 }

@@ -26,8 +26,6 @@ export interface ProductFormValue {
   ingredients: string[] | null;
   isFeatured: boolean | null;
   isOrganic: boolean | null;
-  producedAt: Date | null;
-  expiryDate: Date | null;
   images: string[] | null;
   image: string | null;
   supplierReference: string | null;
@@ -52,8 +50,6 @@ export type ProductFormGroup = FormGroup<{
   ingredients: FormControl<string[] | null>;
   isFeatured: FormControl<boolean | null>;
   isOrganic: FormControl<boolean | null>;
-  producedAt: FormControl<Date | null>;
-  expiryDate: FormControl<Date | null>;
   images: FormControl<string[] | null>;
   image: FormControl<string | null>;
   supplierReference: FormControl<string | null>;

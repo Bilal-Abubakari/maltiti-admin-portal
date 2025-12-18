@@ -141,10 +141,6 @@ export class ProductDialogComponent {
     isFeatured: this.fb.control(false),
     isOrganic: this.fb.control(false),
 
-    // Dates
-    producedAt: this.fb.control<Date | null>(null),
-    expiryDate: this.fb.control<Date | null>(null),
-
     // Images
     images: this.fb.control<string[]>([]),
     image: this.fb.control(''),
@@ -163,8 +159,6 @@ export class ProductDialogComponent {
     label: option,
     value: option,
   }));
-
-  public readonly today = new Date();
 
   // Mode helpers
   public readonly isViewMode = computed(() => this.viewMode());
@@ -218,8 +212,6 @@ export class ProductDialogComponent {
         this.productForm.patchValue({
           ...product,
           ingredients: product.ingredients.map(({ id }) => id),
-          producedAt: product.producedAt ? new Date(product.producedAt) : null,
-          expiryDate: product.expiryDate ? new Date(product.expiryDate) : null,
           costPrice: product.costPrice ?? null,
         });
       } else {
@@ -262,8 +254,6 @@ export class ProductDialogComponent {
       isFeatured: formValue.isFeatured || false,
       isOrganic: formValue.isOrganic || false,
       supplierReference: formValue.supplierReference || undefined,
-      producedAt: formValue.producedAt ? formValue.producedAt.toISOString() : undefined,
-      expiryDate: formValue.expiryDate ? formValue.expiryDate.toISOString() : undefined,
       certifications: formValue.certifications || [],
       images: formValue.images || [],
       image: formValue.image || undefined,
