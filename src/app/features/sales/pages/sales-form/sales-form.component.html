@@ -18,6 +18,7 @@
     <app-button
       label="{{ isEditMode ? 'Update Sale' : 'Create Sale' }}"
       severity="primary"
+      [disabled]="hasLineItemErrors()"
       [loading]="loading()"
       (click)="onSubmit()"
     />
@@ -95,6 +96,7 @@
           [products]="products()"
           (lineItemChange)="onLineItemChange(i, $event)"
           (remove)="removeLineItem(i)"
+          (validationError)="onLineItemValidationError(i, $event)"
         />
       }
     </div>

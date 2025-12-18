@@ -63,7 +63,7 @@
             [value]="getStatusLabel(sale.status)"
           />
         </td>
-        <td>{{ lineItemsTotalPrice(sale.line_items) | currency: 'GH₵ ' }}</td>
+        <td>{{ lineItemsTotalPrice(sale.lineItems) | currency: 'GH₵ ' }}</td>
         <td>{{ sale.createdAt | date:'short' }}</td>
         <td>
           <div class="action-buttons">

@@ -18,7 +18,6 @@ import {
   FormArray,
   FormBuilder,
   FormControl,
-  FormGroup,
   ReactiveFormsModule,
   Validators,
 } from '@angular/forms';
@@ -31,10 +30,7 @@ import { InputNumberModule } from 'primeng/inputnumber';
 import { DialogModule } from 'primeng/dialog';
 import { ConfirmDialogModule } from 'primeng/confirmdialog';
 import { ConfirmationService, MessageService } from 'primeng/api';
-
-// Local imports
 import { Store } from '@ngrx/store';
-import { Actions, ofType } from '@ngrx/effects';
 import { signal } from '@angular/core';
 import { takeUntilDestroyed, toSignal } from '@angular/core/rxjs-interop';
 import {
@@ -44,13 +40,8 @@ import {
   SaleStatus,
   UpdateSaleDto,
 } from '../../models/sale.model';
-import {
-  createSale,
-  createSaleSuccess,
-  updateSale,
-  updateSaleSuccess,
-} from '../../store/sales.actions';
-import { selectCurrentSale, selectError, selectLoading } from '../../store/sales.selectors';
+import { createSale, updateSale } from '../../store/sales.actions';
+import { selectError, selectLoading } from '../../store/sales.selectors';
 import { ButtonComponent } from '@shared/components/button/button.component';
 import { LineItemEditorComponent } from '../line-item-editor/line-item-editor.component';
 import { CustomerCreationModalComponent } from '../customer-creation-modal/customer-creation-modal.component';
@@ -91,7 +82,6 @@ export class SalesFormComponent implements OnInit {
   private readonly route = inject(ActivatedRoute);
   private readonly router = inject(Router);
   private readonly store = inject(Store);
-  private readonly actions$ = inject(Actions);
   private readonly confirmationService = inject(ConfirmationService);
   private readonly messageService = inject(MessageService);
   private readonly productApiService = inject(ProductApiService);
@@ -102,8 +92,9 @@ export class SalesFormComponent implements OnInit {
   // Signals
   public readonly loading = this.store.selectSignal(selectLoading);
   public readonly error = this.store.selectSignal(selectError);
-  public readonly currentSale = this.store.selectSignal(selectCurrentSale);
   public readonly products = signal<LightProduct[]>([]);
+  public readonly lineItemValidationErrors = signal<Map<number, boolean>>(new Map());
+  public readonly hasLineItemErrors = signal<boolean>(false);
   // Form
   public salesForm = this.fb.group({
     line_items: this.fb.array([] as SaleLineItemDto[], Validators.minLength(1)),
@@ -130,7 +121,6 @@ export class SalesFormComponent implements OnInit {
   public ngOnInit(): void {
     this.checkEditMode();
     this.loadProducts();
-    this.subscribeToSaleCreation();
   }
 
   public get isBatchRequired(): boolean {
@@ -143,22 +133,6 @@ export class SalesFormComponent implements OnInit {
           SaleStatus.Paid,
         ].includes(statusValue)
       : false;
-  }
-
-  private subscribeToSaleCreation(): void {
-    this.actions$
-      .pipe(ofType(createSaleSuccess, updateSaleSuccess), takeUntilDestroyed(this.destroyRef))
-      .subscribe((action) => {
-        this.messageService.add({
-          severity: 'success',
-          summary: 'Success',
-          detail:
-            action.type === createSaleSuccess.type
-              ? 'Sale created successfully'
-              : 'Sale updated successfully',
-        });
-        void this.router.navigate([APP_ROUTES.sales.list.fullPath]);
-      });
   }
 
   private loadProducts(): void {
@@ -192,7 +166,7 @@ export class SalesFormComponent implements OnInit {
 
   private populateForm(sale: Sale): void {
     // Set customer
-    this.customerControl.setValue(sale.customer?.id || sale.customer_id);
+    this.customerControl.setValue(sale.customer?.id || sale.customerId);
 
     // Set status
     this.statusControl.setValue(sale.status);
@@ -201,12 +175,12 @@ export class SalesFormComponent implements OnInit {
     this.lineItems.clear();
 
     // Populate line items
-    sale.line_items.forEach((item) => {
+    sale.lineItems.forEach((item) => {
       const lineItemDto: SaleLineItemDto = {
-        product_id: item.product_id,
-        requested_quantity: item.requested_quantity,
-        batch_allocations: item.batch_allocations || [],
-        custom_price: item.custom_price,
+        productId: item.productId,
+        requestedQuantity: item.requestedQuantity,
+        batchAllocations: item.batchAllocations || [],
+        customPrice: item.customPrice,
       };
       this.lineItems.push(this.fb.control(lineItemDto));
     });
@@ -218,36 +192,79 @@ export class SalesFormComponent implements OnInit {
 
   public addLineItem(): void {
     const newLineItem: SaleLineItemDto = {
-      product_id: '',
-      requested_quantity: 1,
-      batch_allocations: [],
+      productId: '',
+      requestedQuantity: 1,
+      batchAllocations: [],
     };
     this.lineItems.push(this.fb.control(newLineItem));
   }
 
   public removeLineItem(index: number): void {
     this.lineItems.removeAt(index);
+
+    // Clear validation error for removed line item
+    const errors = this.lineItemValidationErrors();
+    errors.delete(index);
+
+    // Re-index remaining errors
+    const reIndexedErrors = new Map<number, boolean>();
+    errors.forEach((value, key) => {
+      if (key > index) {
+        reIndexedErrors.set(key - 1, value);
+      } else {
+        reIndexedErrors.set(key, value);
+      }
+    });
+
+    this.lineItemValidationErrors.set(reIndexedErrors);
+
+    // Check if any line item has errors
+    const hasAnyError = Array.from(reIndexedErrors.values()).some((error) => error);
+    this.hasLineItemErrors.set(hasAnyError);
   }
 
   public onLineItemChange(index: number, lineItem: SaleLineItemDto): void {
-    console.log('Line item changed: ', lineItem, ' at index:');
-    this.lineItems.at(index).setValue(lineItem);
+    console.log('Hmm');
+    this.lineItems.at(index).setValue({
+      ...lineItem,
+    });
+  }
+
+  public onLineItemValidationError(index: number, hasError: boolean): void {
+    const errors = this.lineItemValidationErrors();
+    errors.set(index, hasError);
+    this.lineItemValidationErrors.set(new Map(errors));
+
+    // Check if any line item has errors
+    const hasAnyError = Array.from(errors.values()).some((error) => error);
+    this.hasLineItemErrors.set(hasAnyError);
   }
 
   public onSubmit(): void {
+    // Check for line item validation errors first
+    if (this.hasLineItemErrors()) {
+      this.messageService.add({
+        severity: 'error',
+        summary: 'Validation Error',
+        detail:
+          'One or more line items have batch allocation errors. Please fix them before submitting.',
+      });
+      return;
+    }
+
     if (this.salesForm.valid && this.customerControl.valid && this.statusControl.valid) {
       const formValue = this.salesForm.value;
       const lineItems = formValue.line_items as SaleLineItemDto[];
-
       if (this.isEditMode && this.saleId) {
         // Handle update
         const updateData: UpdateSaleDto = {
-          customer_id: String(this.customerControl.value),
-          line_items: lineItems.map((item: SaleLineItemDto) => ({
-            product_id: item.product_id,
-            requested_quantity: item.requested_quantity,
-            batch_allocations: item.batch_allocations,
-            custom_price: item.custom_price || undefined,
+          customerId: String(this.customerControl.value),
+          status: this.statusControl.value as SaleStatus,
+          lineItems: lineItems.map((item: SaleLineItemDto) => ({
+            productId: item.productId,
+            requestedQuantity: item.requestedQuantity,
+            batchAllocations: item.batchAllocations,
+            customPrice: item.customPrice || undefined,
           })),
         };
 
@@ -255,20 +272,20 @@ export class SalesFormComponent implements OnInit {
       } else {
         // Handle create
         const saleData: CreateSaleDto = {
-          customer_id: String(this.customerControl.value),
+          customerId: String(this.customerControl.value),
           status: this.statusControl.value as SaleStatus,
-          line_items: lineItems.map((item: SaleLineItemDto) => ({
-            product_id: item.product_id,
-            requested_quantity: item.requested_quantity,
-            batch_allocations: item.batch_allocations,
-            custom_price: item.custom_price || undefined,
+          lineItems: lineItems.map((item: SaleLineItemDto) => ({
+            productId: item.productId,
+            requestedQuantity: item.requestedQuantity,
+            batchAllocations: item.batchAllocations,
+            customPrice: item.customPrice || undefined,
           })),
         };
 
         this.store.dispatch(createSale({ saleData }));
       }
     } else {
-      this.markFormGroupTouched(this.salesForm);
+      this.salesForm.markAllAsTouched();
       this.customerControl.markAsTouched();
       this.statusControl.markAsTouched();
       this.messageService.add({
@@ -294,16 +311,5 @@ export class SalesFormComponent implements OnInit {
 
   public onCustomerSelected(customer: Customer): void {
     this.customerControl.setValue(customer.id);
-  }
-
-  private markFormGroupTouched(formGroup: FormGroup): void {
-    Object.keys(formGroup.controls).forEach((key) => {
-      const control = formGroup.get(key);
-      if (control instanceof FormGroup) {
-        this.markFormGroupTouched(control);
-      } else {
-        control?.markAsTouched();
-      }
-    });
   }
 }

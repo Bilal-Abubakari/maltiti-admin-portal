@@ -1510,7 +1510,7 @@
             }
           },
           {
-            "name": "customer_id",
+            "name": "customerId",
             "required": false,
             "in": "query",
             "schema": { "type": "string" }
@@ -2852,26 +2852,26 @@
       },
       "BatchAllocationDto": {
         "type": "object",
-        "properties": { "batch_id": { "type": "string" }, "quantity": { "type": "number" } },
-        "required": ["batch_id", "quantity"]
+        "properties": { "batchId": { "type": "string" }, "quantity": { "type": "number" } },
+        "required": ["batchId", "quantity"]
       },
       "SaleLineItemDto": {
         "type": "object",
         "properties": {
-          "product_id": { "type": "string" },
-          "batch_allocations": {
+          "productId": { "type": "string" },
+          "batchAllocations": {
             "type": "array",
             "items": { "$ref": "#/components/schemas/BatchAllocationDto" }
           },
-          "requested_quantity": { "type": "number" },
-          "custom_price": { "type": "number" }
+          "requestedQuantity": { "type": "number" },
+          "customPrice": { "type": "number" }
         },
-        "required": ["product_id", "batch_allocations", "requested_quantity"]
+        "required": ["productId", "batchAllocations", "requestedQuantity"]
       },
       "CreateSaleDto": {
         "type": "object",
         "properties": {
-          "customer_id": { "type": "string" },
+          "customerId": { "type": "string" },
           "status": {
             "type": "string",
             "enum": [
@@ -2884,31 +2884,43 @@
             ],
             "default": "invoice_requested"
           },
-          "line_items": {
+          "lineItems": {
             "type": "array",
             "items": { "$ref": "#/components/schemas/SaleLineItemDto" }
           }
         },
-        "required": ["customer_id", "line_items"]
+        "required": ["customerId", "lineItems"]
       },
       "Sale": { "type": "object", "properties": {} },
       "UpdateSaleLineItemDto": {
         "type": "object",
         "properties": {
-          "product_id": { "type": "string" },
-          "batch_allocations": {
+          "productId": { "type": "string" },
+          "batchAllocations": {
             "type": "array",
             "items": { "$ref": "#/components/schemas/BatchAllocationDto" }
           },
-          "requested_quantity": { "type": "number" },
-          "custom_price": { "type": "number" }
+          "requestedQuantity": { "type": "number" },
+          "customPrice": { "type": "number" }
         }
       },
       "UpdateSaleDto": {
         "type": "object",
         "properties": {
-          "customer_id": { "type": "string" },
-          "line_items": {
+          "customerId": { "type": "string" },
+          "status": {
+            "type": "string",
+            "enum": [
+              "invoice_requested",
+              "pending_payment",
+              "paid",
+              "packaging",
+              "in_transit",
+              "delivered"
+            ],
+            "default": "invoice_requested"
+          },
+          "lineItems": {
             "type": "array",
             "items": { "$ref": "#/components/schemas/UpdateSaleLineItemDto" }
           }
@@ -2934,26 +2946,26 @@
       "AddLineItemDto": {
         "type": "object",
         "properties": {
-          "product_id": { "type": "string" },
-          "batch_allocations": {
+          "productId": { "type": "string" },
+          "batchAllocations": {
             "type": "array",
             "items": { "$ref": "#/components/schemas/BatchAllocationDto" }
           },
-          "requested_quantity": { "type": "number" },
-          "custom_price": { "type": "number" }
+          "requestedQuantity": { "type": "number" },
+          "customPrice": { "type": "number" }
         },
-        "required": ["product_id", "batch_allocations", "requested_quantity"]
+        "required": ["productId", "batchAllocations", "requestedQuantity"]
       },
       "AssignBatchesDto": {
         "type": "object",
         "properties": {
-          "product_id": { "type": "string" },
-          "batch_allocations": {
+          "productId": { "type": "string" },
+          "batchAllocations": {
             "type": "array",
             "items": { "$ref": "#/components/schemas/BatchAllocationDto" }
           }
         },
-        "required": ["product_id", "batch_allocations"]
+        "required": ["productId", "batchAllocations"]
       },
       "GenerateInvoiceDto": {
         "type": "object",

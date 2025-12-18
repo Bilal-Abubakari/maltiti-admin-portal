@@ -11,49 +11,43 @@ export enum SaleStatus {
 }
 
 export interface BatchAllocationDto {
-  batch_id: string;
+  batchId: string;
   quantity: number;
 }
 
 export interface SaleLineItemDto {
-  product_id: string;
-  batch_allocations: BatchAllocationDto[];
-  requested_quantity: number;
-  custom_price?: number;
+  productId: string;
+  batchAllocations: BatchAllocationDto[];
+  requestedQuantity: number;
+  customPrice?: number;
 }
 
 export interface CreateSaleDto {
-  customer_id: string;
+  customerId: string;
   status?: SaleStatus;
-  line_items: SaleLineItemDto[];
+  lineItems: SaleLineItemDto[];
 }
 
 export interface UpdateSaleLineItemDto {
-  product_id?: string;
-  batch_allocations?: BatchAllocationDto[];
-  requested_quantity?: number;
-  custom_price?: number;
+  productId?: string;
+  batchAllocations?: BatchAllocationDto[];
+  requestedQuantity?: number;
+  customPrice?: number;
 }
 
 export interface UpdateSaleDto {
-  customer_id?: string;
-  line_items?: UpdateSaleLineItemDto[];
+  customerId?: string;
+  status?: SaleStatus;
+  lineItems?: UpdateSaleLineItemDto[];
 }
 
 export interface UpdateSaleStatusDto {
   status: SaleStatus;
 }
 
-export interface AddLineItemDto {
-  product_id: string;
-  batch_allocations: BatchAllocationDto[];
-  requested_quantity: number;
-  custom_price?: number;
-}
-
 export interface AssignBatchesDto {
-  product_id: string;
-  batch_allocations: BatchAllocationDto[];
+  productId: string;
+  batchAllocations: BatchAllocationDto[];
 }
 
 export interface GenerateInvoiceDto {
@@ -63,24 +57,24 @@ export interface GenerateInvoiceDto {
 
 export interface SaleLineItem {
   id: string;
-  product_id: string;
-  product?: Product; // Assuming product model exists
-  batch_allocations: BatchAllocationDto[];
-  requested_quantity: number;
-  custom_price?: number;
-  final_price?: number;
-  total_price: number;
-  created_at: string;
-  updated_at: string;
+  productId: string;
+  product?: Product;
+  batchAllocations: BatchAllocationDto[];
+  requestedQuantity: number;
+  customPrice?: number;
+  finalPrice?: number;
+  totalPrice: number;
+  createdAt: string;
+  updatedAt: string;
 }
 
 export interface Sale {
   id: string;
-  customer_id: string;
+  customerId: string;
   customer?: User;
   status: SaleStatus;
-  line_items: SaleLineItem[];
-  total_amount: number;
-  created_at: string;
-  updated_at: string;
+  lineItems: SaleLineItem[];
+  totalAmount: number;
+  createdAt: string;
+  updatedAt: string;
 }

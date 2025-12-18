@@ -9,11 +9,11 @@ import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { environment } from '@environments/environment';
 import {
-  AddLineItemDto,
   AssignBatchesDto,
   CreateSaleDto,
   GenerateInvoiceDto,
   Sale,
+  SaleLineItemDto,
   SaleStatus,
   UpdateSaleDto,
   UpdateSaleStatusDto,
@@ -85,7 +85,7 @@ export class SalesApiService {
    * Add line item to sale
    * POST /sales/{id}/line-items
    */
-  public addLineItem(id: string, dto: AddLineItemDto): Observable<Sale> {
+  public addLineItem(id: string, dto: SaleLineItemDto): Observable<Sale> {
     return this.http.post<Sale>(`${this.baseUrl}/${id}/line-items`, dto);
   }
 
