@@ -2345,16 +2345,6 @@
             "items": { "type": "string" }
           },
           "supplierReference": { "type": "string", "example": "SUP-2024-001" },
-          "producedAt": {
-            "format": "date-time",
-            "type": "string",
-            "example": "2024-01-15T00:00:00.000Z"
-          },
-          "expiryDate": {
-            "format": "date-time",
-            "type": "string",
-            "example": "2026-01-15T00:00:00.000Z"
-          },
           "minOrderQuantity": { "type": "number", "example": 5 },
           "createdAt": {
             "format": "date-time",
@@ -2381,7 +2371,6 @@
           "image",
           "wholesale",
           "retail",
-          "quantityInBox",
           "favorite",
           "rating",
           "reviews",
@@ -2390,8 +2379,6 @@
           "isOrganic",
           "certifications",
           "supplierReference",
-          "producedAt",
-          "expiryDate",
           "minOrderQuantity",
           "createdAt",
           "updatedAt"
@@ -2533,12 +2520,6 @@
             "description": "Supplier reference ID",
             "example": "SUP-2024-001"
           },
-          "producedAt": {
-            "type": "string",
-            "description": "Production date",
-            "example": "2024-01-15"
-          },
-          "expiryDate": { "type": "string", "description": "Expiry date", "example": "2026-01-15" },
           "minOrderQuantity": {
             "type": "number",
             "description": "Minimum order quantity",
@@ -2665,12 +2646,6 @@
             "description": "Supplier reference ID",
             "example": "SUP-2024-001"
           },
-          "producedAt": {
-            "type": "string",
-            "description": "Production date",
-            "example": "2024-01-15"
-          },
-          "expiryDate": { "type": "string", "description": "Expiry date", "example": "2026-01-15" },
           "minOrderQuantity": {
             "type": "number",
             "description": "Minimum order quantity",
