@@ -8,13 +8,13 @@
       [class]="styleClass()"
       [formControl]="control()"
       [id]="id()"
-      [invalid]="this.control()?.touched && this.control()?.invalid"
+      [invalid]="this.control().touched && this.control().invalid"
       [placeholder]="placeholder()"
       [readonly]="readonly()"
       [required]="required()"
       [type]="type()"
     />
-    @if (this.control()?.touched && this.control()?.invalid) {
+    @if (this.control().touched && this.control().invalid) {
       <p-message severity="error" size="small" variant="simple">{{ errorMessage() }}</p-message>
     }
   } @else {
@@ -47,7 +47,7 @@
         <p-inputgroup-addon><ng-content select="[suffixAddon]" /></p-inputgroup-addon>
       }
     </p-inputgroup>
-    @if (this.control()?.touched && this.control()?.invalid) {
+    @if (this.control().touched && this.control().invalid) {
       <p-message severity="error" size="small" variant="simple">{{ errorMessage() }}</p-message>
     }
   }

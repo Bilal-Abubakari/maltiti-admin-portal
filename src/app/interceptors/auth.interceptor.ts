@@ -2,8 +2,8 @@ import { HttpClient, HttpErrorResponse, HttpInterceptorFn } from '@angular/commo
 import { inject } from '@angular/core';
 import { Store } from '@ngrx/store';
 import { catchError, switchMap, throwError } from 'rxjs';
-import { sessionExpired } from '../auth/store/auth.actions';
-import { environment } from '../../environments/environment';
+import { sessionExpired } from '@auth/store/auth.actions';
+import { environment } from '@environments/environment';
 
 export const authInterceptor: HttpInterceptorFn = (req, next) => {
   const store = inject(Store);

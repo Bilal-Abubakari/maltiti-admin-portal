@@ -3,7 +3,7 @@
  * Reusable styling patterns
  */
 
-@import 'variables';
+@use 'variables';
 
 // Flexbox Utilities
 @mixin flex-center {
@@ -27,27 +27,27 @@
 // Responsive Breakpoints
 @mixin responsive($breakpoint) {
   @if $breakpoint == xs {
-    @media (max-width: #{$breakpoint-sm - 1px}) {
+    @media (max-width: #{variables.$breakpoint-sm - 1px}) {
       @content;
     }
   } @else if $breakpoint == sm {
-    @media (min-width: $breakpoint-sm) {
+    @media (min-width: variables.$breakpoint-sm) {
       @content;
     }
   } @else if $breakpoint == md {
-    @media (min-width: $breakpoint-md) {
+    @media (min-width: variables.$breakpoint-md) {
       @content;
     }
   } @else if $breakpoint == lg {
-    @media (min-width: $breakpoint-lg) {
+    @media (min-width: variables.$breakpoint-lg) {
       @content;
     }
   } @else if $breakpoint == xl {
-    @media (min-width: $breakpoint-xl) {
+    @media (min-width: variables.$breakpoint-xl) {
       @content;
     }
   } @else if $breakpoint == 2xl {
-    @media (min-width: $breakpoint-2xl) {
+    @media (min-width: variables.$breakpoint-2xl) {
       @content;
     }
   }
@@ -57,9 +57,9 @@
 @mixin card {
   background-color: var(--surface-card);
   border: 1px solid var(--surface-border);
-  border-radius: $border-radius-lg;
-  box-shadow: $shadow-sm;
-  padding: $card-padding;
+  border-radius: variables.$border-radius-lg;
+  box-shadow: variables.$shadow-sm;
+  padding: variables.$card-padding;
 }
 
 // Truncate Text

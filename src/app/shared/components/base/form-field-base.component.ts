@@ -3,7 +3,7 @@ import { FormControl } from '@angular/forms';
 
 @Directive()
 export class FormFieldBaseComponent {
-  public readonly control = input<FormControl>(new FormControl());
+  public readonly control = input.required<FormControl>();
   public readonly id = input.required<string>();
   public readonly label = input<string>('');
   public readonly placeholder = input<string>('');
