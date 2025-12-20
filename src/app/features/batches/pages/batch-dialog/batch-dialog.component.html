@@ -98,36 +98,6 @@
           [rows]="3"
         />
       </div>
-
-      <!-- Associated Products (View Mode Only) -->
-      @if (viewMode() && selectedBatch()?.products?.length) {
-        <div class="field">
-          <span>Associated Products</span>
-          <p-table class="p-datatable-sm" [value]="selectedBatch()?.products || []">
-            <ng-template pTemplate="header">
-              <tr>
-                <th>Name</th>
-                <th>SKU</th>
-                <th>Category</th>
-                <th>Status</th>
-              </tr>
-            </ng-template>
-            <ng-template let-product pTemplate="body">
-              <tr>
-                <td>{{ product.name }}</td>
-                <td>{{ product.sku }}</td>
-                <td>{{ product.category }}</td>
-                <td>
-                  <p-tag
-                    [severity]="product.status === 'active' ? 'success' : 'warn'"
-                    [value]="product.status"
-                  />
-                </td>
-              </tr>
-            </ng-template>
-          </p-table>
-        </div>
-      }
     </form>
   </ng-template>
 

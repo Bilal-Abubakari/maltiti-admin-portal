@@ -8,12 +8,12 @@ export interface Batch {
   id: string;
   batchNumber: string;
   quantity: number;
-  productionDate?: string;
-  expiryDate?: string;
+  productionDate: string;
+  expiryDate: string;
   manufacturingLocation?: string;
   qualityCheckStatus?: string;
   notes?: string;
-  products?: Product[]; // Products associated with this batch
+  product?: Product;
   createdAt: string;
   updatedAt: string;
 }

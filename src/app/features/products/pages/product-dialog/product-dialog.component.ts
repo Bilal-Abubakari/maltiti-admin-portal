@@ -176,15 +176,11 @@ export class ProductDialogComponent {
       if (product && isView) {
         // Load batches for this product
         this.batchApiService
-          .getAllBatches()
+          .getBatchesByProduct(product.id)
           .pipe(first())
           .subscribe({
             next: (response) => {
-              // Filter batches that contain this product
-              const relatedBatches = response.data.items.filter((batch: Batch) =>
-                batch.products?.some((p) => p.id === product.id),
-              );
-              this.productBatches.set(relatedBatches);
+              this.productBatches.set(response.data);
             },
             error: (error) => {
               console.error('Failed to load batches:', error);

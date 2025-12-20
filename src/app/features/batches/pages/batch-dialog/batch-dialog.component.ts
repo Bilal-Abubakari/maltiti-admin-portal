@@ -8,7 +8,6 @@ import {
   ChangeDetectionStrategy,
   Component,
   computed,
-  DestroyRef,
   effect,
   inject,
   input,
@@ -17,27 +16,21 @@ import {
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
-import { Store } from '@ngrx/store';
-import { Actions, ofType } from '@ngrx/effects';
 import { Dialog } from 'primeng/dialog';
 import { Button } from 'primeng/button';
 import { PrimeTemplate } from 'primeng/api';
-import { MessageService } from 'primeng/api';
 import { TableModule } from 'primeng/table';
 import { TagModule } from 'primeng/tag';
 import { CardModule } from 'primeng/card';
 import { DatePicker } from 'primeng/datepicker';
-
-import * as BatchesActions from '../../store/batches.actions';
-import { selectSelectedBatch } from '../../store/batches.selectors';
 import { Batch, CreateBatchDto, UpdateBatchDto } from '../../models/batch.model';
 import { ProductApiService } from '../../../products/services/product-api.service';
-import { LightProduct } from '../../../products/models/product.model';
 import { SelectComponent } from '@shared/components/select/select.component';
 import { NumberInputComponent } from '@shared/components/number-input/number-input.component';
 import { InputComponent } from '@shared/components/input/input.component';
 import { TextareaComponent } from '@shared/components/textarea/textarea.component';
-import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { toSignal } from '@angular/core/rxjs-interop';
+import { map } from 'rxjs/operators';
 
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -62,11 +55,7 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
   styleUrl: './batch-dialog.component.scss',
 })
 export class BatchDialogComponent {
-  private readonly destroyRef = inject(DestroyRef);
   private readonly fb = inject(FormBuilder);
-  private readonly store = inject(Store);
-  private readonly actions$ = inject(Actions);
-  private readonly messageService = inject(MessageService);
   private readonly productApiService = inject(ProductApiService);
 
   // Inputs
@@ -82,8 +71,12 @@ export class BatchDialogComponent {
   // Signals
   public readonly loading = signal(false);
   public readonly isEdit = computed(() => !!this.batch());
-  public readonly selectedBatch = this.store.selectSignal(selectSelectedBatch);
-  public readonly products = signal<LightProduct[]>([]);
+  public readonly products = toSignal(
+    this.productApiService.getAllProductsSimple().pipe(map(({ data }) => data)),
+    {
+      initialValue: [],
+    },
+  );
   public readonly productOptions = computed(() =>
     this.products().map((product) => ({
       label: product.name,
@@ -95,33 +88,22 @@ export class BatchDialogComponent {
   public readonly batchForm = this.fb.group({
     productId: ['', [Validators.required]],
     quantity: [0, [Validators.required, Validators.min(1)]],
-    productionDate: [''],
-    expiryDate: [''],
+    productionDate: [new Date() as Date],
+    expiryDate: [null as Date | null],
     manufacturingLocation: [''],
     qualityCheckStatus: [''],
     notes: [''],
   });
 
   constructor() {
-    // Load products for the dropdown
-    this.productApiService.getAllProductsSimple().subscribe({
-      next: (response) => {
-        this.products.set(response.data);
-      },
-      error: (error) => {
-        console.error('Failed to load products:', error);
-        this.products.set([]);
-      },
-    });
-
     effect(() => {
       const batch = this.batch();
       if (batch && this.visible()) {
         this.batchForm.patchValue({
-          productId: batch.products?.[0]?.id || '',
+          productId: batch.product?.id || '',
           quantity: batch.quantity || 0,
-          productionDate: batch.productionDate || '',
-          expiryDate: batch.expiryDate || '',
+          productionDate: new Date(batch.productionDate),
+          expiryDate: new Date(batch.expiryDate),
           manufacturingLocation: batch.manufacturingLocation || '',
           qualityCheckStatus: batch.qualityCheckStatus || '',
           notes: batch.notes || '',
@@ -132,32 +114,6 @@ export class BatchDialogComponent {
         });
       }
     });
-
-    // Listen for save success
-    this.actions$
-      .pipe(ofType(BatchesActions.createBatchSuccess), takeUntilDestroyed(this.destroyRef))
-      .subscribe(() => {
-        this.loading.set(false);
-        this.messageService.add({
-          severity: 'success',
-          summary: 'Success',
-          detail: 'Batch created successfully',
-        });
-        this.saveSuccess.emit();
-        this.visibleChange.emit(false);
-      });
-
-    // Listen for save failure
-    this.actions$
-      .pipe(ofType(BatchesActions.createBatchFailure), takeUntilDestroyed(this.destroyRef))
-      .subscribe(() => {
-        this.loading.set(false);
-        this.messageService.add({
-          severity: 'error',
-          summary: 'Error',
-          detail: 'Failed to create batch',
-        });
-      });
   }
 
   public onSave(): void {
@@ -171,8 +127,8 @@ export class BatchDialogComponent {
     const batchData: CreateBatchDto = {
       productId: formValue.productId!,
       quantity: formValue.quantity ?? 0,
-      productionDate: formValue.productionDate || undefined,
-      expiryDate: formValue.expiryDate || undefined,
+      productionDate: formValue.productionDate?.toISOString() || undefined,
+      expiryDate: formValue.expiryDate?.toISOString() || undefined,
       manufacturingLocation: formValue.manufacturingLocation || undefined,
       qualityCheckStatus: formValue.qualityCheckStatus || undefined,
       notes: formValue.notes || undefined,
