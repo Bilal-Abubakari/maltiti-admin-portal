@@ -12,6 +12,7 @@ import {
   AssignBatchesDto,
   CreateSaleDto,
   GenerateInvoiceDto,
+  GenerateReceiptDto,
   Sale,
   SaleLineItemDto,
   SaleStatus,
@@ -111,6 +112,16 @@ export class SalesApiService {
    */
   public generateInvoice(id: string, dto: GenerateInvoiceDto): Observable<Blob> {
     return this.http.post(`${this.baseUrl}/${id}/invoice`, dto, {
+      responseType: 'blob',
+    });
+  }
+
+  /**
+   * Generate receipt PDF for a sale
+   * POST /sales/{id}/receipt
+   */
+  public generateReceipt(id: string, dto: GenerateReceiptDto): Observable<Blob> {
+    return this.http.post(`${this.baseUrl}/${id}/receipt`, dto, {
       responseType: 'blob',
     });
   }

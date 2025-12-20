@@ -1671,6 +1671,23 @@
         "tags": ["Sales"]
       }
     },
+    "/sales/{id}/receipt": {
+      "post": {
+        "operationId": "SalesController_generateReceipt",
+        "parameters": [
+          { "name": "id", "required": true, "in": "path", "schema": { "type": "string" } }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": { "schema": { "$ref": "#/components/schemas/GenerateReceiptDto" } }
+          }
+        },
+        "responses": { "200": { "description": "Receipt PDF generated successfully" } },
+        "summary": "Generate receipt PDF for a sale",
+        "tags": ["Sales"]
+      }
+    },
     "/customers": {
       "get": {
         "operationId": "CustomerController_getAllCustomers",
@@ -2945,6 +2962,14 @@
       "GenerateInvoiceDto": {
         "type": "object",
         "properties": {
+          "discount": { "type": "number", "description": "Discount amount", "default": 0 },
+          "transportation": { "type": "number", "description": "Transportation cost", "default": 0 }
+        }
+      },
+      "GenerateReceiptDto": {
+        "type": "object",
+        "properties": {
+          "paymentMethod": { "type": "string", "description": "Payment method", "default": "Cash" },
           "discount": { "type": "number", "description": "Discount amount", "default": 0 },
           "transportation": { "type": "number", "description": "Transportation cost", "default": 0 }
         }

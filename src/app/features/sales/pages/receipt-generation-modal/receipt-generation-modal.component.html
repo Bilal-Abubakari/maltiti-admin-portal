@@ -1,0 +1,61 @@
+<p-dialog
+  header="Generate Receipt"
+  [closable]="true"
+  [modal]="true"
+  [style]="{'width': '500px'}"
+  [visible]="visible()"
+  (onHide)="close()"
+>
+  <form class="receipt-form" [formGroup]="receiptForm">
+    <div class="form-field">
+      <label for="paymentMethod">Payment Method</label>
+      <input
+        id="paymentMethod"
+        pInputText
+        placeholder="Enter payment method (e.g., Cash, Card, Mobile Money)"
+        [formControl]="receiptForm.controls.paymentMethod"
+      />
+      <small class="field-hint">Optional - Defaults to "Cash"</small>
+    </div>
+
+    <div class="form-field">
+      <label for="discount">Discount Amount</label>
+      <p-inputNumber
+        id="discount"
+        placeholder="Enter discount amount"
+        suffix=" GHS"
+        [formControl]="receiptForm.controls.discount"
+        [min]="0"
+      />
+      <small class="field-hint">Optional - Defaults to 0</small>
+    </div>
+
+    <div class="form-field">
+      <label for="transportation">Transportation Cost</label>
+      <p-inputNumber
+        id="transportation"
+        placeholder="Enter transportation cost"
+        suffix=" GHS"
+        [formControl]="receiptForm.controls.transportation"
+        [min]="0"
+      />
+      <small class="field-hint">Optional - Defaults to 0</small>
+    </div>
+  </form>
+
+  <ng-template pTemplate="footer">
+    <p-button
+      label="Cancel"
+      severity="secondary"
+      [outlined]="true"
+      (onClick)="close()"
+    />
+    <p-button
+      icon="pi pi-file-pdf"
+      label="Generate Receipt"
+      severity="primary"
+      [loading]="loading()"
+      (onClick)="onSubmit()"
+    />
+  </ng-template>
+</p-dialog>

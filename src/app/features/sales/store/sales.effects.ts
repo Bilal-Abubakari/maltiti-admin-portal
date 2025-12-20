@@ -108,12 +108,13 @@ export class SalesEffects {
     () =>
       this.actions$.pipe(
         ofType(SalesActions.createSaleSuccess),
-        map(() => {
+        tap(() => {
           this.messageService.add({
             severity: 'success',
             summary: 'Success',
             detail: 'Sale created successfully',
           });
+          void this.router.navigate([APP_ROUTES.sales.list.fullPath]);
         }),
       ),
     { dispatch: false },
@@ -123,12 +124,13 @@ export class SalesEffects {
     () =>
       this.actions$.pipe(
         ofType(SalesActions.updateSaleSuccess),
-        map(() => {
+        tap(() => {
           this.messageService.add({
             severity: 'success',
             summary: 'Success',
             detail: 'Sale updated successfully',
           });
+          void this.router.navigate([APP_ROUTES.sales.list.fullPath]);
         }),
       ),
     { dispatch: false },
@@ -161,7 +163,6 @@ export class SalesEffects {
             summary: 'Error',
             detail: error || 'Failed to create sale',
           });
-          void this.router.navigate([APP_ROUTES.sales.list.fullPath]);
         }),
       ),
     { dispatch: false },
@@ -171,7 +172,7 @@ export class SalesEffects {
     () =>
       this.actions$.pipe(
         ofType(SalesActions.updateSaleFailure),
-        map(({ error }) => {
+        tap(({ error }) => {
           this.messageService.add({
             severity: 'error',
             summary: 'Error',
@@ -186,7 +187,7 @@ export class SalesEffects {
     () =>
       this.actions$.pipe(
         ofType(SalesActions.updateSaleStatusFailure),
-        map(({ error }) => {
+        tap(({ error }) => {
           this.messageService.add({
             severity: 'error',
             summary: 'Error',

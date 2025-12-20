@@ -11,6 +11,7 @@ import {
   inject,
   OnInit,
   signal,
+  viewChild,
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
@@ -45,6 +46,7 @@ import { lineItemsTotalPrice } from '@shared/utils/totalPriceCalculator';
 import { APP_ROUTES } from '@config/routes.config';
 import { SalesApiService } from '../../services/sales-api.service';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { ReceiptGenerationModalComponent } from '../receipt-generation-modal/receipt-generation-modal.component';
 
 @Component({
   selector: 'app-sales-list',
@@ -63,6 +65,7 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
     MenuModule,
     ButtonComponent,
     SelectComponent,
+    ReceiptGenerationModalComponent,
   ],
   changeDetection: ChangeDetectionStrategy.OnPush,
   providers: [ConfirmationService],
@@ -84,6 +87,9 @@ export class SalesListComponent implements OnInit {
   public readonly limit = this.store.selectSignal(selectLimit);
   public readonly totalPages = this.store.selectSignal(selectTotalPages);
   public readonly menuItems = signal<MenuItem[]>([]);
+
+  // ViewChild references
+  public readonly receiptModal = viewChild.required(ReceiptGenerationModalComponent);
 
   // Local state
   public readonly statusOptions = [
@@ -166,6 +172,10 @@ export class SalesListComponent implements OnInit {
       });
   }
 
+  public onGenerateReceipt(sale: Sale): void {
+    this.receiptModal().open(sale.id);
+  }
+
   public getStatusSeverity(status: SaleStatus): 'success' | 'info' | 'warn' | 'danger' {
     switch (status) {
       case SaleStatus.Delivered:
@@ -217,21 +227,32 @@ export class SalesListComponent implements OnInit {
       });
     }
 
+    const actionItems: MenuItem[] = [
+      {
+        label: 'View',
+        icon: 'pi pi-eye',
+        command: (): void => this.onEditSale(sale),
+      },
+      {
+        label: 'Generate Invoice',
+        icon: 'pi pi-file-pdf',
+        command: (): void => this.onGenerateInvoice(sale),
+      },
+    ];
+
+    // Add receipt generation option only for paid sales
+    if (sale.status === SaleStatus.Paid) {
+      actionItems.push({
+        label: 'Generate Receipt',
+        icon: 'pi pi-receipt',
+        command: (): void => this.onGenerateReceipt(sale),
+      });
+    }
+
     const menuItems: MenuItem[] = [
       {
         label: 'Actions',
-        items: [
-          {
-            label: 'View',
-            icon: 'pi pi-eye',
-            command: (): void => this.onEditSale(sale),
-          },
-          {
-            label: 'Generate Invoice',
-            icon: 'pi pi-file-pdf',
-            command: (): void => this.onGenerateInvoice(sale),
-          },
-        ],
+        items: actionItems,
       },
       ...statusItems,
     ];
