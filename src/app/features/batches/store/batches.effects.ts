@@ -29,7 +29,14 @@ export class BatchesEffects {
         }
         return this.batchApi.getAllBatches(params).pipe(
           map((response) => BatchesActions.loadBatchesSuccess({ response })),
-          catchError((error) => of(BatchesActions.loadBatchesFailure({ error: error.message }))),
+          catchError((error) => {
+            this.messageService.add({
+              severity: 'error',
+              summary: 'Error',
+              detail: 'Failed to load batches',
+            });
+            return of(BatchesActions.loadBatchesFailure({ error: error.error.message }));
+          }),
         );
       }),
     ),
@@ -41,7 +48,14 @@ export class BatchesEffects {
       switchMap(({ id }) =>
         this.batchApi.getBatch(id).pipe(
           map((batch) => BatchesActions.loadBatchSuccess({ batch })),
-          catchError((error) => of(BatchesActions.loadBatchFailure({ error: error.message }))),
+          catchError((error) => {
+            this.messageService.add({
+              severity: 'error',
+              summary: 'Error',
+              detail: 'Failed to load batch',
+            });
+            return of(BatchesActions.loadBatchFailure({ error: error.message }));
+          }),
         ),
       ),
     ),
@@ -52,10 +66,24 @@ export class BatchesEffects {
       ofType(BatchesActions.createBatch),
       switchMap(({ dto }) =>
         this.batchApi.createBatch(dto).pipe(
-          map((batch) => BatchesActions.createBatchSuccess({ batch })),
-          catchError((error) =>
-            of(BatchesActions.createBatchFailure({ error: error.error.error ?? SERVER_ERROR })),
+          tap(() =>
+            this.messageService.add({
+              severity: 'success',
+              summary: 'Success',
+              detail: 'Batch created successfully',
+            }),
           ),
+          map((batch) => BatchesActions.createBatchSuccess({ batch })),
+          catchError((error) => {
+            this.messageService.add({
+              severity: 'error',
+              summary: 'Error',
+              detail: 'Failed to create batch',
+            });
+            return of(
+              BatchesActions.createBatchFailure({ error: error.error.error ?? SERVER_ERROR }),
+            );
+          }),
         ),
       ),
     ),
