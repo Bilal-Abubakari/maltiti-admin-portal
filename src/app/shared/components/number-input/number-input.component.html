@@ -7,7 +7,7 @@
     [currency]="currency()"
     [formControl]="control()"
     [id]="id()"
-    [invalid]="this.control()?.touched && this.control()?.invalid"
+    [invalid]="this.control().touched && this.control().invalid"
     [locale]="locale()"
     [max]="max()"
     [min]="min()"
@@ -18,7 +18,7 @@
     [required]="required()"
     [suffix]="suffix()"
   />
-  @if (this.control()?.touched && this.control()?.invalid) {
+  @if (this.control().touched && this.control().invalid) {
     <p-message severity="error" size="small" variant="simple">{{ errorMessage() }}</p-message>
   }
 </div>

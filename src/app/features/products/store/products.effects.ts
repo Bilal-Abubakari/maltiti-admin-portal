@@ -23,7 +23,13 @@ export class ProductsEffects {
       switchMap(({ params }) =>
         this.productApi.getAllProducts(params).pipe(
           map(({ data }) => ProductsActions.loadProductsSuccess({ data })),
-          catchError((error) => of(ProductsActions.loadProductsFailure({ error: error.message }))),
+          catchError((error) =>
+            of(
+              ProductsActions.loadProductsFailure({
+                error: error?.error?.message ?? 'Failed to load products',
+              }),
+            ),
+          ),
         ),
       ),
     ),
@@ -35,7 +41,13 @@ export class ProductsEffects {
       switchMap(({ id }) =>
         this.productApi.getProduct(id).pipe(
           map((product) => ProductsActions.loadProductSuccess({ product })),
-          catchError((error) => of(ProductsActions.loadProductFailure({ error: error.message }))),
+          catchError((error) =>
+            of(
+              ProductsActions.loadProductFailure({
+                error: error?.error?.message ?? 'Failed to load product',
+              }),
+            ),
+          ),
         ),
       ),
     ),
@@ -47,7 +59,13 @@ export class ProductsEffects {
       switchMap(({ dto }) =>
         this.productApi.createProduct(dto).pipe(
           map((product) => ProductsActions.createProductSuccess({ product })),
-          catchError((error) => of(ProductsActions.createProductFailure({ error: error.message }))),
+          catchError((error) =>
+            of(
+              ProductsActions.createProductFailure({
+                error: error?.error?.message ?? 'Failed to create product',
+              }),
+            ),
+          ),
         ),
       ),
     ),
@@ -129,7 +147,11 @@ export class ProductsEffects {
         this.productApi.changeProductStatus(id).pipe(
           map((product) => ProductsActions.changeProductStatusSuccess({ product })),
           catchError((error) =>
-            of(ProductsActions.changeProductStatusFailure({ error: error.message })),
+            of(
+              ProductsActions.changeProductStatusFailure({
+                error: error?.error?.message ?? 'Failed to change product status',
+              }),
+            ),
           ),
         ),
       ),

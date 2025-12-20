@@ -5,7 +5,7 @@ import { of } from 'rxjs';
 import { catchError, exhaustMap, map, tap } from 'rxjs/operators';
 import { AuthService } from '../services/auth.service';
 import * as AuthActions from './auth.actions';
-import { APP_ROUTES } from '../../config/routes.config';
+import { APP_ROUTES } from '@config/routes.config';
 
 @Injectable()
 export class AuthEffects {
@@ -68,11 +68,13 @@ export class AuthEffects {
       exhaustMap(({ id, currentPassword, newPassword, confirmPassword }) =>
         this.authService.changePassword(id, currentPassword, newPassword, confirmPassword).pipe(
           map(({ user }) => AuthActions.changePasswordSuccess({ user })),
-          catchError((error) => {
-            const errorMessage =
-              error?.error?.message || 'Change password failed. Please try again.';
-            return of(AuthActions.changePasswordFailure({ error: errorMessage }));
-          }),
+          catchError((error) =>
+            of(
+              AuthActions.changePasswordFailure({
+                error: error?.error?.message || 'Change password failed. Please try again.',
+              }),
+            ),
+          ),
         ),
       ),
     ),

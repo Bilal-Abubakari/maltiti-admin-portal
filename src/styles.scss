@@ -4,8 +4,8 @@
 @use "styles/theme.scss";
 
 /* SCSS Variables and Mixins */
-@import 'styles/variables';
-@import 'styles/mixins';
+@use 'styles/variables';
+@use 'styles/mixins';
 
 /* Global Reset */
 * {

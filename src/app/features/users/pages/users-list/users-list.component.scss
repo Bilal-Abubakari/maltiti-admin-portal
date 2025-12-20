@@ -1,5 +1,5 @@
-@import '../../../../../styles/variables';
-@import '../../../../../styles/mixins';
+@use '../../../../../styles/variables';
+@use '../../../../../styles/mixins';
 
 .users-list-container {
   max-width: 100%;
@@ -8,22 +8,22 @@
 
 // Page Header
 .page-header {
-  @include flex-between;
-  margin-bottom: $spacing-xl;
+  @include mixins.flex-between;
+  margin-bottom: variables.$spacing-xl;
   flex-wrap: wrap;
-  gap: $spacing-md;
+  gap: variables.$spacing-md;
 }
 
 .page-title {
   h1 {
-    font-size: $font-size-3xl;
-    font-weight: $font-weight-bold;
+    font-size: variables.$font-size-3xl;
+    font-weight: variables.$font-weight-bold;
     color: var(--text-color);
-    margin: 0 0 $spacing-xs 0;
+    margin: 0 0 variables.$spacing-xs 0;
   }
 
   .page-description {
-    font-size: $font-size-base;
+    font-size: variables.$font-size-base;
     color: var(--text-color-secondary);
     margin: 0;
   }
@@ -31,14 +31,14 @@
 
 // Filters Section
 .filters-section {
-  @include card;
-  margin-bottom: $spacing-lg;
+  @include mixins.card;
+  margin-bottom: variables.$spacing-lg;
 }
 
 .filters-row {
   display: flex;
   flex-wrap: wrap;
-  gap: $spacing-md;
+  gap: variables.$spacing-md;
   align-items: center;
 
   .search-input {
@@ -54,20 +54,20 @@
 
 // Table Card
 .table-card {
-  @include card;
+  @include mixins.card;
   padding: 0;
 
   ::ng-deep .p-datatable {
     .p-datatable-thead > tr > th {
       background-color: var(--surface-50);
-      padding: $spacing-md;
-      font-weight: $font-weight-semibold;
+      padding: variables.$spacing-md;
+      font-weight: variables.$font-weight-semibold;
       color: var(--text-color);
       border-bottom: 2px solid var(--surface-border);
     }
 
     .p-datatable-tbody > tr > td {
-      padding: $spacing-md;
+      padding: variables.$spacing-md;
       border-bottom: 1px solid var(--surface-border);
     }
 
@@ -82,7 +82,7 @@
 // User Name Cell
 .user-name-cell {
   .user-name {
-    font-weight: $font-weight-medium;
+    font-weight: variables.$font-weight-medium;
     color: var(--text-color);
   }
 }
@@ -90,31 +90,31 @@
 // User Email
 .user-email {
   color: var(--text-color);
-  font-family: $font-family-mono;
-  font-size: $font-size-sm;
+  font-family: variables.$font-family-mono;
+  font-size: variables.$font-size-sm;
 }
 
 // User Phone
 .user-phone {
   color: var(--text-color-secondary);
-  font-size: $font-size-sm;
+  font-size: variables.$font-size-sm;
 }
 
 // Created At
 .created-at {
   color: var(--text-color-secondary);
-  font-size: $font-size-sm;
+  font-size: variables.$font-size-sm;
 }
 
 // Action Buttons
 .action-buttons {
-  @include flex-start;
-  gap: $spacing-xs;
+  @include mixins.flex-start;
+  gap: variables.$spacing-xs;
 }
 
 // Empty State
 .empty-state {
-  padding: $spacing-3xl $spacing-md !important;
+  padding: variables.$spacing-3xl variables.$spacing-md !important;
   text-align: center;
 }
 
@@ -122,7 +122,7 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: $spacing-md;
+  gap: variables.$spacing-md;
 
   .empty-icon {
     font-size: 4rem;
@@ -132,14 +132,14 @@
 
   h3 {
     margin: 0;
-    font-size: $font-size-xl;
-    font-weight: $font-weight-semibold;
+    font-size: variables.$font-size-xl;
+    font-weight: variables.$font-weight-semibold;
     color: var(--text-color);
   }
 
   p {
     margin: 0;
-    font-size: $font-size-base;
+    font-size: variables.$font-size-base;
     color: var(--text-color-secondary);
     max-width: 400px;
   }
