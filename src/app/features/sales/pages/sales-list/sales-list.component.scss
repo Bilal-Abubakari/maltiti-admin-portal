@@ -1,4 +1,5 @@
-@import '../../../../../styles/mixins';
+@use '../../../../../styles/mixins';
+@use '../../../../../styles/variables' as variables;
 
 .sales-list-container {
   max-width: 100%;
@@ -7,22 +8,22 @@
 
 // Page Header
 .page-header {
-  @include flex-between;
-  margin-bottom: $spacing-xl;
+  @include mixins.flex-between;
+  margin-bottom: variables.$spacing-xl;
   flex-wrap: wrap;
-  gap: $spacing-md;
+  gap: variables.$spacing-md;
 }
 
 .page-title {
   h1 {
-    font-size: $font-size-3xl;
-    font-weight: $font-weight-bold;
+    font-size: variables.$font-size-3xl;
+    font-weight: variables.$font-weight-bold;
     color: var(--text-color);
-    margin: 0 0 $spacing-xs 0;
+    margin: 0 0 variables.$spacing-xs 0;
   }
 
   .page-description {
-    font-size: $font-size-base;
+    font-size: variables.$font-size-base;
     color: var(--text-color-secondary);
     margin: 0;
   }
@@ -30,19 +31,19 @@
 
 .page-actions {
   display: flex;
-  gap: $spacing-sm;
+  gap: variables.$spacing-sm;
 }
 
 // Filters Section
 .filters-section {
-  @include card;
-  margin-bottom: $spacing-lg;
+  @include mixins.card;
+  margin-bottom: variables.$spacing-lg;
 }
 
 .filters-row {
   display: flex;
   flex-wrap: wrap;
-  gap: $spacing-md;
+  gap: variables.$spacing-md;
   align-items: center;
 
   .filter-dropdown {
@@ -52,12 +53,12 @@
 
 // Table Container
 .table-container {
-  @include card;
+  @include mixins.card;
 }
 
 .action-buttons {
   display: flex;
-  gap: $spacing-xs;
+  gap: variables.$spacing-xs;
   align-items: center;
 
   .status-dropdown {
@@ -75,11 +76,11 @@
 
 // Error Message
 .error-message {
-  @include card;
+  @include mixins.card;
   background-color: var(--red-50);
   border-color: var(--red-200);
   color: var(--red-700);
-  margin-top: $spacing-lg;
+  margin-top: variables.$spacing-lg;
 
   p {
     margin: 0;
@@ -87,14 +88,13 @@
 }
 
 .empty-state {
-  padding: $spacing-3xl $spacing-md !important;
+  padding: variables.$spacing-3xl variables.$spacing-md !important;
   text-align: center;
 
   .empty-state-content {
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: $spacing-md;
+    gap: variables.$spacing-md;
   }
 }
-
