@@ -55,6 +55,12 @@ export interface GenerateInvoiceDto {
   transportation?: number;
 }
 
+export interface GenerateReceiptDto {
+  paymentMethod?: string;
+  discount?: number;
+  transportation?: number;
+}
+
 export interface SaleLineItem {
   id: string;
   productId: string;

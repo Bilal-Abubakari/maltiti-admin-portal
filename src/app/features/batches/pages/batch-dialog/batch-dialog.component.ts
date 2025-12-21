@@ -30,8 +30,9 @@ import { NumberInputComponent } from '@shared/components/number-input/number-inp
 import { InputComponent } from '@shared/components/input/input.component';
 import { TextareaComponent } from '@shared/components/textarea/textarea.component';
 import { toSignal } from '@angular/core/rxjs-interop';
-import { map } from 'rxjs/operators';
-
+import { map, take } from 'rxjs/operators';
+import { Actions, ofType } from '@ngrx/effects';
+import { createBatchSuccess } from '../../store/batches.actions';
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'app-batch-dialog',
@@ -55,6 +56,7 @@ import { map } from 'rxjs/operators';
   styleUrl: './batch-dialog.component.scss',
 })
 export class BatchDialogComponent {
+  private readonly actions = inject(Actions);
   private readonly fb = inject(FormBuilder);
   private readonly productApiService = inject(ProductApiService);
 
@@ -133,6 +135,12 @@ export class BatchDialogComponent {
       qualityCheckStatus: formValue.qualityCheckStatus || undefined,
       notes: formValue.notes || undefined,
     };
+
+    this.actions.pipe(ofType(createBatchSuccess), take(1)).subscribe(() => {
+      this.loading.set(false);
+      this.saveSuccess.emit();
+      this.visibleChange.emit(false);
+    });
 
     this.save.emit(batchData);
   }
