@@ -5,36 +5,15 @@
  */
 
 import { Pipe, PipeTransform } from '@angular/core';
-import { Product, UnitOfMeasurement } from '@features/products/models/product.model';
+import { LightProduct, Product } from '@features/products/models/product.model';
+import { productName } from '@shared/utils/product-name';
 
 @Pipe({
   name: 'productName',
   standalone: true,
 })
 export class ProductNamePipe implements PipeTransform {
-  private readonly unitSymbols: Record<UnitOfMeasurement, string> = {
-    [UnitOfMeasurement.KILOGRAM]: 'kg',
-    [UnitOfMeasurement.GRAM]: 'g',
-    [UnitOfMeasurement.LITRE]: 'L',
-    [UnitOfMeasurement.MILLILITRE]: 'ml',
-  };
-
-  public transform(product: Product | null | undefined): string {
-    if (!product) {
-      return 'N/A';
-    }
-
-    const { name, weight, unitOfMeasurement } = product;
-
-    // If no weight or unit, return just the name
-    if (!weight || !unitOfMeasurement) {
-      return name;
-    }
-
-    // Get unit symbol
-    const unitSymbol = this.unitSymbols[unitOfMeasurement] || unitOfMeasurement;
-
-    // Format: "Name (weight unit)"
-    return `${name} (${weight}${unitSymbol})`;
+  public transform(product: Product | null | undefined | LightProduct): string {
+    return productName(product);
   }
 }

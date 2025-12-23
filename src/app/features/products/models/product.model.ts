@@ -57,7 +57,10 @@ export interface Product {
   updatedAt: string;
 }
 
-export type LightProduct = Pick<Product, 'id' | 'name' | 'wholesale' | 'retail'>;
+export type LightProduct = Pick<
+  Product,
+  'id' | 'name' | 'wholesale' | 'retail' | 'unitOfMeasurement' | 'weight'
+>;
 
 export interface CreateProductDto {
   sku?: string;
