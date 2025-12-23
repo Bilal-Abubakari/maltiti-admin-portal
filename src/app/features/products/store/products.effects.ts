@@ -92,7 +92,9 @@ export class ProductsEffects {
       switchMap(({ id, dto }) =>
         this.productApi.updateProduct(id, dto).pipe(
           map((product) => ProductsActions.updateProductSuccess({ product })),
-          catchError((error) => of(ProductsActions.updateProductFailure({ error: error.message }))),
+          catchError((error) =>
+            of(ProductsActions.updateProductFailure({ error: error.error.message })),
+          ),
         ),
       ),
     ),
@@ -119,7 +121,9 @@ export class ProductsEffects {
       switchMap(({ id }) =>
         this.productApi.deleteProduct(id).pipe(
           map(() => ProductsActions.deleteProductSuccess({ id })),
-          catchError((error) => of(ProductsActions.deleteProductFailure({ error: error.message }))),
+          catchError((error) =>
+            of(ProductsActions.deleteProductFailure({ error: error.error.message })),
+          ),
         ),
       ),
     ),
