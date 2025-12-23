@@ -1,0 +1,130 @@
+<div class="product-performance">
+  <div class="page-header">
+    <h1 class="page-title">
+      <i class="pi pi-box"></i>
+      Product Performance
+    </h1>
+    <p class="page-description">
+      Analyze product performance, top sellers, and revenue contribution.
+    </p>
+  </div>
+
+  <app-report-filters
+    [showAggregation]="true"
+    [showBatch]="false"
+    [showCategory]="true"
+    [showDateRange]="true"
+    [showProduct]="false"
+    (filtersApplied)="onFiltersApplied($event)"
+    (filtersReset)="onFiltersReset()"
+  />
+
+  @if (isLoading()) {
+    <div class="loading-state">
+      <p-skeleton height="400px" styleClass="mb-3" />
+      <p-skeleton height="400px" />
+    </div>
+  } @else {
+    <div class="content-grid">
+      <!-- Revenue Distribution Chart -->
+      @if (chartData()) {
+        <p-card class="chart-card">
+          <ng-template pTemplate="header">
+            <h3 class="card-title">Revenue Distribution</h3>
+          </ng-template>
+          <p-chart height="350px" type="pie" [data]="chartData()" [options]="chartOptions()" />
+        </p-card>
+      }
+
+      <!-- Top Products -->
+      @if (topProducts().length > 0) {
+        <p-card class="top-products-card">
+          <ng-template pTemplate="header">
+            <h3 class="card-title">Top 10 Products</h3>
+          </ng-template>
+          <div class="top-products-list">
+            @for (product of topProducts(); track product.productId; let index = $index) {
+              <div class="product-item">
+                <div class="product-rank">{{ index + 1 }}</div>
+                <div class="product-details">
+                  <div class="product-name">{{ product.productName }}</div>
+                  <div class="product-category">{{ product.category }}</div>
+                </div>
+                <div class="product-metrics">
+                  <div class="metric">
+                    <span class="metric-value">{{ product.revenue | currency: 'GHS ' }}</span>
+                    <span class="metric-label">Revenue</span>
+                  </div>
+                  <div class="metric">
+                    <span class="metric-value">{{ product.quantitySold | number }}</span>
+                    <span class="metric-label">Qty Sold</span>
+                  </div>
+                </div>
+              </div>
+            }
+          </div>
+        </p-card>
+      }
+    </div>
+
+    <!-- All Products Table -->
+    @if (allProducts().length > 0) {
+      <p-card class="table-card">
+        <ng-template pTemplate="header">
+          <h3 class="card-title">All Products Performance</h3>
+        </ng-template>
+        <p-table
+          [globalFilterFields]="['productName', 'category']"
+          [paginator]="true"
+          
+          [rows]="10"
+          [value]="allProducts()"
+        >
+          <ng-template pTemplate="header">
+            <tr>
+              <th pSortableColumn="productName">
+                Product Name <p-sortIcon field="productName" />
+              </th>
+              <th pSortableColumn="category">
+                Category <p-sortIcon field="category" />
+              </th>
+              <th pSortableColumn="revenue">
+                Revenue <p-sortIcon field="revenue" />
+              </th>
+              <th pSortableColumn="quantitySold">
+                Quantity Sold <p-sortIcon field="quantitySold" />
+              </th>
+              <th pSortableColumn="salesCount">
+                Sales Count <p-sortIcon field="salesCount" />
+              </th>
+              <th pSortableColumn="averagePrice">
+                Avg Price <p-sortIcon field="averagePrice" />
+              </th>
+            </tr>
+          </ng-template>
+          <ng-template let-product pTemplate="body">
+            <tr>
+              <td>{{ product.productName }}</td>
+              <td>
+                <span class="category-badge">{{ product.category }}</span>
+              </td>
+              <td>{{ product.revenue | currency: 'GHS ' }}</td>
+              <td>{{ product.quantitySold | number }}</td>
+              <td>{{ product.salesCount | number }}</td>
+              <td>{{ product.averagePrice | currency: 'GHS ' }}</td>
+            </tr>
+          </ng-template>
+        </p-table>
+      </p-card>
+    }
+
+    @if (allProducts().length === 0 && !isLoading()) {
+      <div class="empty-state">
+        <i class="pi pi-box"></i>
+        <h3>No Product Data Available</h3>
+        <p>Apply filters to view product performance</p>
+      </div>
+    }
+  }
+</div>
+

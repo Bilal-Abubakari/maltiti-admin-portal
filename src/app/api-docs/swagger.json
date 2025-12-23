@@ -1799,6 +1799,789 @@
         "summary": "Delete a customer (soft delete)",
         "tags": ["customers"]
       }
+    },
+    "/reports/sales": {
+      "get": {
+        "description": "Returns total revenue, sales count, average order value, and optional time series data. Supports filtering by date range, product, and category. Perfect for dashboard KPIs and charts.",
+        "operationId": "ReportsController_getSalesReport",
+        "parameters": [
+          {
+            "name": "fromDate",
+            "required": false,
+            "in": "query",
+            "description": "Start date for filtering (ISO format)",
+            "schema": { "type": "string" }
+          },
+          {
+            "name": "toDate",
+            "required": false,
+            "in": "query",
+            "description": "End date for filtering (ISO format)",
+            "schema": { "type": "string" }
+          },
+          {
+            "name": "productId",
+            "required": false,
+            "in": "query",
+            "description": "Filter by product ID",
+            "schema": { "type": "string" }
+          },
+          {
+            "name": "category",
+            "required": false,
+            "in": "query",
+            "description": "Filter by product category",
+            "schema": {
+              "enum": [
+                "Shea Butter",
+                "Black Soap",
+                "Cosmetics",
+                "Shea Soap",
+                "Powdered Soap",
+                "Dawadawa",
+                "Essential Oils",
+                "Hair Oil",
+                "Grains",
+                "Legumes",
+                "Other"
+              ],
+              "type": "string"
+            }
+          },
+          {
+            "name": "batchId",
+            "required": false,
+            "in": "query",
+            "description": "Filter by batch ID",
+            "schema": { "type": "string" }
+          },
+          {
+            "name": "aggregation",
+            "required": false,
+            "in": "query",
+            "description": "Time aggregation level",
+            "schema": {
+              "default": "daily",
+              "enum": ["daily", "weekly", "monthly", "yearly"],
+              "type": "string"
+            }
+          },
+          {
+            "name": "includeTrends",
+            "required": false,
+            "in": "query",
+            "description": "Include sales trends",
+            "schema": { "default": false, "type": "boolean" }
+          }
+        ],
+        "responses": { "200": { "description": "Sales report generated successfully" } },
+        "summary": "Get comprehensive sales report",
+        "tags": ["Reports"]
+      }
+    },
+    "/reports/sales/by-product": {
+      "get": {
+        "description": "Returns sales metrics for each product including quantity sold, revenue, and number of sales. Useful for product performance tables and identifying top/bottom performers.",
+        "operationId": "ReportsController_getSalesByProduct",
+        "parameters": [
+          {
+            "name": "fromDate",
+            "required": false,
+            "in": "query",
+            "description": "Start date for filtering (ISO format)",
+            "schema": { "type": "string" }
+          },
+          {
+            "name": "toDate",
+            "required": false,
+            "in": "query",
+            "description": "End date for filtering (ISO format)",
+            "schema": { "type": "string" }
+          },
+          {
+            "name": "productId",
+            "required": false,
+            "in": "query",
+            "description": "Filter by product ID",
+            "schema": { "type": "string" }
+          },
+          {
+            "name": "category",
+            "required": false,
+            "in": "query",
+            "description": "Filter by product category",
+            "schema": {
+              "enum": [
+                "Shea Butter",
+                "Black Soap",
+                "Cosmetics",
+                "Shea Soap",
+                "Powdered Soap",
+                "Dawadawa",
+                "Essential Oils",
+                "Hair Oil",
+                "Grains",
+                "Legumes",
+                "Other"
+              ],
+              "type": "string"
+            }
+          },
+          {
+            "name": "batchId",
+            "required": false,
+            "in": "query",
+            "description": "Filter by batch ID",
+            "schema": { "type": "string" }
+          },
+          {
+            "name": "aggregation",
+            "required": false,
+            "in": "query",
+            "description": "Time aggregation level",
+            "schema": {
+              "default": "daily",
+              "enum": ["daily", "weekly", "monthly", "yearly"],
+              "type": "string"
+            }
+          }
+        ],
+        "responses": { "200": { "description": "Product sales report generated successfully" } },
+        "summary": "Get sales breakdown by product",
+        "tags": ["Reports"]
+      }
+    },
+    "/reports/sales/by-category": {
+      "get": {
+        "description": "Returns sales metrics aggregated by product category with percentage of total revenue. Perfect for pie charts and understanding category performance.",
+        "operationId": "ReportsController_getSalesByCategory",
+        "parameters": [
+          {
+            "name": "fromDate",
+            "required": false,
+            "in": "query",
+            "description": "Start date for filtering (ISO format)",
+            "schema": { "type": "string" }
+          },
+          {
+            "name": "toDate",
+            "required": false,
+            "in": "query",
+            "description": "End date for filtering (ISO format)",
+            "schema": { "type": "string" }
+          },
+          {
+            "name": "productId",
+            "required": false,
+            "in": "query",
+            "description": "Filter by product ID",
+            "schema": { "type": "string" }
+          },
+          {
+            "name": "category",
+            "required": false,
+            "in": "query",
+            "description": "Filter by product category",
+            "schema": {
+              "enum": [
+                "Shea Butter",
+                "Black Soap",
+                "Cosmetics",
+                "Shea Soap",
+                "Powdered Soap",
+                "Dawadawa",
+                "Essential Oils",
+                "Hair Oil",
+                "Grains",
+                "Legumes",
+                "Other"
+              ],
+              "type": "string"
+            }
+          },
+          {
+            "name": "batchId",
+            "required": false,
+            "in": "query",
+            "description": "Filter by batch ID",
+            "schema": { "type": "string" }
+          },
+          {
+            "name": "aggregation",
+            "required": false,
+            "in": "query",
+            "description": "Time aggregation level",
+            "schema": {
+              "default": "daily",
+              "enum": ["daily", "weekly", "monthly", "yearly"],
+              "type": "string"
+            }
+          }
+        ],
+        "responses": { "200": { "description": "Category sales report generated successfully" } },
+        "summary": "Get sales breakdown by category",
+        "tags": ["Reports"]
+      }
+    },
+    "/reports/products/top": {
+      "get": {
+        "description": "Returns ranked list of best-selling products by revenue or quantity. Configurable limit and sort order. Great for leaderboards and highlights.",
+        "operationId": "ReportsController_getTopProducts",
+        "parameters": [
+          {
+            "name": "fromDate",
+            "required": false,
+            "in": "query",
+            "description": "Start date for filtering (ISO format)",
+            "schema": { "type": "string" }
+          },
+          {
+            "name": "toDate",
+            "required": false,
+            "in": "query",
+            "description": "End date for filtering (ISO format)",
+            "schema": { "type": "string" }
+          },
+          {
+            "name": "productId",
+            "required": false,
+            "in": "query",
+            "description": "Filter by product ID",
+            "schema": { "type": "string" }
+          },
+          {
+            "name": "category",
+            "required": false,
+            "in": "query",
+            "description": "Filter by product category",
+            "schema": {
+              "enum": [
+                "Shea Butter",
+                "Black Soap",
+                "Cosmetics",
+                "Shea Soap",
+                "Powdered Soap",
+                "Dawadawa",
+                "Essential Oils",
+                "Hair Oil",
+                "Grains",
+                "Legumes",
+                "Other"
+              ],
+              "type": "string"
+            }
+          },
+          {
+            "name": "batchId",
+            "required": false,
+            "in": "query",
+            "description": "Filter by batch ID",
+            "schema": { "type": "string" }
+          },
+          {
+            "name": "aggregation",
+            "required": false,
+            "in": "query",
+            "description": "Time aggregation level",
+            "schema": {
+              "default": "daily",
+              "enum": ["daily", "weekly", "monthly", "yearly"],
+              "type": "string"
+            }
+          },
+          {
+            "name": "limit",
+            "required": false,
+            "in": "query",
+            "description": "Number of top products to return",
+            "schema": { "default": 10, "type": "number" }
+          },
+          {
+            "name": "sortOrder",
+            "required": false,
+            "in": "query",
+            "schema": { "default": "DESC", "enum": ["ASC", "DESC"], "type": "string" }
+          }
+        ],
+        "responses": { "200": { "description": "Top products report generated successfully" } },
+        "summary": "Get top selling products",
+        "tags": ["Reports"]
+      }
+    },
+    "/reports/products/revenue-distribution": {
+      "get": {
+        "description": "Shows percentage contribution of each product to total revenue. Ideal for understanding which products drive the most revenue.",
+        "operationId": "ReportsController_getRevenueDistribution",
+        "parameters": [
+          {
+            "name": "fromDate",
+            "required": false,
+            "in": "query",
+            "description": "Start date for filtering (ISO format)",
+            "schema": { "type": "string" }
+          },
+          {
+            "name": "toDate",
+            "required": false,
+            "in": "query",
+            "description": "End date for filtering (ISO format)",
+            "schema": { "type": "string" }
+          },
+          {
+            "name": "productId",
+            "required": false,
+            "in": "query",
+            "description": "Filter by product ID",
+            "schema": { "type": "string" }
+          },
+          {
+            "name": "category",
+            "required": false,
+            "in": "query",
+            "description": "Filter by product category",
+            "schema": {
+              "enum": [
+                "Shea Butter",
+                "Black Soap",
+                "Cosmetics",
+                "Shea Soap",
+                "Powdered Soap",
+                "Dawadawa",
+                "Essential Oils",
+                "Hair Oil",
+                "Grains",
+                "Legumes",
+                "Other"
+              ],
+              "type": "string"
+            }
+          },
+          {
+            "name": "batchId",
+            "required": false,
+            "in": "query",
+            "description": "Filter by batch ID",
+            "schema": { "type": "string" }
+          },
+          {
+            "name": "aggregation",
+            "required": false,
+            "in": "query",
+            "description": "Time aggregation level",
+            "schema": {
+              "default": "daily",
+              "enum": ["daily", "weekly", "monthly", "yearly"],
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": { "description": "Revenue distribution report generated successfully" }
+        },
+        "summary": "Get revenue distribution by product",
+        "tags": ["Reports"]
+      }
+    },
+    "/reports/batches": {
+      "get": {
+        "description": "Returns batch production volumes, sold quantities, and utilization rates. Helps track production efficiency and batch performance.",
+        "operationId": "ReportsController_getBatchReport",
+        "parameters": [
+          {
+            "name": "fromDate",
+            "required": false,
+            "in": "query",
+            "description": "Start date for filtering (ISO format)",
+            "schema": { "type": "string" }
+          },
+          {
+            "name": "toDate",
+            "required": false,
+            "in": "query",
+            "description": "End date for filtering (ISO format)",
+            "schema": { "type": "string" }
+          },
+          {
+            "name": "productId",
+            "required": false,
+            "in": "query",
+            "description": "Filter by product ID",
+            "schema": { "type": "string" }
+          },
+          {
+            "name": "category",
+            "required": false,
+            "in": "query",
+            "description": "Filter by product category",
+            "schema": {
+              "enum": [
+                "Shea Butter",
+                "Black Soap",
+                "Cosmetics",
+                "Shea Soap",
+                "Powdered Soap",
+                "Dawadawa",
+                "Essential Oils",
+                "Hair Oil",
+                "Grains",
+                "Legumes",
+                "Other"
+              ],
+              "type": "string"
+            }
+          },
+          {
+            "name": "batchId",
+            "required": false,
+            "in": "query",
+            "description": "Filter by batch ID",
+            "schema": { "type": "string" }
+          },
+          {
+            "name": "aggregation",
+            "required": false,
+            "in": "query",
+            "description": "Time aggregation level",
+            "schema": {
+              "default": "daily",
+              "enum": ["daily", "weekly", "monthly", "yearly"],
+              "type": "string"
+            }
+          }
+        ],
+        "responses": { "200": { "description": "Batch report generated successfully" } },
+        "summary": "Get batch production report",
+        "tags": ["Reports"]
+      }
+    },
+    "/reports/batches/aging": {
+      "get": {
+        "description": "Tracks batch age, days until expiry, and categorizes batches by urgency. Critical for managing perishable inventory and preventing waste.",
+        "operationId": "ReportsController_getBatchAgingReport",
+        "parameters": [
+          {
+            "name": "fromDate",
+            "required": false,
+            "in": "query",
+            "description": "Start date for filtering (ISO format)",
+            "schema": { "type": "string" }
+          },
+          {
+            "name": "toDate",
+            "required": false,
+            "in": "query",
+            "description": "End date for filtering (ISO format)",
+            "schema": { "type": "string" }
+          },
+          {
+            "name": "productId",
+            "required": false,
+            "in": "query",
+            "description": "Filter by product ID",
+            "schema": { "type": "string" }
+          },
+          {
+            "name": "category",
+            "required": false,
+            "in": "query",
+            "description": "Filter by product category",
+            "schema": {
+              "enum": [
+                "Shea Butter",
+                "Black Soap",
+                "Cosmetics",
+                "Shea Soap",
+                "Powdered Soap",
+                "Dawadawa",
+                "Essential Oils",
+                "Hair Oil",
+                "Grains",
+                "Legumes",
+                "Other"
+              ],
+              "type": "string"
+            }
+          },
+          {
+            "name": "batchId",
+            "required": false,
+            "in": "query",
+            "description": "Filter by batch ID",
+            "schema": { "type": "string" }
+          },
+          {
+            "name": "aggregation",
+            "required": false,
+            "in": "query",
+            "description": "Time aggregation level",
+            "schema": {
+              "default": "daily",
+              "enum": ["daily", "weekly", "monthly", "yearly"],
+              "type": "string"
+            }
+          }
+        ],
+        "responses": { "200": { "description": "Batch aging report generated successfully" } },
+        "summary": "Get batch aging and expiry report",
+        "tags": ["Reports"]
+      }
+    },
+    "/reports/inventory": {
+      "get": {
+        "description": "Shows current stock levels, inventory value, and identifies low-stock items. Essential for inventory management and reorder planning.",
+        "operationId": "ReportsController_getInventoryReport",
+        "parameters": [
+          {
+            "name": "category",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "enum": [
+                "Shea Butter",
+                "Black Soap",
+                "Cosmetics",
+                "Shea Soap",
+                "Powdered Soap",
+                "Dawadawa",
+                "Essential Oils",
+                "Hair Oil",
+                "Grains",
+                "Legumes",
+                "Other"
+              ],
+              "type": "string"
+            }
+          },
+          {
+            "name": "productId",
+            "required": false,
+            "in": "query",
+            "description": "Filter by product ID",
+            "schema": { "type": "string" }
+          },
+          {
+            "name": "lowStockOnly",
+            "required": false,
+            "in": "query",
+            "description": "Show only low stock items",
+            "schema": { "type": "boolean" }
+          },
+          {
+            "name": "lowStockThreshold",
+            "required": false,
+            "in": "query",
+            "description": "Low stock threshold",
+            "schema": { "default": 100, "type": "number" }
+          }
+        ],
+        "responses": { "200": { "description": "Inventory report generated successfully" } },
+        "summary": "Get inventory report",
+        "tags": ["Reports"]
+      }
+    },
+    "/reports/stock-movement": {
+      "get": {
+        "description": "Tracks stock changes over time showing production, sales, and net movement. Perfect for line charts showing inventory flow and trends.",
+        "operationId": "ReportsController_getStockMovementReport",
+        "parameters": [
+          {
+            "name": "fromDate",
+            "required": false,
+            "in": "query",
+            "description": "Start date for filtering (ISO format)",
+            "schema": { "type": "string" }
+          },
+          {
+            "name": "toDate",
+            "required": false,
+            "in": "query",
+            "description": "End date for filtering (ISO format)",
+            "schema": { "type": "string" }
+          },
+          {
+            "name": "productId",
+            "required": false,
+            "in": "query",
+            "description": "Filter by product ID",
+            "schema": { "type": "string" }
+          },
+          {
+            "name": "category",
+            "required": false,
+            "in": "query",
+            "description": "Filter by product category",
+            "schema": {
+              "enum": [
+                "Shea Butter",
+                "Black Soap",
+                "Cosmetics",
+                "Shea Soap",
+                "Powdered Soap",
+                "Dawadawa",
+                "Essential Oils",
+                "Hair Oil",
+                "Grains",
+                "Legumes",
+                "Other"
+              ],
+              "type": "string"
+            }
+          },
+          {
+            "name": "batchId",
+            "required": false,
+            "in": "query",
+            "description": "Filter by batch ID",
+            "schema": { "type": "string" }
+          },
+          {
+            "name": "aggregation",
+            "required": false,
+            "in": "query",
+            "description": "Time aggregation level",
+            "schema": {
+              "default": "daily",
+              "enum": ["daily", "weekly", "monthly", "yearly"],
+              "type": "string"
+            }
+          }
+        ],
+        "responses": { "200": { "description": "Stock movement report generated successfully" } },
+        "summary": "Get stock movement report",
+        "tags": ["Reports"]
+      }
+    },
+    "/reports/comparative": {
+      "get": {
+        "description": "Compares two time periods showing growth metrics and percentage changes. Useful for month-over-month, year-over-year comparisons.",
+        "operationId": "ReportsController_getComparativeReport",
+        "parameters": [
+          {
+            "name": "currentFromDate",
+            "required": true,
+            "in": "query",
+            "description": "Start date for current period",
+            "schema": { "type": "string" }
+          },
+          {
+            "name": "currentToDate",
+            "required": true,
+            "in": "query",
+            "description": "End date for current period",
+            "schema": { "type": "string" }
+          },
+          {
+            "name": "previousFromDate",
+            "required": true,
+            "in": "query",
+            "description": "Start date for previous period",
+            "schema": { "type": "string" }
+          },
+          {
+            "name": "previousToDate",
+            "required": true,
+            "in": "query",
+            "description": "End date for previous period",
+            "schema": { "type": "string" }
+          },
+          {
+            "name": "category",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "enum": [
+                "Shea Butter",
+                "Black Soap",
+                "Cosmetics",
+                "Shea Soap",
+                "Powdered Soap",
+                "Dawadawa",
+                "Essential Oils",
+                "Hair Oil",
+                "Grains",
+                "Legumes",
+                "Other"
+              ],
+              "type": "string"
+            }
+          }
+        ],
+        "responses": { "200": { "description": "Comparative report generated successfully" } },
+        "summary": "Get period-over-period comparison",
+        "tags": ["Reports"]
+      }
+    },
+    "/reports/dashboard-summary": {
+      "get": {
+        "description": "Returns a comprehensive summary of key business metrics for dashboard display. Includes sales, inventory, and production KPIs in a single response.",
+        "operationId": "ReportsController_getDashboardSummary",
+        "parameters": [
+          {
+            "name": "fromDate",
+            "required": false,
+            "in": "query",
+            "description": "Start date for filtering (ISO format)",
+            "schema": { "type": "string" }
+          },
+          {
+            "name": "toDate",
+            "required": false,
+            "in": "query",
+            "description": "End date for filtering (ISO format)",
+            "schema": { "type": "string" }
+          },
+          {
+            "name": "productId",
+            "required": false,
+            "in": "query",
+            "description": "Filter by product ID",
+            "schema": { "type": "string" }
+          },
+          {
+            "name": "category",
+            "required": false,
+            "in": "query",
+            "description": "Filter by product category",
+            "schema": {
+              "enum": [
+                "Shea Butter",
+                "Black Soap",
+                "Cosmetics",
+                "Shea Soap",
+                "Powdered Soap",
+                "Dawadawa",
+                "Essential Oils",
+                "Hair Oil",
+                "Grains",
+                "Legumes",
+                "Other"
+              ],
+              "type": "string"
+            }
+          },
+          {
+            "name": "batchId",
+            "required": false,
+            "in": "query",
+            "description": "Filter by batch ID",
+            "schema": { "type": "string" }
+          },
+          {
+            "name": "aggregation",
+            "required": false,
+            "in": "query",
+            "description": "Time aggregation level",
+            "schema": {
+              "default": "daily",
+              "enum": ["daily", "weekly", "monthly", "yearly"],
+              "type": "string"
+            }
+          }
+        ],
+        "responses": { "200": { "description": "Dashboard summary generated successfully" } },
+        "summary": "Get dashboard summary with key metrics",
+        "tags": ["Reports"]
+      }
     }
   },
   "info": {
