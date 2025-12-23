@@ -1688,6 +1688,23 @@
         "tags": ["Sales"]
       }
     },
+    "/sales/{id}/waybill": {
+      "post": {
+        "operationId": "SalesController_generateWaybill",
+        "parameters": [
+          { "name": "id", "required": true, "in": "path", "schema": { "type": "string" } }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": { "schema": { "$ref": "#/components/schemas/GenerateWaybillDto" } }
+          }
+        },
+        "responses": { "200": { "description": "Waybill PDF generated successfully" } },
+        "summary": "Generate waybill PDF for a sale",
+        "tags": ["Sales"]
+      }
+    },
     "/customers": {
       "get": {
         "operationId": "CustomerController_getAllCustomers",
@@ -2973,6 +2990,45 @@
           "discount": { "type": "number", "description": "Discount amount", "default": 0 },
           "transportation": { "type": "number", "description": "Transportation cost", "default": 0 }
         }
+      },
+      "DriverDetailsDto": {
+        "type": "object",
+        "properties": {
+          "name": { "type": "string", "description": "Driver name" },
+          "vehicleNumber": { "type": "string", "description": "Vehicle/Truck number" },
+          "phoneNumber": { "type": "string", "description": "Driver phone number" },
+          "email": { "type": "string", "description": "Driver email" }
+        },
+        "required": ["name", "vehicleNumber", "phoneNumber"]
+      },
+      "ReceiverDetailsDto": {
+        "type": "object",
+        "properties": {
+          "name": { "type": "string", "description": "Receiver name" },
+          "phone": { "type": "string", "description": "Receiver phone number" },
+          "email": { "type": "string", "description": "Receiver email" },
+          "address": { "type": "string", "description": "Receiver address" }
+        },
+        "required": ["name", "phone"]
+      },
+      "GenerateWaybillDto": {
+        "type": "object",
+        "properties": {
+          "driver": {
+            "description": "Driver details",
+            "allOf": [{ "$ref": "#/components/schemas/DriverDetailsDto" }]
+          },
+          "receiver": {
+            "description": "Receiver details (falls back to customer if not provided)",
+            "allOf": [{ "$ref": "#/components/schemas/ReceiverDetailsDto" }]
+          },
+          "remarks": {
+            "type": "string",
+            "description": "Remarks about the condition of goods",
+            "default": "All In Good Condition"
+          }
+        },
+        "required": ["driver"]
       },
       "CreateCustomerDto": {
         "type": "object",

@@ -13,6 +13,7 @@ import {
   CreateSaleDto,
   GenerateInvoiceDto,
   GenerateReceiptDto,
+  GenerateWaybillDto,
   Sale,
   SaleLineItemDto,
   SaleStatus,
@@ -122,6 +123,16 @@ export class SalesApiService {
    */
   public generateReceipt(id: string, dto: GenerateReceiptDto): Observable<Blob> {
     return this.http.post(`${this.baseUrl}/${id}/receipt`, dto, {
+      responseType: 'blob',
+    });
+  }
+
+  /**
+   * Generate waybill PDF for a sale
+   * POST /sales/{id}/waybill
+   */
+  public generateWaybill(id: string, dto: GenerateWaybillDto): Observable<Blob> {
+    return this.http.post(`${this.baseUrl}/${id}/waybill`, dto, {
       responseType: 'blob',
     });
   }

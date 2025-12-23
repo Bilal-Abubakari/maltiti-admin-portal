@@ -61,6 +61,26 @@ export interface GenerateReceiptDto {
   transportation?: number;
 }
 
+export interface DriverDetailsDto {
+  name: string;
+  vehicleNumber: string;
+  phoneNumber: string;
+  email?: string;
+}
+
+export interface ReceiverDetailsDto {
+  name: string;
+  phone: string;
+  email?: string;
+  address?: string;
+}
+
+export interface GenerateWaybillDto {
+  driver: DriverDetailsDto;
+  receiver?: ReceiverDetailsDto;
+  remarks?: string;
+}
+
 export interface SaleLineItem {
   id: string;
   productId: string;

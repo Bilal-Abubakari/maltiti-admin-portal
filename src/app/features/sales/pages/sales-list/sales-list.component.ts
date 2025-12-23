@@ -47,6 +47,7 @@ import { APP_ROUTES } from '@config/routes.config';
 import { SalesApiService } from '../../services/sales-api.service';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { ReceiptGenerationModalComponent } from '../receipt-generation-modal/receipt-generation-modal.component';
+import { WaybillGenerationModalComponent } from '../waybill-generation-modal/waybill-generation-modal.component';
 
 @Component({
   selector: 'app-sales-list',
@@ -66,6 +67,7 @@ import { ReceiptGenerationModalComponent } from '../receipt-generation-modal/rec
     ButtonComponent,
     SelectComponent,
     ReceiptGenerationModalComponent,
+    WaybillGenerationModalComponent,
   ],
   changeDetection: ChangeDetectionStrategy.OnPush,
   providers: [ConfirmationService],
@@ -90,6 +92,7 @@ export class SalesListComponent implements OnInit {
 
   // ViewChild references
   public readonly receiptModal = viewChild.required(ReceiptGenerationModalComponent);
+  public readonly waybillModal = viewChild.required(WaybillGenerationModalComponent);
 
   // Local state
   public readonly statusOptions = [
@@ -176,6 +179,10 @@ export class SalesListComponent implements OnInit {
     this.receiptModal().open(sale.id);
   }
 
+  public onGenerateWaybill(sale: Sale): void {
+    this.waybillModal().open(sale.id);
+  }
+
   public getStatusSeverity(status: SaleStatus): 'success' | 'info' | 'warn' | 'danger' {
     switch (status) {
       case SaleStatus.Delivered:
@@ -237,6 +244,11 @@ export class SalesListComponent implements OnInit {
         label: 'Generate Invoice',
         icon: 'pi pi-file-pdf',
         command: (): void => this.onGenerateInvoice(sale),
+      },
+      {
+        label: 'Generate Waybill',
+        icon: 'pi pi-truck',
+        command: (): void => this.onGenerateWaybill(sale),
       },
     ];
 
