@@ -34,6 +34,7 @@ import { BatchApiService } from '../../../batches/services/batch-api.service';
 import { combineLatest, EMPTY, merge, Subject, switchMap } from 'rxjs';
 import { Message } from 'primeng/message';
 import { filter, map, startWith } from 'rxjs/operators';
+import { productName } from '@shared/utils/product-name';
 
 type PriceType = 'wholesale' | 'retail';
 
@@ -166,6 +167,7 @@ export class LineItemEditorComponent implements OnInit {
   private onProductChange(productId: string): void {
     const selectedProduct = this.selectedProduct();
     if (productId) {
+      console.log('Hey there');
       this.loadBatchesForProduct(productId);
     }
     if (selectedProduct && !this.lineItemForm.get('customPrice')?.value) {
@@ -328,7 +330,6 @@ export class LineItemEditorComponent implements OnInit {
     } else {
       this.clearBatchErrors(quantityControl);
     }
-
     this.validationError.emit(hasError);
   }
 
@@ -387,7 +388,6 @@ export class LineItemEditorComponent implements OnInit {
     if (!batch) {
       return null;
     }
-
     return {
       availableQuantity: batch.quantity,
       expiryDate: batch.expiryDate || null,
@@ -395,6 +395,6 @@ export class LineItemEditorComponent implements OnInit {
   }
 
   public get productOptions(): { label: string; value: string }[] {
-    return this.products().map(({ id, name }) => ({ label: name, value: id }));
+    return this.products().map((product) => ({ label: productName(product), value: product.id }));
   }
 }
