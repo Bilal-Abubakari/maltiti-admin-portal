@@ -2582,6 +2582,117 @@
         "summary": "Get dashboard summary with key metrics",
         "tags": ["Reports"]
       }
+    },
+    "/dashboard/summary": {
+      "get": {
+        "description": "Returns high-level KPIs including revenue, sales, products, batches, and inventory metrics. Optimized for fast dashboard loading. Supports optional date range and period comparison.",
+        "operationId": "DashboardController_getSummary",
+        "parameters": [
+          {
+            "name": "fromDate",
+            "required": false,
+            "in": "query",
+            "description": "Start date for period filtering (ISO format)",
+            "schema": { "type": "string" }
+          },
+          {
+            "name": "toDate",
+            "required": false,
+            "in": "query",
+            "description": "End date for period filtering (ISO format)",
+            "schema": { "type": "string" }
+          },
+          {
+            "name": "includeComparison",
+            "required": false,
+            "in": "query",
+            "description": "Include comparison with previous period",
+            "schema": { "default": false, "type": "boolean" }
+          }
+        ],
+        "responses": { "200": { "description": "Dashboard summary retrieved successfully" } },
+        "summary": "Get dashboard summary with KPIs",
+        "tags": ["Dashboard"]
+      }
+    },
+    "/dashboard/trends": {
+      "get": {
+        "description": "Returns sales and revenue trends for the last 7, 30, or 90 days. Includes production vs sales comparison. Optimized for chart rendering.",
+        "operationId": "DashboardController_getTrends",
+        "parameters": [
+          {
+            "name": "period",
+            "required": false,
+            "in": "query",
+            "description": "Period for trend data",
+            "schema": { "default": "30", "enum": ["7", "30", "90"], "type": "string" }
+          }
+        ],
+        "responses": { "200": { "description": "Dashboard trends retrieved successfully" } },
+        "summary": "Get dashboard trend data",
+        "tags": ["Dashboard"]
+      }
+    },
+    "/dashboard/highlights": {
+      "get": {
+        "description": "Returns top sellers, bottom performers, fastest growing, and declining products. Provides quick performance insights for dashboard highlights.",
+        "operationId": "DashboardController_getHighlights",
+        "parameters": [
+          {
+            "name": "limit",
+            "required": false,
+            "in": "query",
+            "description": "Number of top/bottom products to return",
+            "schema": { "minimum": 1, "maximum": 10, "default": 5, "type": "number" }
+          }
+        ],
+        "responses": { "200": { "description": "Dashboard highlights retrieved successfully" } },
+        "summary": "Get top and bottom performers",
+        "tags": ["Dashboard"]
+      }
+    },
+    "/dashboard/alerts": {
+      "get": {
+        "description": "Returns low stock alerts, expiring batches, and other critical inventory notifications. Sorted by severity and urgency for immediate action.",
+        "operationId": "DashboardController_getAlerts",
+        "parameters": [
+          {
+            "name": "lowStockThreshold",
+            "required": false,
+            "in": "query",
+            "description": "Low stock threshold",
+            "schema": { "default": 100, "type": "number" }
+          },
+          {
+            "name": "expiryWarningDays",
+            "required": false,
+            "in": "query",
+            "description": "Days until expiry for critical alert",
+            "schema": { "default": 30, "type": "number" }
+          }
+        ],
+        "responses": { "200": { "description": "Dashboard alerts retrieved successfully" } },
+        "summary": "Get inventory alerts",
+        "tags": ["Dashboard"]
+      }
+    },
+    "/dashboard/activity": {
+      "get": {
+        "description": "Returns recent sales, newly created batches, and latest inventory changes. Provides a quick overview of recent system activity.",
+        "operationId": "DashboardController_getActivity",
+        "parameters": [
+          {
+            "name": "limit",
+            "required": false,
+            "in": "query",
+            "description": "Number of recent items to return",
+            "schema": { "minimum": 5, "maximum": 20, "default": 10, "type": "number" }
+          }
+        ],
+        "responses": { "200": { "description": "Dashboard activity retrieved successfully" } },
+        "summary": "Get recent activity",
+        "tags": ["Dashboard"]
+      }
     }
   },
   "info": {
