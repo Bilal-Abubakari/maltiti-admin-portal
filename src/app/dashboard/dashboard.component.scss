@@ -1,12 +1,12 @@
+@use 'styles/mixins' as mixins;
+
 .dashboard {
   padding: 2rem;
   max-width: 1600px;
   margin: 0 auto;
 }
 .dashboard-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
+  @include mixins.flex-between;
   margin-bottom: 2rem;
 }
 .page-title {
@@ -31,7 +31,7 @@
   transition: all 0.2s ease;
   &:hover {
     transform: translateY(-2px);
-    box-shadow: var(--p-shadow-lg);
+    @include mixins.elevation(4);
   }
   ::ng-deep .p-card-body {
     padding: 1.5rem;
@@ -45,9 +45,7 @@
     width: 56px;
     height: 56px;
     border-radius: 12px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
+    @include mixins.flex-center;
     i {
       font-size: 1.5rem;
       color: white;
@@ -107,9 +105,7 @@ section {
   margin-bottom: 2rem;
 }
 .section-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
+  @include mixins.flex-between;
   margin-bottom: 1rem;
 }
 .section-title {
@@ -247,9 +243,7 @@ section {
     margin: 0;
   }
   .highlight-item {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
+    @include mixins.flex-between;
     padding: 0.75rem 0;
     border-bottom: 1px solid var(--p-surface-50);
     &:last-child { border-bottom: none; }
@@ -383,9 +377,7 @@ section {
     margin: 0;
   }
   .activity-item {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
+    @include mixins.flex-between;
     padding: 0.75rem 0;
     border-bottom: 1px solid var(--p-surface-50);
     &:last-child { border-bottom: none; }
