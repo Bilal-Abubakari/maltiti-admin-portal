@@ -1,0 +1,166 @@
+<div class="sales-reports">
+  <div class="page-header">
+    <h1 class="page-title">
+      <i class="pi pi-chart-line"></i>
+      Sales Reports
+    </h1>
+    <p class="page-description">
+      Analyze sales trends, revenue, and performance metrics over time.
+    </p>
+  </div>
+
+  <app-report-filters
+    [showAggregation]="true"
+    [showBatch]="true"
+    [showCategory]="true"
+    [showDateRange]="true"
+    [showProduct]="true"
+    (filtersApplied)="onFiltersApplied($event)"
+    (filtersReset)="onFiltersReset()"
+  />
+
+  @if (isLoading()) {
+    <div class="loading-state">
+      <p-skeleton height="150px" styleClass="mb-3" />
+      <p-skeleton height="400px" styleClass="mb-3" />
+      <p-skeleton height="300px" />
+    </div>
+  } @else if (salesReport()) {
+    <!-- KPI Cards -->
+    <div class="kpi-cards">
+      <p-card class="kpi-card">
+        <div class="kpi-content">
+          <div class="kpi-icon revenue">
+            <i class="pi pi-dollar"></i>
+          </div>
+          <div class="kpi-details">
+            <span class="kpi-label">Total Revenue</span>
+            <span class="kpi-value">{{ salesReport()!.totalRevenue | currency: 'GHS ' }}</span>
+            @if (salesReport()!.trends?.revenueGrowth) {
+              <span
+                class="kpi-trend"
+                [class.negative]="salesReport()!.trends!.revenueGrowth < 0"
+                [class.positive]="salesReport()!.trends!.revenueGrowth > 0"
+              >
+                <i
+                  [class]="
+                    salesReport()!.trends!.revenueGrowth > 0 ? 'pi pi-arrow-up' : 'pi pi-arrow-down'
+                  "
+                ></i>
+                {{ salesReport()!.trends!.revenueGrowth | number: '1.2-2' }}%
+              </span>
+            }
+          </div>
+        </div>
+      </p-card>
+
+      <p-card class="kpi-card">
+        <div class="kpi-content">
+          <div class="kpi-icon sales">
+            <i class="pi pi-shopping-bag"></i>
+          </div>
+          <div class="kpi-details">
+            <span class="kpi-label">Total Sales</span>
+            <span class="kpi-value">{{ salesReport()!.salesCount | number }}</span>
+            @if (salesReport()!.trends?.salesGrowth) {
+              <span
+                class="kpi-trend"
+                [class.negative]="salesReport()!.trends!.salesGrowth < 0"
+                [class.positive]="salesReport()!.trends!.salesGrowth > 0"
+              >
+                <i
+                  [class]="
+                    salesReport()!.trends!.salesGrowth > 0 ? 'pi pi-arrow-up' : 'pi pi-arrow-down'
+                  "
+                ></i>
+                {{ salesReport()!.trends!.salesGrowth | number: '1.2-2' }}%
+              </span>
+            }
+          </div>
+        </div>
+      </p-card>
+
+      <p-card class="kpi-card">
+        <div class="kpi-content">
+          <div class="kpi-icon average">
+            <i class="pi pi-chart-bar"></i>
+          </div>
+          <div class="kpi-details">
+            <span class="kpi-label">Avg Order Value</span>
+            <span class="kpi-value">{{
+              salesReport()!.averageOrderValue | currency: 'GHS '
+            }}</span>
+            @if (salesReport()!.trends?.averageOrderValueGrowth) {
+              <span
+                class="kpi-trend"
+                [class.negative]="salesReport()!.trends!.averageOrderValueGrowth < 0"
+                [class.positive]="salesReport()!.trends!.averageOrderValueGrowth > 0"
+              >
+                <i
+                  [class]="
+                    salesReport()!.trends!.averageOrderValueGrowth > 0
+                      ? 'pi pi-arrow-up'
+                      : 'pi pi-arrow-down'
+                  "
+                ></i>
+                {{ salesReport()!.trends!.averageOrderValueGrowth | number: '1.2-2' }}%
+              </span>
+            }
+          </div>
+        </div>
+      </p-card>
+    </div>
+
+    <!-- Sales Trends Chart -->
+    @if (chartData()) {
+      <p-card class="chart-card">
+        <ng-template pTemplate="header">
+          <h3 class="card-title">Sales Trends Over Time</h3>
+        </ng-template>
+        <p-chart height="400px" type="line" [data]="chartData()" [options]="chartOptions()" />
+      </p-card>
+    }
+
+    <!-- Sales Data Table -->
+    @if (tableData().length > 0) {
+      <p-card class="table-card">
+        <ng-template pTemplate="header">
+          <h3 class="card-title">Detailed Sales Data</h3>
+        </ng-template>
+        <p-table [paginator]="true" [rows]="10" [value]="tableData()">
+          <ng-template pTemplate="header">
+            <tr>
+              <th pSortableColumn="date">
+                Date <p-sortIcon field="date" />
+              </th>
+              <th pSortableColumn="revenue">
+                Revenue <p-sortIcon field="revenue" />
+              </th>
+              <th pSortableColumn="salesCount">
+                Sales Count <p-sortIcon field="salesCount" />
+              </th>
+              <th pSortableColumn="averageOrderValue">
+                Avg Order Value <p-sortIcon field="averageOrderValue" />
+              </th>
+            </tr>
+          </ng-template>
+          <ng-template let-item pTemplate="body">
+            <tr>
+              <td>{{ item.date | date: 'mediumDate' }}</td>
+              <td>{{ item.revenue | currency: 'GHS ' }}</td>
+              <td>{{ item.salesCount | number }}</td>
+              <td>{{ item.averageOrderValue | currency: 'GHS ' }}</td>
+            </tr>
+          </ng-template>
+        </p-table>
+      </p-card>
+    }
+  } @else {
+    <div class="empty-state">
+      <i class="pi pi-chart-line"></i>
+      <h3>No Sales Data Available</h3>
+      <p>Apply filters to view sales reports</p>
+    </div>
+  }
+</div>
+

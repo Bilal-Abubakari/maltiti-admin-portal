@@ -81,16 +81,16 @@ export class SidebarComponent {
         icon: 'pi pi-shopping-bag',
         route: APP_ROUTES.sales.fullPath,
       },
-      {
-        label: 'Orders',
-        icon: 'pi pi-shopping-cart',
-        route: '/orders',
-      },
-      {
-        label: 'Cooperatives',
-        icon: 'pi pi-users',
-        route: '/cooperatives',
-      },
+      // {
+      //   label: 'Orders',
+      //   icon: 'pi pi-shopping-cart',
+      //   route: '/orders',
+      // },
+      // {
+      //   label: 'Cooperatives',
+      //   icon: 'pi pi-users',
+      //   route: '/cooperatives',
+      // },
       {
         label: 'Reports',
         icon: 'pi pi-chart-bar',
