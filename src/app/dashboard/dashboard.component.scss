@@ -1,150 +1,390 @@
-@use '../../styles/variables' as variables;
-@use '../../styles/mixins';
-
-.dashboard-container {
-  max-width: 100%;
+.dashboard {
+  padding: 2rem;
+  max-width: 1600px;
+  margin: 0 auto;
 }
-
-// Dashboard Header
 .dashboard-header {
-  margin-bottom: variables.$spacing-2xl;
-
-  h1 {
-    font-size: variables.$font-size-3xl;
-    font-weight: variables.$font-weight-bold;
-    color: var(--text-color);
-    margin: 0 0 variables.$spacing-xs 0;
-  }
-
-  .subtitle {
-    font-size: variables.$font-size-lg;
-    color: var(--text-color-secondary);
-    margin: 0;
-  }
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 2rem;
 }
-
-// Metrics Grid
-.metrics-grid {
+.page-title {
+  font-size: 2rem;
+  font-weight: 700;
+  color: var(--p-text-color);
+  margin: 0;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+.kpi-section {
+  margin-bottom: 2rem;
+}
+.kpi-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-  gap: variables.$spacing-lg;
-  margin-bottom: variables.$spacing-2xl;
+  gap: 1.5rem;
 }
-
-::ng-deep .metric-card {
-  .p-card-body {
-    padding: variables.$spacing-lg;
+.kpi-card {
+  cursor: pointer;
+  transition: all 0.2s ease;
+  &:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--p-shadow-lg);
+  }
+  ::ng-deep .p-card-body {
+    padding: 1.5rem;
+  }
+  .kpi-content {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+  }
+  .kpi-icon {
+    width: 56px;
+    height: 56px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    i {
+      font-size: 1.5rem;
+      color: white;
+    }
+  }
+  .kpi-details {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+  }
+  .kpi-label {
+    font-size: 0.875rem;
+    color: var(--p-text-muted-color);
+  }
+  .kpi-value {
+    font-size: 1.75rem;
+    font-weight: 700;
+    color: var(--p-text-color);
+  }
+  .kpi-trend {
+    font-size: 0.875rem;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+    &.positive {
+      color: var(--p-green-600);
+    }
+    &.negative {
+      color: var(--p-red-600);
+    }
+  }
+  &.revenue .kpi-icon {
+    background: linear-gradient(135deg, #10b981, #059669);
+  }
+  &.sales .kpi-icon {
+    background: linear-gradient(135deg, #3b82f6, #2563eb);
+  }
+  &.inventory .kpi-icon {
+    background: linear-gradient(135deg, #8b5cf6, #7c3aed);
+  }
+  &.stock .kpi-icon {
+    background: linear-gradient(135deg, #f59e0b, #d97706);
+  }
+  &.products .kpi-icon {
+    background: linear-gradient(135deg, #ec4899, #db2777);
+  }
+  &.batches .kpi-icon {
+    background: linear-gradient(135deg, #06b6d4, #0891b2);
   }
 }
-
-.metric-content {
-  @include mixins.flex-start;
-  gap: variables.$spacing-lg;
+section {
+  margin-bottom: 2rem;
 }
-
-.metric-icon {
-  width: 60px;
-  height: 60px;
-  @include mixins.flex-center;
-  border-radius: variables.$border-radius-xl;
-  font-size: 1.75rem;
-
-  &.products {
-    background-color: var(--blue-50);
-    color: var(--blue-600);
-  }
-
-  &.warning {
-    background-color: var(--yellow-50);
-    color: var(--yellow-600);
-  }
-
-  &.batches {
-    background-color: var(--purple-50);
-    color: var(--purple-600);
-  }
-
-  &.orders {
-    background-color: var(--green-50);
-    color: var(--green-600);
+.section-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+}
+.section-title {
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: var(--p-text-color);
+  margin: 0;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+.charts-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(450px, 1fr));
+  gap: 1.5rem;
+}
+.highlights-alerts-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+  gap: 1.5rem;
+}
+.activity-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+  gap: 1.5rem;
+}
+@media (max-width: 1200px) {
+  .charts-grid {
+    grid-template-columns: 1fr;
   }
 }
-
-.metric-details {
-  flex: 1;
-
-  .metric-label {
-    font-size: variables.$font-size-sm;
-    color: var(--text-color-secondary);
-    margin: 0 0 variables.$spacing-xs 0;
-    font-weight: variables.$font-weight-medium;
+@media (max-width: 768px) {
+  .dashboard {
+    padding: 1rem;
   }
-
-  .metric-value {
-    font-size: variables.$font-size-3xl;
-    font-weight: variables.$font-weight-bold;
-    color: var(--text-color);
+  .kpi-grid {
+    grid-template-columns: 1fr;
+  }
+  .page-title {
+    font-size: 1.5rem;
+  }
+}
+// Highlights Card Styles
+.highlights-card {
+  ::ng-deep .p-card-body {
+    padding: 1.5rem;
+  }
+  .highlight-section {
+    &:not(:last-child) {
+      margin-bottom: 1.5rem;
+      padding-bottom: 1.5rem;
+      border-bottom: 1px solid var(--p-surface-border);
+    }
+    .highlight-title {
+      font-size: 0.875rem;
+      font-weight: 600;
+      color: var(--p-text-color);
+      margin: 0 0 1rem 0;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      i {
+        font-size: 1rem;
+        &.success { color: var(--p-green-600); }
+        &.warning { color: var(--p-orange-600); }
+      }
+    }
+  }
+  .highlight-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+  .highlight-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.75rem 0;
+    border-bottom: 1px solid var(--p-surface-50);
+    &:last-child { border-bottom: none; }
+    .product-name {
+      font-size: 0.875rem;
+      color: var(--p-text-color);
+      font-weight: 500;
+      flex: 1;
+    }
+    .product-revenue {
+      font-size: 0.875rem;
+      color: var(--p-text-muted-color);
+      font-weight: 600;
+    }
+  }
+  .empty-message {
+    font-size: 0.875rem;
+    color: var(--p-text-muted-color);
+    text-align: center;
+    padding: 1rem 0;
     margin: 0;
   }
 }
-
-// Quick Actions
-.quick-actions {
-  h2 {
-    font-size: variables.$font-size-2xl;
-    font-weight: variables.$font-weight-semibold;
-    color: var(--text-color);
-    margin: 0 0 variables.$spacing-lg 0;
+// Alerts Card Styles
+.alerts-card {
+  ::ng-deep .p-card-body {
+    padding: 1.5rem;
   }
-}
-
-.actions-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-  gap: variables.$spacing-lg;
-}
-
-.action-card {
-  text-align: center;
-  padding: variables.$spacing-lg 0;
-
-  .action-icon {
-    font-size: 3rem;
-    color: var(--primary-color);
-    margin-bottom: variables.$spacing-md;
-  }
-
-  h3 {
-    font-size: variables.$font-size-xl;
-    font-weight: variables.$font-weight-semibold;
-    color: var(--text-color);
-    margin: 0 0 variables.$spacing-sm 0;
-  }
-
-  p {
-    font-size: variables.$font-size-base;
-    color: var(--text-color-secondary);
-    margin: 0 0 variables.$spacing-lg 0;
-  }
-}
-
-// Responsive Design
-@include mixins.responsive(md) {
-  .metrics-grid {
-    grid-template-columns: 1fr;
-  }
-
-  .actions-grid {
-    grid-template-columns: 1fr;
-  }
-
-  .dashboard-header {
-    h1 {
-      font-size: variables.$font-size-2xl;
+  .alert-summary {
+    display: flex;
+    justify-content: space-around;
+    margin-bottom: 1.5rem;
+    padding-bottom: 1.5rem;
+    border-bottom: 1px solid var(--p-surface-border);
+    .alert-stat {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0.25rem;
+      .stat-value {
+        font-size: 1.75rem;
+        font-weight: 700;
+      }
+      .stat-label {
+        font-size: 0.75rem;
+        color: var(--p-text-muted-color);
+        text-transform: uppercase;
+        font-weight: 600;
+      }
+      &.critical .stat-value { color: var(--p-red-600); }
+      &.warning .stat-value { color: var(--p-orange-600); }
+      &.total .stat-value { color: var(--p-primary-color); }
     }
-
-    .subtitle {
-      font-size: variables.$font-size-base;
+  }
+  .alert-group {
+    &:not(:last-child) { margin-bottom: 1.5rem; }
+    .alert-group-title {
+      font-size: 0.875rem;
+      font-weight: 600;
+      color: var(--p-text-color);
+      margin: 0 0 0.75rem 0;
     }
+  }
+  .alert-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+  .alert-item {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.75rem 0;
+    border-bottom: 1px solid var(--p-surface-50);
+    &:last-child { border-bottom: none; }
+    .alert-details {
+      display: flex;
+      flex-direction: column;
+      gap: 0.25rem;
+      flex: 1;
+      .alert-name {
+        font-size: 0.875rem;
+        color: var(--p-text-color);
+        font-weight: 500;
+      }
+      .alert-info {
+        font-size: 0.75rem;
+        color: var(--p-text-muted-color);
+      }
+    }
+  }
+  .empty-alerts {
+    text-align: center;
+    padding: 2rem;
+    i {
+      font-size: 3rem;
+      color: var(--p-green-500);
+      margin-bottom: 0.5rem;
+    }
+    p {
+      font-size: 0.875rem;
+      color: var(--p-text-muted-color);
+      margin: 0;
+    }
+  }
+}
+// Activity Card Styles
+.activity-card {
+  .activity-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem 1.5rem;
+    .activity-title {
+      font-size: 1rem;
+      font-weight: 600;
+      color: var(--p-text-color);
+      margin: 0;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      i { color: var(--p-primary-color); }
+    }
+  }
+  ::ng-deep .p-card-body {
+    padding: 0 1.5rem 1.5rem;
+  }
+  .activity-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+  .activity-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.75rem 0;
+    border-bottom: 1px solid var(--p-surface-50);
+    &:last-child { border-bottom: none; }
+    .activity-info {
+      display: flex;
+      flex-direction: column;
+      gap: 0.25rem;
+      flex: 1;
+      .activity-main {
+        font-size: 0.875rem;
+        color: var(--p-text-color);
+        font-weight: 500;
+      }
+      .activity-sub {
+        font-size: 0.75rem;
+        color: var(--p-text-muted-color);
+      }
+    }
+    .activity-meta {
+      display: flex;
+      flex-direction: column;
+      gap: 0.25rem;
+      align-items: flex-end;
+      .activity-amount {
+        font-size: 0.875rem;
+        color: var(--p-text-color);
+        font-weight: 600;
+        &.positive { color: var(--p-green-600); }
+        &.negative { color: var(--p-red-600); }
+      }
+      .activity-date {
+        font-size: 0.75rem;
+        color: var(--p-text-muted-color);
+      }
+    }
+  }
+  .empty-message {
+    font-size: 0.875rem;
+    color: var(--p-text-muted-color);
+    text-align: center;
+    padding: 2rem 0;
+    margin: 0;
+  }
+}
+// Chart Card Enhancement
+.chart-card {
+  ::ng-deep .p-card-body { padding: 1rem; }
+  .chart-header {
+    padding: 0.5rem 1rem;
+    .chart-title {
+      font-size: 1rem;
+      font-weight: 600;
+      color: var(--p-text-color);
+      margin: 0 0 0.25rem 0;
+    }
+    .chart-subtitle {
+      font-size: 0.875rem;
+      color: var(--p-text-muted-color);
+    }
+  }
+}
+// Header Enhancement
+.header-content {
+  .page-subtitle {
+    font-size: 1rem;
+    color: var(--p-text-muted-color);
+    margin: 0;
   }
 }

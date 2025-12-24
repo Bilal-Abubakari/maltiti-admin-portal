@@ -1,50 +1,270 @@
 /**
  * Dashboard Component
- * Main dashboard overview page with key metrics and quick actions
+ * Executive-style dashboard with KPIs, trends, highlights, alerts, and recent activity
  */
 
-import { ChangeDetectionStrategy, Component, inject, OnInit } from '@angular/core';
-import { CommonModule } from '@angular/common';
-import { RouterLink } from '@angular/router';
-import { Store } from '@ngrx/store';
+import { ChangeDetectionStrategy, Component, inject, OnInit, signal } from '@angular/core';
+import { Router, RouterLink } from '@angular/router';
 import { CardModule } from 'primeng/card';
+import { ChartModule } from 'primeng/chart';
+import { TableModule } from 'primeng/table';
+import { TagModule } from 'primeng/tag';
+import { SkeletonModule } from 'primeng/skeleton';
 import { ButtonModule } from 'primeng/button';
-import { selectUser } from '@auth/store/auth.selectors';
-import { selectAllProducts } from '@features/products/store/products.selectors';
-import { selectAllBatches } from '@features/batches/store/batches.selectors';
-import * as ProductsActions from '../features/products/store/products.actions';
-import * as BatchesActions from '../features/batches/store/batches.actions';
+import { CurrencyPipe, DatePipe, DecimalPipe } from '@angular/common';
+import { first } from 'rxjs';
+import { DashboardApiService } from './services/dashboard-api.service';
+import {
+  AlertSeverity,
+  DashboardActivity,
+  DashboardAlerts,
+  DashboardHighlights,
+  DashboardSummary,
+  DashboardTrends,
+} from './models/dashboard.model';
 
 @Component({
   selector: 'app-dashboard',
-  standalone: true,
+  imports: [
+    CardModule,
+    ChartModule,
+    TableModule,
+    TagModule,
+    SkeletonModule,
+    ButtonModule,
+    RouterLink,
+    CurrencyPipe,
+    DatePipe,
+    DecimalPipe,
+  ],
   templateUrl: './dashboard.component.html',
-  styleUrls: ['./dashboard.component.scss'],
-  imports: [CommonModule, RouterLink, CardModule, ButtonModule],
+  styleUrl: './dashboard.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class DashboardComponent implements OnInit {
-  private store = inject(Store);
+  private readonly dashboardApi = inject(DashboardApiService);
+  private readonly router = inject(Router);
 
-  public readonly user = this.store.selectSignal(selectUser);
-  public readonly products = this.store.selectSignal(selectAllProducts);
-  public readonly batches = this.store.selectSignal(selectAllBatches);
+  public readonly isLoadingSummary = signal(false);
+  public readonly isLoadingTrends = signal(false);
+  public readonly isLoadingHighlights = signal(false);
+  public readonly isLoadingAlerts = signal(false);
+  public readonly isLoadingActivity = signal(false);
+
+  public readonly summary = signal<DashboardSummary | null>(null);
+  public readonly trends = signal<DashboardTrends | null>(null);
+  public readonly highlights = signal<DashboardHighlights | null>(null);
+  public readonly alerts = signal<DashboardAlerts | null>(null);
+  public readonly activity = signal<DashboardActivity | null>(null);
+
+  public readonly salesChartData = signal<unknown>(null);
+  public readonly salesChartOptions = signal<unknown>(null);
+  public readonly revenueChartData = signal<unknown>(null);
+  public readonly revenueChartOptions = signal<unknown>(null);
+
+  constructor() {
+    this.initializeChartOptions();
+  }
 
   public ngOnInit(): void {
-    // Load initial data for dashboard metrics
-    this.store.dispatch(ProductsActions.loadProducts({ params: { limit: 100 } }));
-    this.store.dispatch(BatchesActions.loadBatches({ params: {} }));
+    this.loadDashboardData();
   }
 
-  public get activeProducts(): number {
-    return this.products().filter((p) => p.status === 'active').length;
+  private loadDashboardData(): void {
+    this.loadSummary();
+    this.loadTrends();
+    this.loadHighlights();
+    this.loadAlerts();
+    this.loadActivity();
   }
 
-  public get lowStockBatches(): number {
-    return this.batches().filter((b) => b.quantity < 10).length;
+  private loadSummary(): void {
+    this.isLoadingSummary.set(true);
+    this.dashboardApi
+      .getSummary({ includeComparison: true })
+      .pipe(first())
+      .subscribe({
+        next: (data) => {
+          this.summary.set(data);
+          this.isLoadingSummary.set(false);
+        },
+        error: (error) => {
+          console.error('Failed to load dashboard summary:', error);
+          this.isLoadingSummary.set(false);
+        },
+      });
   }
 
-  public get totalBatches(): number {
-    return this.batches().length;
+  private loadTrends(): void {
+    this.isLoadingTrends.set(true);
+    this.dashboardApi
+      .getTrends({ period: '30' })
+      .pipe(first())
+      .subscribe({
+        next: (data) => {
+          this.trends.set(data);
+          this.updateCharts(data);
+          this.isLoadingTrends.set(false);
+        },
+        error: (error) => {
+          console.error('Failed to load dashboard trends:', error);
+          this.isLoadingTrends.set(false);
+        },
+      });
+  }
+
+  private loadHighlights(): void {
+    this.isLoadingHighlights.set(true);
+    this.dashboardApi
+      .getHighlights({ limit: 5 })
+      .pipe(first())
+      .subscribe({
+        next: (data) => {
+          this.highlights.set(data);
+          this.isLoadingHighlights.set(false);
+        },
+        error: (error) => {
+          console.error('Failed to load dashboard highlights:', error);
+          this.isLoadingHighlights.set(false);
+        },
+      });
+  }
+
+  private loadAlerts(): void {
+    this.isLoadingAlerts.set(true);
+    this.dashboardApi
+      .getAlerts({ lowStockThreshold: 100, expiryWarningDays: 30 })
+      .pipe(first())
+      .subscribe({
+        next: (data) => {
+          this.alerts.set(data);
+          this.isLoadingAlerts.set(false);
+        },
+        error: (error) => {
+          console.error('Failed to load dashboard alerts:', error);
+          this.isLoadingAlerts.set(false);
+        },
+      });
+  }
+
+  private loadActivity(): void {
+    this.isLoadingActivity.set(true);
+    this.dashboardApi
+      .getActivity({ limit: 5 })
+      .pipe(first())
+      .subscribe({
+        next: (data) => {
+          this.activity.set(data);
+          this.isLoadingActivity.set(false);
+        },
+        error: (error) => {
+          console.error('Failed to load dashboard activity:', error);
+          this.isLoadingActivity.set(false);
+        },
+      });
+  }
+
+  private updateCharts(trendsData: DashboardTrends): void {
+    const documentStyle = getComputedStyle(document.documentElement);
+    this.salesChartData.set({
+      labels: trendsData.trends.map((t) =>
+        new Date(t.date).toLocaleDateString('en-US', { month: 'short', day: 'numeric' }),
+      ),
+      datasets: [
+        {
+          label: 'Sales',
+          data: trendsData.trends.map((t) => t.sales),
+          borderColor: documentStyle.getPropertyValue('--p-primary-color'),
+          backgroundColor: documentStyle.getPropertyValue('--p-primary-color') + '20',
+          tension: 0.4,
+          fill: true,
+        },
+      ],
+    });
+
+    this.revenueChartData.set({
+      labels: trendsData.trends.map((t) =>
+        new Date(t.date).toLocaleDateString('en-US', { month: 'short', day: 'numeric' }),
+      ),
+      datasets: [
+        {
+          label: 'Revenue',
+          data: trendsData.trends.map((t) => t.revenue),
+          borderColor: documentStyle.getPropertyValue('--p-green-500'),
+          backgroundColor: documentStyle.getPropertyValue('--p-green-500') + '20',
+          tension: 0.4,
+          fill: true,
+        },
+        ...(trendsData.trends.some((t) => t.production !== undefined)
+          ? [
+              {
+                label: 'Production',
+                data: trendsData.trends.map((t) => t.production || 0),
+                borderColor: documentStyle.getPropertyValue('--p-blue-500'),
+                backgroundColor: documentStyle.getPropertyValue('--p-blue-500') + '20',
+                tension: 0.4,
+                fill: false,
+              },
+            ]
+          : []),
+      ],
+    });
+  }
+
+  private initializeChartOptions(): void {
+    const documentStyle = getComputedStyle(document.documentElement);
+    const textColorSecondary = documentStyle.getPropertyValue('--p-text-muted-color');
+    const surfaceBorder = documentStyle.getPropertyValue('--p-surface-border');
+    const baseOptions = {
+      maintainAspectRatio: false,
+      aspectRatio: 0.6,
+      plugins: {
+        legend: { display: false },
+        tooltip: { mode: 'index', intersect: false },
+      },
+      scales: {
+        x: {
+          ticks: { color: textColorSecondary, font: { size: 11 } },
+          grid: { display: false },
+        },
+        y: {
+          ticks: { color: textColorSecondary, font: { size: 11 } },
+          grid: { color: surfaceBorder },
+        },
+      },
+    };
+    this.salesChartOptions.set(baseOptions);
+    this.revenueChartOptions.set(baseOptions);
+  }
+
+  public getAlertSeverity(severity: AlertSeverity): 'success' | 'warn' | 'danger' {
+    switch (severity) {
+      case 'critical':
+        return 'danger';
+      case 'warning':
+        return 'warn';
+      default:
+        return 'success';
+    }
+  }
+
+  public navigateToReports(section: string): void {
+    void this.router.navigate(['/reports', section]);
+  }
+
+  public navigateToSales(): void {
+    void this.router.navigate(['/sales']);
+  }
+
+  public navigateToBatches(): void {
+    void this.router.navigate(['/batches']);
+  }
+
+  public navigateToProducts(): void {
+    void this.router.navigate(['/products']);
+  }
+
+  public navigateToInventory(): void {
+    void this.router.navigate(['/reports/inventory']);
   }
 }

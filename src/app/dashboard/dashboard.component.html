@@ -1,96 +1,466 @@
-<div class="dashboard-container">
-  <!-- Welcome Header -->
+<div class="dashboard">
+  <!-- Dashboard Header -->
   <div class="dashboard-header">
-    <h1>Welcome back, {{ user()?.name || 'Admin' }}!</h1>
-    <p class="subtitle">Here's what's happening with your business today</p>
-  </div>
-
-  <!-- Metrics Cards -->
-  <div class="metrics-grid">
-    <p-card class="metric-card">
-      <div class="metric-content">
-        <div class="metric-icon products">
-          <i class="pi pi-box"></i>
-        </div>
-        <div class="metric-details">
-          <p class="metric-label">Active Products</p>
-          <h2 class="metric-value">{{ activeProducts }}</h2>
-        </div>
-      </div>
-    </p-card>
-
-    <p-card class="metric-card">
-      <div class="metric-content">
-        <div class="metric-icon warning">
-          <i class="pi pi-exclamation-triangle"></i>
-        </div>
-        <div class="metric-details">
-          <p class="metric-label">Low Stock Batches</p>
-          <h2 class="metric-value">{{ lowStockBatches }}</h2>
-        </div>
-      </div>
-    </p-card>
-
-    <p-card class="metric-card">
-      <div class="metric-content">
-        <div class="metric-icon batches">
-          <i class="pi pi-tag"></i>
-        </div>
-        <div class="metric-details">
-          <p class="metric-label">Total Batches</p>
-          <h2 class="metric-value">{{ totalBatches }}</h2>
-        </div>
-      </div>
-    </p-card>
-
-    <p-card class="metric-card">
-      <div class="metric-content">
-        <div class="metric-icon orders">
-          <i class="pi pi-shopping-cart"></i>
-        </div>
-        <div class="metric-details">
-          <p class="metric-label">Pending Orders</p>
-          <h2 class="metric-value">0</h2>
-        </div>
-      </div>
-    </p-card>
-  </div>
-
-  <!-- Quick Actions -->
-  <div class="quick-actions">
-    <h2>Quick Actions</h2>
-    <div class="actions-grid">
-      <p-card>
-        <div class="action-card">
-          <i class="pi pi-plus-circle action-icon"></i>
-          <h3>Add Product</h3>
-          <p>Create a new product in your inventory</p>
-          <p-button icon="pi pi-plus" label="Add Product" routerLink="/products" />
-        </div>
-      </p-card>
-
-      <p-card>
-        <div class="action-card">
-          <i class="pi pi-tag action-icon"></i>
-          <h3>Create Batch</h3>
-          <p>Register a new production batch</p>
-          <p-button icon="pi pi-plus" label="Create Batch" routerLink="/batches" />
-        </div>
-      </p-card>
-
-      <p-card>
-        <div class="action-card">
-          <i class="pi pi-chart-line action-icon"></i>
-          <h3>View Reports</h3>
-          <p>Access sales and inventory reports</p>
-          <p-button
-            icon="pi pi-chart-bar"
-            label="View Reports"
-            routerLink="/reports"
-            [outlined]="true"
-          />
-        </div>
-      </p-card>
+    <div class="header-content">
+      <h1 class="page-title">
+        <i class="pi pi-home"></i>
+        Dashboard
+      </h1>
+      <p class="page-subtitle">Welcome to your executive business overview</p>
+    </div>
+    <div class="header-actions">
+      <p-button icon="pi pi-chart-bar" label="View Full Reports" routerLink="/reports" [outlined]="true" />
     </div>
   </div>
+
+  <!-- KPI Summary Section -->
+  <section class="kpi-section">
+    @if (isLoadingSummary()) {
+      <div class="kpi-grid">
+        @for (i of [1, 2, 3, 4, 5, 6]; track i) {
+          <p-card class="kpi-card">
+            <p-skeleton height="100px" />
+          </p-card>
+        }
+      </div>
+    } @else if (summary()) {
+      <div class="kpi-grid">
+        <!-- Total Revenue KPI -->
+        <p-card class="kpi-card revenue" (click)="navigateToReports('sales')">
+          <div class="kpi-content">
+            <div class="kpi-icon">
+              <i class="pi pi-dollar"></i>
+            </div>
+            <div class="kpi-details">
+              <span class="kpi-label">Total Revenue</span>
+              <span class="kpi-value">{{ summary()!.totalRevenue | currency: 'GHS ' }}</span>
+              @if (summary()!.comparison?.revenueGrowth !== undefined) {
+                <span
+                  class="kpi-trend"
+                  [class.negative]="summary()!.comparison!.revenueGrowth < 0"
+                  [class.positive]="summary()!.comparison!.revenueGrowth > 0"
+                >
+                  <i [class]="summary()!.comparison!.revenueGrowth > 0 ? 'pi pi-arrow-up' : 'pi pi-arrow-down'"></i>
+                  {{ summary()!.comparison!.revenueGrowth | number: '1.1-1' }}%
+                </span>
+              }
+            </div>
+          </div>
+        </p-card>
+
+        <!-- Total Sales KPI -->
+        <p-card class="kpi-card sales" (click)="navigateToSales()">
+          <div class="kpi-content">
+            <div class="kpi-icon">
+              <i class="pi pi-shopping-bag"></i>
+            </div>
+            <div class="kpi-details">
+              <span class="kpi-label">Total Sales</span>
+              <span class="kpi-value">{{ summary()!.totalSales | number }}</span>
+              @if (summary()!.comparison?.salesGrowth !== undefined) {
+                <span
+                  class="kpi-trend"
+                  [class.negative]="summary()!.comparison!.salesGrowth < 0"
+                  [class.positive]="summary()!.comparison!.salesGrowth > 0"
+                >
+                  <i [class]="summary()!.comparison!.salesGrowth > 0 ? 'pi pi-arrow-up' : 'pi pi-arrow-down'"></i>
+                  {{ summary()!.comparison!.salesGrowth | number: '1.1-1' }}%
+                </span>
+              }
+            </div>
+          </div>
+        </p-card>
+
+        <!-- Inventory Value KPI -->
+        <p-card class="kpi-card inventory" (click)="navigateToInventory()">
+          <div class="kpi-content">
+            <div class="kpi-icon">
+              <i class="pi pi-warehouse"></i>
+            </div>
+            <div class="kpi-details">
+              <span class="kpi-label">Inventory Value</span>
+              <span class="kpi-value">{{ summary()!.inventoryValue | currency: 'GHS ' }}</span>
+              @if (summary()!.comparison?.inventoryGrowth !== undefined) {
+                <span
+                  class="kpi-trend"
+                  [class.negative]="summary()!.comparison!.inventoryGrowth < 0"
+                  [class.positive]="summary()!.comparison!.inventoryGrowth > 0"
+                >
+                  <i [class]="summary()!.comparison!.inventoryGrowth > 0 ? 'pi pi-arrow-up' : 'pi pi-arrow-down'"></i>
+                  {{ summary()!.comparison!.inventoryGrowth | number: '1.1-1' }}%
+                </span>
+              }
+            </div>
+          </div>
+        </p-card>
+
+        <!-- Unsold Stock KPI -->
+        <p-card class="kpi-card stock" (click)="navigateToInventory()">
+          <div class="kpi-content">
+            <div class="kpi-icon">
+              <i class="pi pi-box"></i>
+            </div>
+            <div class="kpi-details">
+              <span class="kpi-label">Unsold Stock</span>
+              <span class="kpi-value">{{ summary()!.unsoldStock | number }}</span>
+            </div>
+          </div>
+        </p-card>
+
+        <!-- Total Products KPI -->
+        <p-card class="kpi-card products" (click)="navigateToProducts()">
+          <div class="kpi-content">
+            <div class="kpi-icon">
+              <i class="pi pi-tags"></i>
+            </div>
+            <div class="kpi-details">
+              <span class="kpi-label">Total Products</span>
+              <span class="kpi-value">{{ summary()!.totalProducts | number }}</span>
+            </div>
+          </div>
+        </p-card>
+
+        <!-- Total Batches KPI -->
+        <p-card class="kpi-card batches" (click)="navigateToBatches()">
+          <div class="kpi-content">
+            <div class="kpi-icon">
+              <i class="pi pi-tag"></i>
+            </div>
+            <div class="kpi-details">
+              <span class="kpi-label">Total Batches</span>
+              <span class="kpi-value">{{ summary()!.totalBatches | number }}</span>
+            </div>
+          </div>
+        </p-card>
+      </div>
+    }
+  </section>
+
+  <!-- Trends Preview Section -->
+  <section class="trends-section">
+    <div class="section-header">
+      <h2 class="section-title">
+        <i class="pi pi-chart-line"></i>
+        Trends (Last 30 Days)
+      </h2>
+      <p-button
+        icon="pi pi-arrow-right"
+        label="View Details"
+        size="small"
+        [text]="true"
+        (onClick)="navigateToReports('sales')"
+      />
+    </div>
+
+    @if (isLoadingTrends()) {
+      <div class="charts-grid">
+        @for (i of [1, 2]; track i) {
+          <p-card>
+            <p-skeleton height="250px" />
+          </p-card>
+        }
+      </div>
+    } @else if (trends()) {
+      <div class="charts-grid">
+        <!-- Sales Trend Chart -->
+        <p-card class="chart-card">
+          <ng-template pTemplate="header">
+            <div class="chart-header">
+              <h3 class="chart-title">Sales Trend</h3>
+              <span class="chart-subtitle">{{ trends()!.summary.totalSales | number }} total sales</span>
+            </div>
+          </ng-template>
+          <p-chart height="220px" type="line" [data]="salesChartData()" [options]="salesChartOptions()" />
+        </p-card>
+
+        <!-- Revenue Trend Chart -->
+        <p-card class="chart-card">
+          <ng-template pTemplate="header">
+            <div class="chart-header">
+              <h3 class="chart-title">Revenue & Production</h3>
+              <span class="chart-subtitle">{{ trends()!.summary.totalRevenue | currency: 'GHS ' }} total revenue</span>
+            </div>
+          </ng-template>
+          <p-chart height="220px" type="line" [data]="revenueChartData()" [options]="revenueChartOptions()" />
+        </p-card>
+      </div>
+    }
+  </section>
+
+  <!-- Highlights & Alerts Grid -->
+  <div class="highlights-alerts-grid">
+    <!-- Performance Highlights Section -->
+    <section class="highlights-section">
+      <div class="section-header">
+        <h2 class="section-title">
+          <i class="pi pi-star-fill"></i>
+          Performance Highlights
+        </h2>
+        <p-button
+          icon="pi pi-arrow-right"
+          label="View All"
+          size="small"
+          [text]="true"
+          (onClick)="navigateToReports('product-performance')"
+        />
+      </div>
+
+      @if (isLoadingHighlights()) {
+        <p-card>
+          <p-skeleton height="300px" />
+        </p-card>
+      } @else if (highlights()) {
+        <p-card class="highlights-card">
+          <!-- Top Sellers -->
+          <div class="highlight-section">
+            <h4 class="highlight-title">
+              <i class="pi pi-arrow-up success"></i>
+              Top Sellers
+            </h4>
+            @if (highlights()!.topSellers.length > 0) {
+              <ul class="highlight-list">
+                @for (product of highlights()!.topSellers; track product.productId) {
+                  <li class="highlight-item">
+                    <span class="product-name">{{ product.productName }}</span>
+                    <span class="product-revenue">{{ product.revenue | currency: 'GHS ' }}</span>
+                  </li>
+                }
+              </ul>
+            } @else {
+              <p class="empty-message">No data available</p>
+            }
+          </div>
+
+          <!-- Bottom Performers -->
+          <div class="highlight-section">
+            <h4 class="highlight-title">
+              <i class="pi pi-arrow-down warning"></i>
+              Under-performing
+            </h4>
+            @if (highlights()!.bottomPerformers.length > 0) {
+              <ul class="highlight-list">
+                @for (product of highlights()!.bottomPerformers; track product.productId) {
+                  <li class="highlight-item">
+                    <span class="product-name">{{ product.productName }}</span>
+                    <span class="product-revenue">{{ product.revenue | currency: 'GHS ' }}</span>
+                  </li>
+                }
+              </ul>
+            } @else {
+              <p class="empty-message">No data available</p>
+            }
+          </div>
+        </p-card>
+      }
+    </section>
+
+    <!-- Alerts & Warnings Section -->
+    <section class="alerts-section">
+      <div class="section-header">
+        <h2 class="section-title">
+          <i class="pi pi-exclamation-triangle"></i>
+          Alerts & Warnings
+        </h2>
+        <p-button
+          icon="pi pi-arrow-right"
+          label="View All"
+          size="small"
+          [text]="true"
+          (onClick)="navigateToInventory()"
+        />
+      </div>
+
+      @if (isLoadingAlerts()) {
+        <p-card>
+          <p-skeleton height="300px" />
+        </p-card>
+      } @else if (alerts()) {
+        <p-card class="alerts-card">
+          <!-- Alert Summary -->
+          <div class="alert-summary">
+            <div class="alert-stat critical">
+              <span class="stat-value">{{ alerts()!.criticalCount }}</span>
+              <span class="stat-label">Critical</span>
+            </div>
+            <div class="alert-stat warning">
+              <span class="stat-value">{{ alerts()!.warningCount }}</span>
+              <span class="stat-label">Warnings</span>
+            </div>
+            <div class="alert-stat total">
+              <span class="stat-value">{{ alerts()!.totalAlerts }}</span>
+              <span class="stat-label">Total</span>
+            </div>
+          </div>
+
+          <!-- Low Stock Alerts -->
+          @if (alerts()!.lowStockAlerts.length > 0) {
+            <div class="alert-group">
+              <h4 class="alert-group-title">Low Stock Items</h4>
+              <ul class="alert-list">
+                @for (alert of alerts()!.lowStockAlerts.slice(0, 3); track alert.productId) {
+                  <li class="alert-item">
+                    <p-tag [severity]="getAlertSeverity(alert.severity)" [value]="alert.severity" />
+                    <div class="alert-details">
+                      <span class="alert-name">{{ alert.productName }}</span>
+                      <span class="alert-info">{{ alert.currentStock }} units remaining</span>
+                    </div>
+                  </li>
+                }
+              </ul>
+            </div>
+          }
+
+          <!-- Expiring Batches -->
+          @if (alerts()!.expiringBatches.length > 0) {
+            <div class="alert-group">
+              <h4 class="alert-group-title">Expiring Batches</h4>
+              <ul class="alert-list">
+                @for (alert of alerts()!.expiringBatches.slice(0, 3); track alert.batchId) {
+                  <li class="alert-item">
+                    <p-tag [severity]="getAlertSeverity(alert.severity)" [value]="alert.severity" />
+                    <div class="alert-details">
+                      <span class="alert-name">{{ alert.batchNumber }} - {{ alert.productName }}</span>
+                      <span class="alert-info">Expires in {{ alert.daysUntilExpiry }} days</span>
+                    </div>
+                  </li>
+                }
+              </ul>
+            </div>
+          }
+
+          <!-- No Alerts State -->
+          @if (alerts()!.lowStockAlerts.length === 0 && alerts()!.expiringBatches.length === 0) {
+            <div class="empty-alerts">
+              <i class="pi pi-check-circle"></i>
+              <p>No critical alerts at this time</p>
+            </div>
+          }
+        </p-card>
+      }
+    </section>
+  </div>
+
+  <!-- Recent Activity Section -->
+  <section class="activity-section">
+    <div class="section-header">
+      <h2 class="section-title">
+        <i class="pi pi-clock"></i>
+        Recent Activity
+      </h2>
+    </div>
+
+    @if (isLoadingActivity()) {
+      <div class="activity-grid">
+        @for (i of [1, 2, 3]; track i) {
+          <p-card>
+            <p-skeleton height="200px" />
+          </p-card>
+        }
+      </div>
+    } @else if (activity()) {
+      <div class="activity-grid">
+        <!-- Recent Sales -->
+        <p-card class="activity-card">
+          <ng-template pTemplate="header">
+            <div class="activity-header">
+              <h3 class="activity-title">
+                <i class="pi pi-shopping-bag"></i>
+                Recent Sales
+              </h3>
+              <p-button label="View All" size="small" [text]="true" (onClick)="navigateToSales()" />
+            </div>
+          </ng-template>
+
+          @if (activity()!.recentSales.length > 0) {
+            <ul class="activity-list">
+              @for (sale of activity()!.recentSales; track sale.id) {
+                <li class="activity-item">
+                  <div class="activity-info">
+                    <span class="activity-main">{{ sale.saleNumber }}</span>
+                    <span class="activity-sub">{{ sale.customerName }}</span>
+                  </div>
+                  <div class="activity-meta">
+                    <span class="activity-amount">{{ sale.totalAmount | currency: 'GHS ' }}</span>
+                    <span class="activity-date">{{ sale.createdAt | date: 'short' }}</span>
+                  </div>
+                </li>
+              }
+            </ul>
+          } @else {
+            <p class="empty-message">No recent sales</p>
+          }
+        </p-card>
+
+        <!-- Recent Batches -->
+        <p-card class="activity-card">
+          <ng-template pTemplate="header">
+            <div class="activity-header">
+              <h3 class="activity-title">
+                <i class="pi pi-tag"></i>
+                Recent Batches
+              </h3>
+              <p-button label="View All" size="small" [text]="true" (onClick)="navigateToBatches()" />
+            </div>
+          </ng-template>
+
+          @if (activity()!.recentBatches.length > 0) {
+            <ul class="activity-list">
+              @for (batch of activity()!.recentBatches; track batch.id) {
+                <li class="activity-item">
+                  <div class="activity-info">
+                    <span class="activity-main">{{ batch.batchNumber }}</span>
+                    <span class="activity-sub">{{ batch.productName }}</span>
+                  </div>
+                  <div class="activity-meta">
+                    <span class="activity-amount">{{ batch.quantity }} units</span>
+                    <span class="activity-date">{{ batch.createdAt | date: 'short' }}</span>
+                  </div>
+                </li>
+              }
+            </ul>
+          } @else {
+            <p class="empty-message">No recent batches</p>
+          }
+        </p-card>
+
+        <!-- Recent Inventory Changes -->
+        <p-card class="activity-card">
+          <ng-template pTemplate="header">
+            <div class="activity-header">
+              <h3 class="activity-title">
+                <i class="pi pi-sync"></i>
+                Inventory Changes
+              </h3>
+              <p-button label="View All" size="small" [text]="true" (onClick)="navigateToInventory()" />
+            </div>
+          </ng-template>
+
+          @if (activity()!.recentInventoryChanges.length > 0) {
+            <ul class="activity-list">
+              @for (change of activity()!.recentInventoryChanges; track change.id) {
+                <li class="activity-item">
+                  <div class="activity-info">
+                    <span class="activity-main">{{ change.productName }}</span>
+                    <span class="activity-sub">{{ change.changeType }}</span>
+                  </div>
+                  <div class="activity-meta">
+                    <span
+                      class="activity-amount"
+                      [class.negative]="change.quantityChange < 0"
+                      [class.positive]="change.quantityChange > 0"
+                    >
+                      {{ change.quantityChange > 0 ? '+' : '' }}{{ change.quantityChange }}
+                    </span>
+                    <span class="activity-date">{{ change.timestamp | date: 'short' }}</span>
+                  </div>
+                </li>
+              }
+            </ul>
+          } @else {
+            <p class="empty-message">No recent changes</p>
+          }
+        </p-card>
+      </div>
+    }
+  </section>
 </div>
