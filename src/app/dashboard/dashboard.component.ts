@@ -32,10 +32,10 @@ import {
     TagModule,
     SkeletonModule,
     ButtonModule,
-    RouterLink,
-    CurrencyPipe,
     DatePipe,
     DecimalPipe,
+    CurrencyPipe,
+    RouterLink,
   ],
   templateUrl: './dashboard.component.html',
   styleUrl: './dashboard.component.scss',
@@ -166,14 +166,16 @@ export class DashboardComponent implements OnInit {
 
   private updateCharts(trendsData: DashboardTrends): void {
     const documentStyle = getComputedStyle(document.documentElement);
+
+    // Sales Chart Data
     this.salesChartData.set({
-      labels: trendsData.trends.map((t) =>
+      labels: trendsData.sales.data.map((t) =>
         new Date(t.date).toLocaleDateString('en-US', { month: 'short', day: 'numeric' }),
       ),
       datasets: [
         {
-          label: 'Sales',
-          data: trendsData.trends.map((t) => t.sales),
+          label: trendsData.sales.label,
+          data: trendsData.sales.data.map((t) => t.value),
           borderColor: documentStyle.getPropertyValue('--p-primary-color'),
           backgroundColor: documentStyle.getPropertyValue('--p-primary-color') + '20',
           tension: 0.4,
@@ -182,31 +184,36 @@ export class DashboardComponent implements OnInit {
       ],
     });
 
+    // Revenue Chart Data with Production vs Sales
     this.revenueChartData.set({
-      labels: trendsData.trends.map((t) =>
+      labels: trendsData.revenue.data.map((t) =>
         new Date(t.date).toLocaleDateString('en-US', { month: 'short', day: 'numeric' }),
       ),
       datasets: [
         {
-          label: 'Revenue',
-          data: trendsData.trends.map((t) => t.revenue),
+          label: trendsData.revenue.label,
+          data: trendsData.revenue.data.map((t) => t.value),
           borderColor: documentStyle.getPropertyValue('--p-green-500'),
           backgroundColor: documentStyle.getPropertyValue('--p-green-500') + '20',
           tension: 0.4,
           fill: true,
         },
-        ...(trendsData.trends.some((t) => t.production !== undefined)
-          ? [
-              {
-                label: 'Production',
-                data: trendsData.trends.map((t) => t.production || 0),
-                borderColor: documentStyle.getPropertyValue('--p-blue-500'),
-                backgroundColor: documentStyle.getPropertyValue('--p-blue-500') + '20',
-                tension: 0.4,
-                fill: false,
-              },
-            ]
-          : []),
+        {
+          label: 'Produced',
+          data: trendsData.productionVsSales.produced.map((t) => t.value),
+          borderColor: documentStyle.getPropertyValue('--p-blue-500'),
+          backgroundColor: documentStyle.getPropertyValue('--p-blue-500') + '20',
+          tension: 0.4,
+          fill: false,
+        },
+        {
+          label: 'Sold',
+          data: trendsData.productionVsSales.sold.map((t) => t.value),
+          borderColor: documentStyle.getPropertyValue('--p-orange-500'),
+          backgroundColor: documentStyle.getPropertyValue('--p-orange-500') + '20',
+          tension: 0.4,
+          fill: false,
+        },
       ],
     });
   }
@@ -246,6 +253,35 @@ export class DashboardComponent implements OnInit {
       default:
         return 'success';
     }
+  }
+
+  public getStockAlerts(): {
+    productId?: string;
+    productName?: string;
+    message: string;
+    severity: AlertSeverity;
+  }[] {
+    if (!this.alerts()) {
+      return [];
+    }
+    return this.alerts()!.alerts.filter(
+      (alert) => alert.type === 'low_stock' || alert.type === 'overstock',
+    );
+  }
+
+  public getExpiryAlerts(): {
+    batchId?: string;
+    batchNumber?: string;
+    productName?: string;
+    message: string;
+    severity: AlertSeverity;
+  }[] {
+    if (!this.alerts()) {
+      return [];
+    }
+    return this.alerts()!.alerts.filter(
+      (alert) => alert.type === 'expiring_soon' || alert.type === 'expired',
+    );
   }
 
   public navigateToReports(section: string): void {

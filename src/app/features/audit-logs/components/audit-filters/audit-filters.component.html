@@ -1,0 +1,78 @@
+<div class="audit-filters">
+  <form class="filters-form" [formGroup]="filterForm">
+    <div class="filters-grid">
+      <!-- Date Range Filter -->
+      <div class="filter-field">
+        <label for="dateRange">Date Range</label>
+        <p-date-picker
+          dateFormat="yy-mm-dd"
+          formControlName="dateRange"
+          inputId="dateRange"
+          placeholder="Select date range"
+          selectionMode="range"
+          [showButtonBar]="true"
+          [showIcon]="true"
+        />
+      </div>
+
+      <!-- Action Type Filter -->
+      <app-select
+        id="actionType"
+        label="Action Type"
+        placeholder="All Actions"
+        [control]="filterForm.controls.actionType"
+        [options]="actionTypes()"
+        [showClear]="true"
+      />
+
+      <!-- Entity Type Filter -->
+      <app-select
+        id="entityType"
+        label="Entity Type"
+        placeholder="All Entities"
+        [control]="filterForm.controls.entityType"
+        [options]="entityTypes()"
+        [showClear]="true"
+      />
+
+      <!-- User ID Filter -->
+      <div class="filter-field">
+        <label for="userId">User ID</label>
+        <input
+          formControlName="userId"
+          id="userId"
+          pInputText
+          placeholder="Enter user ID"
+          type="text"
+        />
+      </div>
+
+      <!-- Role Filter -->
+      <app-select
+        id="role"
+        label="Role"
+        placeholder="All Roles"
+        [control]="filterForm.controls.role"
+        [options]="roles()"
+        [showClear]="true"
+      />
+    </div>
+
+    <!-- Action Buttons -->
+    <div class="filters-actions">
+      <p-button
+        icon="pi pi-refresh"
+        label="Reset"
+        severity="secondary"
+        [outlined]="true"
+        (onClick)="onResetFilters()"
+      />
+      <p-button
+        icon="pi pi-filter"
+        label="Apply Filters"
+        (onClick)="onApplyFilters()"
+      />
+    </div>
+  </form>
+</div>
+

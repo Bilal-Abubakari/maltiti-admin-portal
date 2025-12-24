@@ -15,6 +15,7 @@
 
   <!-- KPI Summary Section -->
   <section class="kpi-section">
+    @let dashboardSummary = summary();
     @if (isLoadingSummary()) {
       <div class="kpi-grid">
         @for (i of [1, 2, 3, 4, 5, 6]; track i) {
@@ -23,7 +24,8 @@
           </p-card>
         }
       </div>
-    } @else if (summary()) {
+
+    } @else if (dashboardSummary) {
       <div class="kpi-grid">
         <!-- Total Revenue KPI -->
         <p-card class="kpi-card revenue" (click)="navigateToReports('sales')">
@@ -33,15 +35,16 @@
             </div>
             <div class="kpi-details">
               <span class="kpi-label">Total Revenue</span>
-              <span class="kpi-value">{{ summary()!.totalRevenue | currency: 'GHS ' }}</span>
-              @if (summary()!.comparison?.revenueGrowth !== undefined) {
+              <span class="kpi-value">{{ dashboardSummary.kpis.revenue.total | currency: 'GHS ' }}</span>
+              @let growthPercentage = dashboardSummary.kpis.revenue.growthPercentage ?? 0;
+              @if (growthPercentage !== undefined) {
                 <span
                   class="kpi-trend"
-                  [class.negative]="summary()!.comparison!.revenueGrowth < 0"
-                  [class.positive]="summary()!.comparison!.revenueGrowth > 0"
+                  [class.negative]="growthPercentage < 0"
+                  [class.positive]="growthPercentage > 0"
                 >
-                  <i [class]="summary()!.comparison!.revenueGrowth > 0 ? 'pi pi-arrow-up' : 'pi pi-arrow-down'"></i>
-                  {{ summary()!.comparison!.revenueGrowth | number: '1.1-1' }}%
+                  <i [class]="growthPercentage > 0 ? 'pi pi-arrow-up' : 'pi pi-arrow-down'"></i>
+                  {{ growthPercentage | number: '1.1-1' }}%
                 </span>
               }
             </div>
@@ -56,15 +59,16 @@
             </div>
             <div class="kpi-details">
               <span class="kpi-label">Total Sales</span>
-              <span class="kpi-value">{{ summary()!.totalSales | number }}</span>
-              @if (summary()!.comparison?.salesGrowth !== undefined) {
+
+              <span class="kpi-value">{{ summary()!.kpis.sales.total | number }}</span>
+              @if (summary()!.kpis.sales.growthPercentage !== undefined) {
                 <span
                   class="kpi-trend"
-                  [class.negative]="summary()!.comparison!.salesGrowth < 0"
-                  [class.positive]="summary()!.comparison!.salesGrowth > 0"
+                  [class.negative]="growthPercentage < 0"
+                  [class.positive]="growthPercentage > 0"
                 >
-                  <i [class]="summary()!.comparison!.salesGrowth > 0 ? 'pi pi-arrow-up' : 'pi pi-arrow-down'"></i>
-                  {{ summary()!.comparison!.salesGrowth | number: '1.1-1' }}%
+                  <i [class]="growthPercentage > 0 ? 'pi pi-arrow-up' : 'pi pi-arrow-down'"></i>
+                  {{ growthPercentage | number: '1.1-1' }}%
                 </span>
               }
             </div>
@@ -79,30 +83,21 @@
             </div>
             <div class="kpi-details">
               <span class="kpi-label">Inventory Value</span>
-              <span class="kpi-value">{{ summary()!.inventoryValue | currency: 'GHS ' }}</span>
-              @if (summary()!.comparison?.inventoryGrowth !== undefined) {
-                <span
-                  class="kpi-trend"
-                  [class.negative]="summary()!.comparison!.inventoryGrowth < 0"
-                  [class.positive]="summary()!.comparison!.inventoryGrowth > 0"
-                >
-                  <i [class]="summary()!.comparison!.inventoryGrowth > 0 ? 'pi pi-arrow-up' : 'pi pi-arrow-down'"></i>
-                  {{ summary()!.comparison!.inventoryGrowth | number: '1.1-1' }}%
-                </span>
-              }
+              <span class="kpi-value">{{ summary()!.kpis.inventory.totalValue | currency: 'GHS ' }}</span>
+              <span class="kpi-info">{{ summary()!.kpis.inventory.totalQuantity | number }} units</span>
             </div>
           </div>
         </p-card>
 
-        <!-- Unsold Stock KPI -->
+        <!-- Low Stock Items KPI -->
         <p-card class="kpi-card stock" (click)="navigateToInventory()">
           <div class="kpi-content">
             <div class="kpi-icon">
               <i class="pi pi-box"></i>
             </div>
             <div class="kpi-details">
-              <span class="kpi-label">Unsold Stock</span>
-              <span class="kpi-value">{{ summary()!.unsoldStock | number }}</span>
+              <span class="kpi-label">Low Stock Items</span>
+              <span class="kpi-value">{{ summary()!.kpis.inventory.lowStockItems | number }}</span>
             </div>
           </div>
         </p-card>
@@ -115,7 +110,8 @@
             </div>
             <div class="kpi-details">
               <span class="kpi-label">Total Products</span>
-              <span class="kpi-value">{{ summary()!.totalProducts | number }}</span>
+              <span class="kpi-value">{{ summary()!.kpis.products.total | number }}</span>
+              <span class="kpi-info">{{ summary()!.kpis.products.active }} active</span>
             </div>
           </div>
         </p-card>
@@ -128,7 +124,8 @@
             </div>
             <div class="kpi-details">
               <span class="kpi-label">Total Batches</span>
-              <span class="kpi-value">{{ summary()!.totalBatches | number }}</span>
+              <span class="kpi-value">{{ summary()!.kpis.batches.total | number }}</span>
+              <span class="kpi-info">{{ summary()!.kpis.batches.active }} active</span>
             </div>
           </div>
         </p-card>
@@ -166,8 +163,25 @@
         <p-card class="chart-card">
           <ng-template pTemplate="header">
             <div class="chart-header">
-              <h3 class="chart-title">Sales Trend</h3>
-              <span class="chart-subtitle">{{ trends()!.summary.totalSales | number }} total sales</span>
+              <h3 class="chart-title">{{ trends()!.sales.label }}</h3>
+              <div class="chart-meta">
+                <span class="chart-subtitle">{{ trends()!.sales.total | number }} total</span>
+                <span
+                  class="trend-indicator"
+                  [class.down]="trends()!.sales.trend === 'down'"
+                  [class.stable]="trends()!.sales.trend === 'stable'"
+                  [class.up]="trends()!.sales.trend === 'up'"
+                >
+                  @if (trends()!.sales.trend === 'up') {
+                    <i class="pi pi-arrow-up"></i>
+                  } @else if (trends()!.sales.trend === 'down') {
+                    <i class="pi pi-arrow-down"></i>
+                  } @else {
+                    <i class="pi pi-minus"></i>
+                  }
+                  {{ trends()!.sales.changePercentage | number: '1.1-1' }}%
+                </span>
+              </div>
             </div>
           </ng-template>
           <p-chart height="220px" type="line" [data]="salesChartData()" [options]="salesChartOptions()" />
@@ -177,8 +191,25 @@
         <p-card class="chart-card">
           <ng-template pTemplate="header">
             <div class="chart-header">
-              <h3 class="chart-title">Revenue & Production</h3>
-              <span class="chart-subtitle">{{ trends()!.summary.totalRevenue | currency: 'GHS ' }} total revenue</span>
+              <h3 class="chart-title">{{ trends()!.revenue.label }}</h3>
+              <div class="chart-meta">
+                <span class="chart-subtitle">{{ trends()!.revenue.total | currency: 'GHS ' }} total</span>
+                <span
+                  class="trend-indicator"
+                  [class.down]="trends()!.revenue.trend === 'down'"
+                  [class.stable]="trends()!.revenue.trend === 'stable'"
+                  [class.up]="trends()!.revenue.trend === 'up'"
+                >
+                  @if (trends()!.revenue.trend === 'up') {
+                    <i class="pi pi-arrow-up"></i>
+                  } @else if (trends()!.revenue.trend === 'down') {
+                    <i class="pi pi-arrow-down"></i>
+                  } @else {
+                    <i class="pi pi-minus"></i>
+                  }
+                  {{ trends()!.revenue.changePercentage | number: '1.1-1' }}%
+                </span>
+              </div>
             </div>
           </ng-template>
           <p-chart height="220px" type="line" [data]="revenueChartData()" [options]="revenueChartOptions()" />
@@ -279,30 +310,30 @@
           <!-- Alert Summary -->
           <div class="alert-summary">
             <div class="alert-stat critical">
-              <span class="stat-value">{{ alerts()!.criticalCount }}</span>
+              <span class="stat-value">{{ alerts()!.critical }}</span>
               <span class="stat-label">Critical</span>
             </div>
             <div class="alert-stat warning">
-              <span class="stat-value">{{ alerts()!.warningCount }}</span>
+              <span class="stat-value">{{ alerts()!.warnings }}</span>
               <span class="stat-label">Warnings</span>
             </div>
             <div class="alert-stat total">
-              <span class="stat-value">{{ alerts()!.totalAlerts }}</span>
+              <span class="stat-value">{{ alerts()!.total }}</span>
               <span class="stat-label">Total</span>
             </div>
           </div>
 
-          <!-- Low Stock Alerts -->
-          @if (alerts()!.lowStockAlerts.length > 0) {
+          <!-- Low Stock & Overstock Alerts -->
+          @if (getStockAlerts().length > 0) {
             <div class="alert-group">
-              <h4 class="alert-group-title">Low Stock Items</h4>
+              <h4 class="alert-group-title">Stock Alerts</h4>
               <ul class="alert-list">
-                @for (alert of alerts()!.lowStockAlerts.slice(0, 3); track alert.productId) {
+                @for (alert of getStockAlerts().slice(0, 3); track alert.productId) {
                   <li class="alert-item">
                     <p-tag [severity]="getAlertSeverity(alert.severity)" [value]="alert.severity" />
                     <div class="alert-details">
                       <span class="alert-name">{{ alert.productName }}</span>
-                      <span class="alert-info">{{ alert.currentStock }} units remaining</span>
+                      <span class="alert-info">{{ alert.message }}</span>
                     </div>
                   </li>
                 }
@@ -310,17 +341,17 @@
             </div>
           }
 
-          <!-- Expiring Batches -->
-          @if (alerts()!.expiringBatches.length > 0) {
+          <!-- Expiring & Expired Batches -->
+          @if (getExpiryAlerts().length > 0) {
             <div class="alert-group">
-              <h4 class="alert-group-title">Expiring Batches</h4>
+              <h4 class="alert-group-title">Expiry Alerts</h4>
               <ul class="alert-list">
-                @for (alert of alerts()!.expiringBatches.slice(0, 3); track alert.batchId) {
+                @for (alert of getExpiryAlerts().slice(0, 3); track alert.batchId) {
                   <li class="alert-item">
                     <p-tag [severity]="getAlertSeverity(alert.severity)" [value]="alert.severity" />
                     <div class="alert-details">
                       <span class="alert-name">{{ alert.batchNumber }} - {{ alert.productName }}</span>
-                      <span class="alert-info">Expires in {{ alert.daysUntilExpiry }} days</span>
+                      <span class="alert-info">{{ alert.message }}</span>
                     </div>
                   </li>
                 }
@@ -329,7 +360,7 @@
           }
 
           <!-- No Alerts State -->
-          @if (alerts()!.lowStockAlerts.length === 0 && alerts()!.expiringBatches.length === 0) {
+          @if (alerts()!.alerts.length === 0) {
             <div class="empty-alerts">
               <i class="pi pi-check-circle"></i>
               <p>No critical alerts at this time</p>
@@ -370,8 +401,8 @@
               <p-button label="View All" size="small" [text]="true" (onClick)="navigateToSales()" />
             </div>
           </ng-template>
-
-          @if (activity()!.recentSales.length > 0) {
+          @let dashboardActivity = activity();
+          @if (dashboardActivity && dashboardActivity.recentSales.length > 0) {
             <ul class="activity-list">
               @for (sale of activity()!.recentSales; track sale.id) {
                 <li class="activity-item">
@@ -403,9 +434,9 @@
             </div>
           </ng-template>
 
-          @if (activity()!.recentBatches.length > 0) {
+          @if (dashboardActivity && dashboardActivity.recentBatches.length > 0) {
             <ul class="activity-list">
-              @for (batch of activity()!.recentBatches; track batch.id) {
+              @for (batch of dashboardActivity.recentBatches; track batch.batchId) {
                 <li class="activity-item">
                   <div class="activity-info">
                     <span class="activity-main">{{ batch.batchNumber }}</span>
@@ -413,7 +444,7 @@
                   </div>
                   <div class="activity-meta">
                     <span class="activity-amount">{{ batch.quantity }} units</span>
-                    <span class="activity-date">{{ batch.createdAt | date: 'short' }}</span>
+                    <span class="activity-date">{{ batch.productionDate | date: 'short' }}</span>
                   </div>
                 </li>
               }
@@ -434,10 +465,9 @@
               <p-button label="View All" size="small" [text]="true" (onClick)="navigateToInventory()" />
             </div>
           </ng-template>
-
-          @if (activity()!.recentInventoryChanges.length > 0) {
+          @if (dashboardActivity && dashboardActivity.recentChanges.length > 0) {
             <ul class="activity-list">
-              @for (change of activity()!.recentInventoryChanges; track change.id) {
+              @for (change of dashboardActivity.recentChanges; track change.id) {
                 <li class="activity-item">
                   <div class="activity-info">
                     <span class="activity-main">{{ change.productName }}</span>

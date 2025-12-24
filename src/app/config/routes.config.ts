@@ -39,6 +39,9 @@ export interface IAppRoutes {
     create: IRouteConfig;
     edit: (id: string) => string;
   };
+  auditLogs: IRouteConfig & {
+    details: (id: string) => string;
+  };
   root: IRouteConfig;
 }
 
@@ -94,19 +97,16 @@ export const APP_ROUTES: IAppRoutes = {
     },
     edit: (id: string) => `/sales/${id}`,
   },
+  auditLogs: {
+    path: 'audit-logs',
+    fullPath: '/audit-logs',
+    details: (id: string) => `/audit-logs/${id}`,
+  },
   root: {
     path: '',
     fullPath: '/',
   },
 };
-
-/**
- * Type-safe route paths extracted from APP_ROUTES
- */
-export type AppRoutePath =
-  | typeof APP_ROUTES.auth.login.fullPath
-  | typeof APP_ROUTES.dashboard.fullPath
-  | typeof APP_ROUTES.root.fullPath;
 
 /**
  * Helper function to get route path with type safety

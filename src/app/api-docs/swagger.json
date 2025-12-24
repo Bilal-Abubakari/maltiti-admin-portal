@@ -1,6 +1,301 @@
 {
   "openapi": "3.0.0",
   "paths": {
+    "/audits": {
+      "get": {
+        "description": "Retrieve audit logs with support for filtering by date range, action type, entity type, user ID, and role. Supports pagination and sorting.",
+        "operationId": "AuditController_findAll",
+        "parameters": [
+          {
+            "name": "from",
+            "required": false,
+            "in": "query",
+            "description": "Start date for filtering (ISO 8601 format)",
+            "schema": { "example": "2023-01-01T00:00:00Z", "type": "string" }
+          },
+          {
+            "name": "to",
+            "required": false,
+            "in": "query",
+            "description": "End date for filtering (ISO 8601 format)",
+            "schema": { "example": "2023-12-31T23:59:59Z", "type": "string" }
+          },
+          {
+            "name": "actionType",
+            "required": false,
+            "in": "query",
+            "description": "Filter by action type",
+            "schema": {
+              "enum": [
+                "LOGIN",
+                "LOGOUT",
+                "LOGIN_FAILED",
+                "PASSWORD_CHANGED",
+                "PASSWORD_RESET",
+                "CREATE",
+                "UPDATE",
+                "DELETE",
+                "ROLE_CHANGED",
+                "PERMISSION_CHANGED",
+                "STATUS_CHANGED",
+                "INVENTORY_ADJUSTED",
+                "BATCH_ASSIGNED",
+                "REPORT_EXPORTED",
+                "DATA_EXPORTED",
+                "SALE_CREATED",
+                "SALE_UPDATED",
+                "SALE_CANCELLED",
+                "CONFIGURATION_CHANGED",
+                "SYSTEM_ACTION",
+                "USER_CREATED",
+                "USER_UPDATED",
+                "USER_DELETED",
+                "USER_DEACTIVATED",
+                "USER_ACTIVATED"
+              ],
+              "type": "string"
+            }
+          },
+          {
+            "name": "entityType",
+            "required": false,
+            "in": "query",
+            "description": "Filter by entity type",
+            "schema": {
+              "enum": [
+                "USER",
+                "PRODUCT",
+                "BATCH",
+                "INVENTORY",
+                "SALE",
+                "CHECKOUT",
+                "CART",
+                "COOPERATIVE",
+                "COOPERATIVE_MEMBER",
+                "CUSTOMER",
+                "REPORT",
+                "SYSTEM",
+                "CONFIGURATION",
+                "AUTHENTICATION"
+              ],
+              "type": "string"
+            }
+          },
+          {
+            "name": "userId",
+            "required": false,
+            "in": "query",
+            "description": "Filter by user ID who performed the action",
+            "schema": { "example": "123e4567-e89b-12d3-a456-426614174000", "type": "string" }
+          },
+          {
+            "name": "role",
+            "required": false,
+            "in": "query",
+            "description": "Filter by user role",
+            "schema": { "enum": ["user", "admin", "superadmin"], "type": "string" }
+          },
+          {
+            "name": "page",
+            "required": false,
+            "in": "query",
+            "description": "Page number (starts from 1)",
+            "schema": { "default": 1, "example": 1, "type": "number" }
+          },
+          {
+            "name": "limit",
+            "required": false,
+            "in": "query",
+            "description": "Number of items per page",
+            "schema": { "default": 20, "example": 20, "type": "number" }
+          },
+          {
+            "name": "sortOrder",
+            "required": false,
+            "in": "query",
+            "description": "Sort order (ASC or DESC)",
+            "schema": { "default": "DESC", "example": "DESC", "type": "string" }
+          },
+          {
+            "description": "Start date for filtering (ISO 8601 format)",
+            "required": false,
+            "name": "from",
+            "in": "query",
+            "schema": { "example": "2023-01-01T00:00:00Z" }
+          },
+          {
+            "description": "End date for filtering (ISO 8601 format)",
+            "required": false,
+            "name": "to",
+            "in": "query",
+            "schema": { "example": "2023-12-31T23:59:59Z" }
+          },
+          {
+            "description": "Filter by action type",
+            "required": false,
+            "name": "actionType",
+            "in": "query",
+            "schema": {
+              "enum": [
+                "LOGIN",
+                "LOGOUT",
+                "LOGIN_FAILED",
+                "PASSWORD_CHANGED",
+                "PASSWORD_RESET",
+                "CREATE",
+                "UPDATE",
+                "DELETE",
+                "ROLE_CHANGED",
+                "PERMISSION_CHANGED",
+                "STATUS_CHANGED",
+                "INVENTORY_ADJUSTED",
+                "BATCH_ASSIGNED",
+                "REPORT_EXPORTED",
+                "DATA_EXPORTED",
+                "SALE_CREATED",
+                "SALE_UPDATED",
+                "SALE_CANCELLED",
+                "CONFIGURATION_CHANGED",
+                "SYSTEM_ACTION",
+                "USER_CREATED",
+                "USER_UPDATED",
+                "USER_DELETED",
+                "USER_DEACTIVATED",
+                "USER_ACTIVATED"
+              ],
+              "type": "string"
+            }
+          },
+          {
+            "description": "Filter by entity type",
+            "required": false,
+            "name": "entityType",
+            "in": "query",
+            "schema": {
+              "enum": [
+                "USER",
+                "PRODUCT",
+                "BATCH",
+                "INVENTORY",
+                "SALE",
+                "CHECKOUT",
+                "CART",
+                "COOPERATIVE",
+                "COOPERATIVE_MEMBER",
+                "CUSTOMER",
+                "REPORT",
+                "SYSTEM",
+                "CONFIGURATION",
+                "AUTHENTICATION"
+              ],
+              "type": "string"
+            }
+          },
+          {
+            "description": "Filter by user ID who performed the action",
+            "required": false,
+            "name": "userId",
+            "in": "query",
+            "schema": { "example": "123e4567-e89b-12d3-a456-426614174000" }
+          },
+          {
+            "description": "Filter by user role",
+            "required": false,
+            "name": "role",
+            "in": "query",
+            "schema": { "enum": ["user", "admin", "superadmin"], "type": "string" }
+          },
+          {
+            "description": "Page number (starts from 1)",
+            "required": false,
+            "name": "page",
+            "in": "query",
+            "schema": { "default": 1, "example": 1 }
+          },
+          {
+            "description": "Number of items per page",
+            "required": false,
+            "name": "limit",
+            "in": "query",
+            "schema": { "default": 20, "example": 20 }
+          },
+          {
+            "description": "Sort order (ASC or DESC)",
+            "required": false,
+            "name": "sortOrder",
+            "in": "query",
+            "schema": { "default": "DESC", "example": "DESC" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Audit logs retrieved successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": { "$ref": "#/components/schemas/AuditLogResponseDto" }
+                }
+              }
+            }
+          }
+        },
+        "summary": "Fetch audit logs (Super Admin Only)",
+        "tags": ["audit"]
+      }
+    },
+    "/audits/{id}": {
+      "get": {
+        "description": "Retrieve full details of a specific audit log including metadata with before/after values where available.",
+        "operationId": "AuditController_findOne",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "description": "Audit Log ID",
+            "schema": { "type": "string" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Audit log retrieved successfully",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/AuditLogResponseDto" }
+              }
+            }
+          }
+        },
+        "summary": "Fetch audit log details (Super Admin Only)",
+        "tags": ["audit"]
+      }
+    },
+    "/audits/stats/overview": {
+      "get": {
+        "description": "Retrieve statistics about audit logs including action type distribution, entity type distribution, and top users.",
+        "operationId": "AuditController_getStatistics",
+        "parameters": [
+          {
+            "name": "from",
+            "required": false,
+            "in": "query",
+            "description": "Start date (ISO 8601 format)",
+            "schema": { "type": "string" }
+          },
+          {
+            "name": "to",
+            "required": false,
+            "in": "query",
+            "description": "End date (ISO 8601 format)",
+            "schema": { "type": "string" }
+          }
+        ],
+        "responses": { "200": { "description": "Audit statistics retrieved successfully" } },
+        "summary": "Get audit statistics (Super Admin Only)",
+        "tags": ["audit"]
+      }
+    },
     "/authentication/sign-up": {
       "post": {
         "operationId": "AuthenticationController_register",
@@ -2727,6 +3022,125 @@
       }
     },
     "schemas": {
+      "AuditLogResponseDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "Unique identifier for the audit log",
+            "example": "123e4567-e89b-12d3-a456-426614174000"
+          },
+          "actionType": {
+            "type": "string",
+            "description": "Type of action performed",
+            "enum": [
+              "LOGIN",
+              "LOGOUT",
+              "LOGIN_FAILED",
+              "PASSWORD_CHANGED",
+              "PASSWORD_RESET",
+              "CREATE",
+              "UPDATE",
+              "DELETE",
+              "ROLE_CHANGED",
+              "PERMISSION_CHANGED",
+              "STATUS_CHANGED",
+              "INVENTORY_ADJUSTED",
+              "BATCH_ASSIGNED",
+              "REPORT_EXPORTED",
+              "DATA_EXPORTED",
+              "SALE_CREATED",
+              "SALE_UPDATED",
+              "SALE_CANCELLED",
+              "CONFIGURATION_CHANGED",
+              "SYSTEM_ACTION",
+              "USER_CREATED",
+              "USER_UPDATED",
+              "USER_DELETED",
+              "USER_DEACTIVATED",
+              "USER_ACTIVATED"
+            ],
+            "example": "CREATE"
+          },
+          "entityType": {
+            "type": "string",
+            "description": "Type of entity affected",
+            "enum": [
+              "USER",
+              "PRODUCT",
+              "BATCH",
+              "INVENTORY",
+              "SALE",
+              "CHECKOUT",
+              "CART",
+              "COOPERATIVE",
+              "COOPERATIVE_MEMBER",
+              "CUSTOMER",
+              "REPORT",
+              "SYSTEM",
+              "CONFIGURATION",
+              "AUTHENTICATION"
+            ],
+            "example": "PRODUCT"
+          },
+          "entityId": {
+            "type": "string",
+            "description": "ID of the entity affected",
+            "example": "456e7890-e89b-12d3-a456-426614174111"
+          },
+          "description": {
+            "type": "string",
+            "description": "Human-readable description of the action",
+            "example": "Created product 'Organic Shea Butter 500g'"
+          },
+          "performedByUserId": {
+            "type": "string",
+            "description": "ID of user who performed the action",
+            "example": "789e1234-e89b-12d3-a456-426614174222"
+          },
+          "performedByUserName": {
+            "type": "string",
+            "description": "Name of user who performed the action",
+            "example": "John Doe"
+          },
+          "performedByRole": {
+            "type": "string",
+            "description": "Role of user who performed the action",
+            "enum": ["user", "admin", "superadmin"],
+            "example": "admin"
+          },
+          "ipAddress": {
+            "type": "string",
+            "description": "IP address from which action was performed",
+            "example": "192.168.1.1"
+          },
+          "userAgent": {
+            "type": "string",
+            "description": "User agent string of the client",
+            "example": "Mozilla/5.0..."
+          },
+          "timestamp": {
+            "format": "date-time",
+            "type": "string",
+            "description": "Timestamp when action was performed",
+            "example": "2023-12-24T10:30:00Z"
+          },
+          "metadata": {
+            "type": "object",
+            "description": "Additional metadata (before/after values, etc.)",
+            "example": { "before": { "price": 100 }, "after": { "price": 120 } }
+          }
+        },
+        "required": [
+          "id",
+          "actionType",
+          "entityType",
+          "description",
+          "performedByUserId",
+          "performedByRole",
+          "timestamp"
+        ]
+      },
       "RegisterUserDto": { "type": "object", "properties": {} },
       "VerifyPhoneDto": { "type": "object", "properties": {} },
       "SignInDto": { "type": "object", "properties": {} },
