@@ -14,9 +14,7 @@
   font-weight: 700;
   color: var(--p-text-color);
   margin: 0;
-  display: flex;
-  align-items: center;
-  gap: 0.75rem;
+  @include mixins.flex-start(0.75rem);
 }
 .kpi-section {
   margin-bottom: 2rem;
@@ -37,9 +35,7 @@
     padding: 1.5rem;
   }
   .kpi-content {
-    display: flex;
-    align-items: center;
-    gap: 1rem;
+    @include mixins.flex-start(1rem);
   }
   .kpi-icon {
     width: 56px;
@@ -52,9 +48,7 @@
     }
   }
   .kpi-details {
-    display: flex;
-    flex-direction: column;
-    gap: 0.25rem;
+    @include mixins.flex-column(0.25rem);
   }
   .kpi-label {
     font-size: 0.875rem;
@@ -72,9 +66,7 @@
   .kpi-trend {
     font-size: 0.875rem;
     font-weight: 600;
-    display: flex;
-    align-items: center;
-    gap: 0.25rem;
+    @include mixins.flex-start(0.25rem);
     &.positive {
       color: var(--p-green-600);
     }
@@ -113,9 +105,7 @@ section {
   font-weight: 600;
   color: var(--p-text-color);
   margin: 0;
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
+  @include mixins.flex-start(0.5rem);
 }
 .charts-grid {
   display: grid;
@@ -130,9 +120,7 @@ section {
   }
 
   .chart-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: flex-start;
+    @include mixins.flex-between(flex-start);
 
     .chart-title {
       font-size: 1rem;
@@ -142,10 +130,7 @@ section {
     }
 
     .chart-meta {
-      display: flex;
-      flex-direction: column;
-      align-items: flex-end;
-      gap: 0.25rem;
+      @include mixins.flex-column(0.25rem, flex-end);
 
       .chart-subtitle {
         font-size: 0.875rem;
@@ -154,9 +139,7 @@ section {
       }
 
       .trend-indicator {
-        display: flex;
-        align-items: center;
-        gap: 0.25rem;
+        @include mixins.flex-start(0.25rem);
         font-size: 0.875rem;
         font-weight: 600;
         padding: 0.25rem 0.5rem;
@@ -227,9 +210,7 @@ section {
       font-weight: 600;
       color: var(--p-text-color);
       margin: 0 0 1rem 0;
-      display: flex;
-      align-items: center;
-      gap: 0.5rem;
+      @include mixins.flex-start(0.5rem);
       i {
         font-size: 1rem;
         &.success { color: var(--p-green-600); }
@@ -279,10 +260,7 @@ section {
     padding-bottom: 1.5rem;
     border-bottom: 1px solid var(--p-surface-border);
     .alert-stat {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 0.25rem;
+      @include mixins.flex-column(0.25rem, center);
       .stat-value {
         font-size: 1.75rem;
         font-weight: 700;
@@ -313,16 +291,12 @@ section {
     margin: 0;
   }
   .alert-item {
-    display: flex;
-    align-items: center;
-    gap: 0.75rem;
+    @include mixins.flex-start(0.75rem);
     padding: 0.75rem 0;
     border-bottom: 1px solid var(--p-surface-50);
     &:last-child { border-bottom: none; }
     .alert-details {
-      display: flex;
-      flex-direction: column;
-      gap: 0.25rem;
+      @include mixins.flex-column(0.25rem);
       flex: 1;
       .alert-name {
         font-size: 0.875rem;
@@ -353,18 +327,14 @@ section {
 // Activity Card Styles
 .activity-card {
   .activity-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
+    @include mixins.flex-between;
     padding: 1rem 1.5rem;
     .activity-title {
       font-size: 1rem;
       font-weight: 600;
       color: var(--p-text-color);
       margin: 0;
-      display: flex;
-      align-items: center;
-      gap: 0.5rem;
+      @include mixins.flex-start(0.5rem);
       i { color: var(--p-primary-color); }
     }
   }
@@ -382,9 +352,7 @@ section {
     border-bottom: 1px solid var(--p-surface-50);
     &:last-child { border-bottom: none; }
     .activity-info {
-      display: flex;
-      flex-direction: column;
-      gap: 0.25rem;
+      @include mixins.flex-column(0.25rem);
       flex: 1;
       .activity-main {
         font-size: 0.875rem;
@@ -397,10 +365,7 @@ section {
       }
     }
     .activity-meta {
-      display: flex;
-      flex-direction: column;
-      gap: 0.25rem;
-      align-items: flex-end;
+      @include mixins.flex-column(0.25rem, flex-end);
       .activity-amount {
         font-size: 0.875rem;
         color: var(--p-text-color);
