@@ -8,14 +8,20 @@ import { Store } from '@ngrx/store';
 import { Router } from '@angular/router';
 import { ButtonModule } from 'primeng/button';
 import { MenuModule } from 'primeng/menu';
+import { AvatarModule } from 'primeng/avatar';
 import { MenuItem } from 'primeng/api';
-import { selectUser } from '@auth/store/auth.selectors';
+import {
+  selectUserAvatarUrl,
+  selectUserInitialsFromName,
+  selectUserName,
+} from '@auth/store/auth.selectors';
 import { authLogout } from '@auth/store/auth.actions';
+import { APP_ROUTES } from '@config/routes.config';
 
 @Component({
   selector: 'app-header',
   standalone: true,
-  imports: [ButtonModule, MenuModule],
+  imports: [ButtonModule, MenuModule, AvatarModule],
   templateUrl: './header.component.html',
   styleUrl: './header.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -28,17 +34,19 @@ export class HeaderComponent {
   public readonly toggleSidebar = output<void>();
 
   // User signal from store
-  public readonly user = this.store.selectSignal(selectUser);
+  public readonly avatarUrl = this.store.selectSignal(selectUserAvatarUrl);
+  public readonly fullName = this.store.selectSignal(selectUserName);
+  public readonly userInitials = this.store.selectSignal(selectUserInitialsFromName);
 
   // User menu items
   public readonly userMenuItems = computed<MenuItem[]>(() => [
     {
-      label: this.user()?.name || 'User',
+      label: this.fullName() || 'User',
       items: [
         {
           label: 'Settings',
           icon: 'pi pi-cog',
-          command: (): void => this.navigateTo('/settings'),
+          command: (): void => this.navigateTo(APP_ROUTES.settings.fullPath),
         },
         {
           separator: true,

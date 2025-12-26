@@ -13,14 +13,18 @@
   </div>
 
   <div class="header-right">
-    <p-button icon="pi pi-bell" severity="secondary" [badge]="'3'" [rounded]="true" [text]="true" />
     <p-menu #userMenu [model]="userMenuItems()" [popup]="true" />
-    <p-button
-      icon="pi pi-user"
-      severity="secondary"
-      [rounded]="true"
-      [text]="true"
-      (onClick)="userMenu.toggle($event)"
-    />
+       <p-avatar
+         shape="circle"
+         style="cursor:pointer; margin-left: 0.5rem;"
+         [image]="avatarUrl()"
+         [label]="!avatarUrl ? userInitials() : undefined"
+         [style.background-color]="!avatarUrl() ? '#d9eaff' : null"
+         [style.color]="avatarUrl() ? '#2a3b4d' : null"
+         [style.font-size.px]="18"
+         [style.height.px]="36"
+         [style.width.px]="36"
+         (click)="userMenu.toggle($event)"
+       />
   </div>
 </header>
