@@ -298,6 +298,7 @@
     },
     "/authentication/sign-up": {
       "post": {
+        "description": "Creates a new user account and sends a verification email",
         "operationId": "AuthenticationController_register",
         "parameters": [],
         "requestBody": {
@@ -306,15 +307,27 @@
             "application/json": { "schema": { "$ref": "#/components/schemas/RegisterUserDto" } }
           }
         },
-        "responses": { "201": { "description": "" } },
+        "responses": {
+          "201": { "description": "User registration successful" },
+          "400": { "description": "Bad request - validation failed" },
+          "409": { "description": "User with email already exists" }
+        },
+        "summary": "Register a new user",
         "tags": ["Authentication"]
       }
     },
     "/authentication/verify-phone/{id}": {
       "post": {
+        "description": "Verifies user phone number using OTP code",
         "operationId": "AuthenticationController_verifyPhone",
         "parameters": [
-          { "name": "id", "required": true, "in": "path", "schema": { "type": "string" } }
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "description": "User ID",
+            "schema": { "type": "string" }
+          }
         ],
         "requestBody": {
           "required": true,
@@ -322,12 +335,19 @@
             "application/json": { "schema": { "$ref": "#/components/schemas/VerifyPhoneDto" } }
           }
         },
-        "responses": { "201": { "description": "" } },
+        "responses": {
+          "200": { "description": "Phone verification successful" },
+          "401": { "description": "Unauthorized - invalid or missing token" },
+          "409": { "description": "User with phone number already exists" }
+        },
+        "security": [{ "cookie": [] }],
+        "summary": "Verify phone number",
         "tags": ["Authentication"]
       }
     },
     "/authentication/customer-signup": {
       "post": {
+        "description": "Register a new customer account with email verification",
         "operationId": "AuthenticationController_customerSignup",
         "parameters": [],
         "requestBody": {
@@ -336,12 +356,18 @@
             "application/json": { "schema": { "$ref": "#/components/schemas/RegisterUserDto" } }
           }
         },
-        "responses": { "201": { "description": "" } },
+        "responses": {
+          "201": { "description": "Customer account created, verification email sent" },
+          "400": { "description": "Bad request - validation failed" },
+          "409": { "description": "User with email already exists" }
+        },
+        "summary": "Customer signup",
         "tags": ["Authentication"]
       }
     },
     "/authentication/login": {
       "post": {
+        "description": "Authenticates user and returns access token and refresh token in HTTP-only cookies. Also logs the login event in audit logs.",
         "operationId": "AuthenticationController_signIn",
         "parameters": [],
         "requestBody": {
@@ -350,12 +376,17 @@
             "application/json": { "schema": { "$ref": "#/components/schemas/SignInDto" } }
           }
         },
-        "responses": { "201": { "description": "" } },
+        "responses": {
+          "200": { "description": "Login successful, tokens set in cookies" },
+          "401": { "description": "Invalid username or password" }
+        },
+        "summary": "User login",
         "tags": ["Authentication"]
       }
     },
     "/authentication/forgot-password": {
       "post": {
+        "description": "Sends a password reset link to the user's email",
         "operationId": "AuthenticationController_forgotPassword",
         "parameters": [],
         "requestBody": {
@@ -364,12 +395,17 @@
             "application/json": { "schema": { "$ref": "#/components/schemas/ForgotPasswordDto" } }
           }
         },
-        "responses": { "201": { "description": "" } },
+        "responses": {
+          "200": { "description": "Password reset email sent successfully" },
+          "404": { "description": "User with email does not exist" }
+        },
+        "summary": "Request password reset",
         "tags": ["Authentication"]
       }
     },
     "/authentication/reset-password": {
       "post": {
+        "description": "Resets user password using the reset token from email",
         "operationId": "AuthenticationController_resetPassword",
         "parameters": [],
         "requestBody": {
@@ -378,39 +414,75 @@
             "application/json": { "schema": { "$ref": "#/components/schemas/ResetPasswordDto" } }
           }
         },
-        "responses": { "201": { "description": "" } },
+        "responses": {
+          "200": { "description": "Password reset successful" },
+          "400": { "description": "Bad request - passwords do not match" },
+          "410": { "description": "Reset token has expired" }
+        },
+        "summary": "Reset password",
         "tags": ["Authentication"]
       }
     },
     "/authentication/verify/{id}/{token}": {
       "get": {
+        "description": "Verifies user email using the verification token from email",
         "operationId": "AuthenticationController_emailVerification",
         "parameters": [
-          { "name": "id", "required": true, "in": "path", "schema": { "type": "string" } },
-          { "name": "token", "required": true, "in": "path", "schema": { "type": "string" } }
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "description": "User ID",
+            "schema": { "type": "string" }
+          },
+          {
+            "name": "token",
+            "required": true,
+            "in": "path",
+            "description": "Verification token",
+            "schema": { "type": "string" }
+          }
         ],
-        "responses": { "200": { "description": "" } },
+        "responses": {
+          "200": { "description": "Email verification successful" },
+          "401": { "description": "Token does not exist or has expired" },
+          "404": { "description": "User not found" }
+        },
+        "summary": "Verify email address",
         "tags": ["Authentication"]
       }
     },
     "/authentication/refresh-token": {
       "post": {
+        "description": "Generates new access and refresh tokens using the refresh token from cookies. Implements token rotation for security.",
         "operationId": "AuthenticationController_refreshToken",
         "parameters": [],
-        "responses": { "201": { "description": "" } },
+        "responses": {
+          "200": { "description": "Tokens refreshed successfully" },
+          "401": { "description": "Invalid or missing refresh token" }
+        },
+        "security": [{ "cookie": [] }],
+        "summary": "Refresh access token",
         "tags": ["Authentication"]
       }
     },
     "/authentication/logout": {
       "post": {
+        "description": "Invalidates the current session, clears authentication cookies, and logs the logout event in audit logs",
         "operationId": "AuthenticationController_logout",
         "parameters": [],
-        "responses": { "201": { "description": "" } },
+        "responses": {
+          "200": { "description": "Logged out successfully" },
+          "401": { "description": "Unauthorized - not logged in" }
+        },
+        "security": [{ "cookie": [] }],
+        "summary": "User logout",
         "tags": ["Authentication"]
       }
     },
     "/authentication/create-admin": {
       "post": {
+        "description": "Creates a new admin user account with auto-generated password. Credentials are sent via email. Only Super Admin can create admin accounts.",
         "operationId": "AuthenticationController_createAdmin",
         "parameters": [],
         "requestBody": {
@@ -419,15 +491,30 @@
             "application/json": { "schema": { "$ref": "#/components/schemas/CreateAdminDto" } }
           }
         },
-        "responses": { "201": { "description": "" } },
+        "responses": {
+          "201": { "description": "Admin account created successfully, credentials sent to email" },
+          "400": { "description": "Bad request - email must be @maltitiaenterprise.com" },
+          "401": { "description": "Unauthorized - not logged in" },
+          "403": { "description": "Forbidden - requires Super Admin role" },
+          "409": { "description": "User with email already exists" }
+        },
+        "security": [{ "cookie": [] }],
+        "summary": "Create admin user (Super Admin only)",
         "tags": ["Authentication"]
       }
     },
     "/authentication/change-password/{id}": {
       "post": {
+        "description": "Changes user password. Requires current password for validation. Updates mustChangePassword flag to false.",
         "operationId": "AuthenticationController_changePassword",
         "parameters": [
-          { "name": "id", "required": true, "in": "path", "schema": { "type": "string" } }
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "description": "User ID",
+            "schema": { "type": "string" }
+          }
         ],
         "requestBody": {
           "required": true,
@@ -435,7 +522,16 @@
             "application/json": { "schema": { "$ref": "#/components/schemas/ChangePasswordDto" } }
           }
         },
-        "responses": { "201": { "description": "" } },
+        "responses": {
+          "200": { "description": "Password changed successfully" },
+          "400": {
+            "description": "Bad request - passwords do not match or current password is incorrect"
+          },
+          "401": { "description": "Unauthorized - not logged in" },
+          "404": { "description": "User not found" }
+        },
+        "security": [{ "cookie": [] }],
+        "summary": "Change password",
         "tags": ["Authentication"]
       }
     },
@@ -2988,6 +3084,86 @@
         "summary": "Get recent activity",
         "tags": ["Dashboard"]
       }
+    },
+    "/me/profile": {
+      "get": {
+        "description": "Returns the authenticated user's profile information. Read-only fields like role and verification status are included.",
+        "operationId": "ProfileController_getProfile",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Profile retrieved successfully",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ProfileResponseDto" }
+              }
+            }
+          },
+          "401": { "description": "Unauthorized - not logged in" }
+        },
+        "security": [{ "cookie": [] }],
+        "summary": "Get my profile",
+        "tags": ["Profile & Settings"]
+      },
+      "put": {
+        "description": "Updates the authenticated user's profile information. Email changes require re-verification. Role and permissions cannot be modified through this endpoint.",
+        "operationId": "ProfileController_updateProfile",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": { "schema": { "$ref": "#/components/schemas/UpdateProfileDto" } }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Profile updated successfully",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ProfileResponseDto" }
+              }
+            }
+          },
+          "400": { "description": "Bad request - validation failed" },
+          "401": { "description": "Unauthorized - not logged in" },
+          "409": { "description": "Email already in use by another account" }
+        },
+        "security": [{ "cookie": [] }],
+        "summary": "Update my profile",
+        "tags": ["Profile & Settings"]
+      }
+    },
+    "/me/profile/avatar": {
+      "post": {
+        "description": "Uploads or updates the authenticated user's profile avatar image. Accepts image files (jpg, png, gif) up to 5MB.",
+        "operationId": "ProfileController_uploadAvatar",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "file": {
+                    "type": "string",
+                    "format": "binary",
+                    "description": "Avatar image file"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": { "description": "Avatar uploaded successfully" },
+          "400": { "description": "Bad request - invalid file type or size" },
+          "401": { "description": "Unauthorized - not logged in" }
+        },
+        "security": [{ "cookie": [] }],
+        "summary": "Upload profile avatar",
+        "tags": ["Profile & Settings"]
+      }
     }
   },
   "info": {
@@ -4398,6 +4574,83 @@
           }
         },
         "required": ["id"]
+      },
+      "ProfileResponseDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "User ID",
+            "example": "123e4567-e89b-12d3-a456-426614174000"
+          },
+          "firstName": { "type": "string", "description": "First name", "example": "John" },
+          "lastName": { "type": "string", "description": "Last name", "example": "Doe" },
+          "name": { "type": "string", "description": "Full name", "example": "John Doe" },
+          "email": {
+            "type": "string",
+            "description": "Email address",
+            "example": "john.doe@maltitiaenterprise.com"
+          },
+          "phone": { "type": "string", "description": "Phone number", "example": "+1234567890" },
+          "avatarUrl": {
+            "type": "string",
+            "description": "Profile avatar URL",
+            "example": "https://example.com/avatars/user.jpg"
+          },
+          "userType": {
+            "type": "string",
+            "description": "User role (read-only)",
+            "enum": ["user", "admin", "superadmin"],
+            "example": "admin"
+          },
+          "emailVerified": {
+            "type": "boolean",
+            "description": "Email verification status (read-only)",
+            "example": true
+          },
+          "phoneVerified": {
+            "type": "boolean",
+            "description": "Phone verification status (read-only)",
+            "example": true
+          },
+          "createdAt": {
+            "format": "date-time",
+            "type": "string",
+            "description": "Account creation date (read-only)",
+            "example": "2023-12-24T10:00:00Z"
+          },
+          "updatedAt": {
+            "format": "date-time",
+            "type": "string",
+            "description": "Last update date (read-only)",
+            "example": "2023-12-24T12:00:00Z"
+          }
+        },
+        "required": [
+          "id",
+          "firstName",
+          "lastName",
+          "name",
+          "email",
+          "userType",
+          "emailVerified",
+          "phoneVerified",
+          "createdAt",
+          "updatedAt"
+        ]
+      },
+      "UpdateProfileDto": {
+        "type": "object",
+        "properties": {
+          "firstName": { "type": "string", "description": "First name", "example": "John" },
+          "lastName": { "type": "string", "description": "Last name", "example": "Doe" },
+          "email": {
+            "type": "string",
+            "description": "Email address (requires re-verification if changed)",
+            "example": "john.doe@maltitiaenterprise.com"
+          },
+          "phone": { "type": "string", "description": "Phone number", "example": "+1234567890" }
+        }
       }
     }
   }

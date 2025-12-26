@@ -23,6 +23,8 @@ You are an expert in TypeScript, Angular, and scalable web application developme
 - let's use IResponse type for Api Response but if it is paginated list then use IPaginatedResponse<T> type.
 - Let's always unsubscribe from observables that we subscribe to mostly using takeUntilDestroyed() or if possible take(1), first()
 - Don't use array methods in template, it should all be in the component.
+- takeUntilDestroyed should be used with DestroyRef from @angular/core when not used in the constructor.
+- Avoid nested subscription (.subscribe) as all cost
 
 ## Components
 

@@ -8,7 +8,7 @@ import { FormFieldBaseComponent } from '../base/form-field-base.component';
 @Component({
   selector: 'app-password-input',
   templateUrl: './password-input.component.html',
-  styleUrl: '../base/form-field-base.component.scss',
+  styleUrls: ['password-input.component.scss', '../base/form-field-base.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [ReactiveFormsModule, PasswordModule, FloatLabelModule, MessageModule],
 })

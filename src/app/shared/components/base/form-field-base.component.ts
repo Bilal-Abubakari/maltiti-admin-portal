@@ -1,16 +1,20 @@
-import { computed, Directive, input } from '@angular/core';
-import { FormControl } from '@angular/forms';
+import { computed, DestroyRef, Directive, effect, inject, input, signal } from '@angular/core';
+import { FormControl, ValidationErrors } from '@angular/forms';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { map, startWith } from 'rxjs/operators';
 
 @Directive()
 export class FormFieldBaseComponent {
+  private readonly destroyRef = inject(DestroyRef);
   public readonly control = input.required<FormControl>();
   public readonly id = input.required<string>();
   public readonly label = input<string>('');
   public readonly placeholder = input<string>('');
   public readonly styleClass = input<string>('');
+  private readonly errorsSignal = signal<ValidationErrors | null>(null);
 
   public readonly errorMessage = computed(() => {
-    const errors = this.control()?.errors;
+    const errors = this.errorsSignal();
     if (!errors) {
       return null;
     }
@@ -29,7 +33,25 @@ export class FormFieldBaseComponent {
     pattern: 'Please enter a valid value',
     weakPassword:
       'Password must contain at least 8 characters, 1 lowercase, 1 uppercase, 1 number, and 1 symbol',
+    mismatch: 'Passwords do not match',
   };
+
+  constructor() {
+    effect(() => {
+      const ctrl = this.control();
+      if (ctrl) {
+        ctrl.statusChanges
+          .pipe(
+            startWith(ctrl.status),
+            map(() => ctrl.errors),
+            takeUntilDestroyed(this.destroyRef),
+          )
+          .subscribe((errors) => {
+            this.errorsSignal.set(errors);
+          });
+      }
+    });
+  }
 
   protected getErrorMessage(key: string, value: unknown): string {
     const messageTemplate = this.ERROR_MESSAGES[key];

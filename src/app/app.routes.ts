@@ -13,7 +13,7 @@ export const routes: Routes = [
     loadComponent: () => import('./auth/login/login.component').then((m) => m.LoginComponent),
   },
   {
-    path: APP_ROUTES.dashboard.path,
+    path: '',
     loadComponent: () =>
       import('./layout/dashboard-layout/dashboard-layout.component').then(
         (m) => m.DashboardLayoutComponent,
@@ -22,92 +22,41 @@ export const routes: Routes = [
     children: [
       {
         path: '',
+        redirectTo: APP_ROUTES.dashboard.path,
+        pathMatch: 'full',
+      },
+      {
+        path: APP_ROUTES.dashboard.path,
         loadComponent: () =>
           import('./dashboard/dashboard.component').then((m) => m.DashboardComponent),
       },
-    ],
-  },
-  {
-    path: APP_ROUTES.products.path,
-    loadComponent: () =>
-      import('./layout/dashboard-layout/dashboard-layout.component').then(
-        (m) => m.DashboardLayoutComponent,
-      ),
-    canActivate: [authGuard],
-    children: [
       {
-        path: '',
+        path: APP_ROUTES.products.path,
         loadChildren: () => import('./features/products/routes').then((m) => m.PRODUCTS_ROUTES),
       },
-    ],
-  },
-  {
-    path: APP_ROUTES.batches.path,
-    loadComponent: () =>
-      import('./layout/dashboard-layout/dashboard-layout.component').then(
-        (m) => m.DashboardLayoutComponent,
-      ),
-    canActivate: [authGuard],
-    children: [
       {
-        path: '',
+        path: APP_ROUTES.batches.path,
         loadChildren: () => import('./features/batches/routes').then((m) => m.BATCHES_ROUTES),
       },
-    ],
-  },
-  {
-    path: APP_ROUTES.users.path,
-    loadComponent: () =>
-      import('./layout/dashboard-layout/dashboard-layout.component').then(
-        (m) => m.DashboardLayoutComponent,
-      ),
-    canActivate: [authGuard],
-    children: [
       {
-        path: '',
+        path: APP_ROUTES.users.path,
         loadChildren: () => import('./features/users/routes').then((m) => m.USERS_ROUTES),
       },
-    ],
-  },
-  {
-    path: APP_ROUTES.sales.path,
-    loadComponent: () =>
-      import('./layout/dashboard-layout/dashboard-layout.component').then(
-        (m) => m.DashboardLayoutComponent,
-      ),
-    canActivate: [authGuard],
-    children: [
       {
-        path: '',
+        path: APP_ROUTES.sales.path,
         loadChildren: () => import('./features/sales/routes').then((m) => m.SALES_ROUTES),
       },
-    ],
-  },
-  {
-    path: APP_ROUTES.reports.path,
-    loadComponent: () =>
-      import('./layout/dashboard-layout/dashboard-layout.component').then(
-        (m) => m.DashboardLayoutComponent,
-      ),
-    canActivate: [authGuard],
-    children: [
       {
-        path: '',
+        path: APP_ROUTES.reports.path,
         loadChildren: () => import('./features/reports/routes').then((m) => m.REPORTS_ROUTES),
       },
-    ],
-  },
-  {
-    path: APP_ROUTES.auditLogs.path,
-    loadComponent: () =>
-      import('./layout/dashboard-layout/dashboard-layout.component').then(
-        (m) => m.DashboardLayoutComponent,
-      ),
-    canActivate: [authGuard],
-    children: [
       {
-        path: '',
+        path: APP_ROUTES.auditLogs.path,
         loadChildren: () => import('./features/audit-logs/routes').then((m) => m.AUDIT_LOGS_ROUTES),
+      },
+      {
+        path: APP_ROUTES.settings.path,
+        loadChildren: () => import('./features/settings/routes').then((m) => m.SETTINGS_ROUTES),
       },
     ],
   },

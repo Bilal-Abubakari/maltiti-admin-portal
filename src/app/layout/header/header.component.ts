@@ -9,8 +9,8 @@ import { Router } from '@angular/router';
 import { ButtonModule } from 'primeng/button';
 import { MenuModule } from 'primeng/menu';
 import { MenuItem } from 'primeng/api';
-import { selectUser } from '../../auth/store/auth.selectors';
-import { authLogout } from '../../auth/store/auth.actions';
+import { selectUser } from '@auth/store/auth.selectors';
+import { authLogout } from '@auth/store/auth.actions';
 
 @Component({
   selector: 'app-header',
@@ -35,11 +35,6 @@ export class HeaderComponent {
     {
       label: this.user()?.name || 'User',
       items: [
-        {
-          label: 'Profile',
-          icon: 'pi pi-user',
-          command: (): void => this.navigateTo('/profile'),
-        },
         {
           label: 'Settings',
           icon: 'pi pi-cog',
