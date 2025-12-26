@@ -12,8 +12,8 @@ import {
   selectMustChangePassword,
   selectUserId,
 } from '../store/auth.selectors';
-import { PasswordInputComponent } from '../../shared/components/password-input/password-input.component';
-import { CustomValidators } from '../../shared/validators/custom-validators';
+import { PasswordInputComponent } from '@shared/components/password-input/password-input.component';
+import { CustomValidators } from '@shared/validators/custom-validators';
 
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,

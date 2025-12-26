@@ -1,0 +1,199 @@
+<div class="settings-container">
+  <div class="settings-header">
+    <h1>Settings & Profile</h1>
+    <p>Manage your account information and preferences</p>
+  </div>
+
+  <!-- Loading State -->
+  @if (loading()) {
+    <div class="loading-container">
+      <p-progressSpinner />
+      <p>Loading profile...</p>
+    </div>
+  } @else {
+    <!-- Error Message -->
+    <div class="error-message">
+    @if (error()) {
+      <p-message severity="error">
+        {{error()}}
+      </p-message>
+    }
+
+    <!-- Success Message -->
+    @if (success()) {
+      <p-message severity="success">
+        {{success()}}
+      </p-message>
+    }
+  </div>
+
+    <div class="settings-content">
+      <!-- Custom Tabs -->
+      <div class="tabs-header">
+        <p-button
+          label="Profile Information"
+          [outlined]="activeTab() !== 0"
+          [severity]="activeTab() === 0 ? 'primary' : 'secondary'"
+          (onClick)="activeTab.set(0)"
+        />
+        <p-button
+          label="Avatar"
+          [outlined]="activeTab() !== 1"
+          [severity]="activeTab() === 1 ? 'primary' : 'secondary'"
+          (onClick)="activeTab.set(1)"
+        />
+        <p-button
+          label="Password"
+          [outlined]="activeTab() !== 2"
+          [severity]="activeTab() === 2 ? 'primary' : 'secondary'"
+          (onClick)="activeTab.set(2)"
+        />
+      </div>
+
+      <!-- Tab Content -->
+      @if (activeTab() === 0) {
+        <p-card class="profile-card" header="Profile Information">
+          <form class="profile-form" [formGroup]="profileForm">
+            <div class="form-grid">
+              <div class="form-field">
+                <app-input
+                  label="Full Name *"
+                  placeholder="Enter your full name"
+                  [control]="nameControl()"
+                  [id]="'name'"
+                  [required]="true"
+                />
+              </div>
+
+              <div class="form-field">
+                <app-input
+                  label="Email Address"
+                  placeholder="your.email@example.com"
+                  [control]="emailControl()"
+                  [disabled]="true"
+                  [id]="'email'"
+                  [readonly]="true"
+                />
+                <small class="help-text">Email cannot be changed here. Contact support if needed.</small>
+              </div>
+
+              <div class="form-field">
+                <app-input
+                  label="Phone Number"
+                  placeholder="+1234567890"
+                  type="tel"
+                  [control]="phoneControl()"
+                  [id]="'phone'"
+                />
+              </div>
+            </div>
+
+            <div class="form-actions">
+              <p-button
+                icon="pi pi-times"
+                label="Cancel"
+                severity="secondary"
+                [disabled]="saving()"
+                [outlined]="true"
+                (onClick)="onCancel()"
+              />
+              <p-button
+                icon="pi pi-check"
+                label="Save Changes"
+                [disabled]="this.profileForm.invalid || saving()"
+                [loading]="saving()"
+                (onClick)="onSave()"
+              />
+            </div>
+          </form>
+        </p-card>
+      }
+
+      @if (activeTab() === 1) {
+        <p-card class="avatar-card" header="Profile Picture">
+          <div class="avatar-section">
+            <div class="current-avatar">
+              @if (profile()?.avatarUrl) {
+                <img class="avatar-image" [alt]="profile()!.name" [src]="profile()!.avatarUrl!" />
+              } @else {
+                <div class="avatar-placeholder">
+                  <i class="pi pi-user"></i>
+                </div>
+              }
+            </div>
+
+            <div class="avatar-upload">
+              <p-fileupload
+                accept="image/*"
+                chooseLabel="Choose Image"
+                maxFileSize="5242880"
+                mode="basic"
+                [auto]="true"
+                [disabled]="uploading()"
+                [multiple]="false"
+                (onSelect)="onAvatarUpload($event)"
+              />
+              @if (uploading()) {
+                <div class="upload-progress">
+                  <p-progressSpinner />
+                  <span>Uploading...</span>
+                </div>
+              }
+              <small class="help-text">Supported formats: JPG, PNG, GIF. Max size: 5MB</small>
+            </div>
+          </div>
+        </p-card>
+      }
+
+      @if (activeTab() === 2) {
+        <p-card class="password-card" header="Password & Security">
+          <form class="password-form" [formGroup]="passwordForm">
+            <div class="form-grid">
+              <div class="form-field">
+                <app-password-input
+                  label="Current Password *"
+                  placeholder="Enter your current password"
+                  [control]="currentPasswordControl()"
+                  [feedback]="false"
+                  [id]="'currentPassword'"
+                />
+              </div>
+
+              <div class="form-field">
+                <app-password-input
+                  label="New Password *"
+                  placeholder="Enter your new password"
+                  [control]="newPasswordControl()"
+                  [id]="'newPassword'"
+                />
+              </div>
+
+              <div class="form-field">
+                <app-password-input
+                  label="Confirm New Password *"
+                  placeholder="Confirm your new password"
+                  [control]="confirmPasswordControl()"
+                  [id]="'confirmPassword'"
+                />
+              </div>
+
+             @if (passwordForm.hasError('mismatch')) {
+               <p-message severity="error">New password and confirm password do not match</p-message>
+             }
+            </div>
+
+            <div class="form-actions">
+              <p-button
+                icon="pi pi-lock"
+                label="Change Password"
+                [disabled]="this.passwordForm.invalid || changingPassword()"
+                [loading]="changingPassword()"
+                (onClick)="onChangePassword()"
+              />
+            </div>
+          </form>
+        </p-card>
+      }
+    </div>
+  }
+</div>
