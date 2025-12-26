@@ -47,20 +47,56 @@ export interface DashboardActivityParams {
 }
 
 /**
+ * Dashboard KPIs - Key Performance Indicators
+ */
+export interface DashboardKPIs {
+  revenue: {
+    total: number;
+    period: number;
+    previousPeriod?: number;
+    growthPercentage?: number;
+  };
+  sales: {
+    total: number;
+    period: number;
+    previousPeriod?: number;
+    growthPercentage?: number;
+  };
+  products: {
+    total: number;
+    active: number;
+    inactive: number;
+  };
+  batches: {
+    total: number;
+    active: number;
+  };
+  inventory: {
+    totalValue: number;
+    totalQuantity: number;
+    lowStockItems: number;
+  };
+  production: {
+    totalProduced: number;
+    totalSold: number;
+    utilizationRate: number;
+  };
+}
+
+/**
  * Dashboard Summary Response - Main KPI metrics
  */
 export interface DashboardSummary {
-  totalRevenue: number;
-  totalSales: number;
-  inventoryValue: number;
-  unsoldStock: number;
-  totalProducts: number;
-  totalBatches: number;
-  comparison?: {
-    revenueGrowth: number;
-    salesGrowth: number;
-    inventoryGrowth: number;
+  kpis: DashboardKPIs;
+  period: {
+    from: string;
+    to: string;
   };
+  comparisonPeriod?: {
+    from: string;
+    to: string;
+  };
+  lastUpdated: string;
 }
 
 /**
@@ -68,22 +104,36 @@ export interface DashboardSummary {
  */
 export interface TrendDataPoint {
   date: string;
-  revenue: number;
-  sales: number;
-  production?: number;
+  value: number;
 }
+
+/**
+ * Trend Direction
+ */
+export type TrendDirection = 'up' | 'down' | 'stable';
 
 /**
  * Dashboard Trends Response
  */
 export interface DashboardTrends {
   period: string;
-  trends: TrendDataPoint[];
-  summary: {
-    totalRevenue: number;
-    totalSales: number;
-    totalProduction: number;
-    averageDaily: number;
+  sales: {
+    label: string;
+    data: TrendDataPoint[];
+    total: number;
+    trend: TrendDirection;
+    changePercentage: number;
+  };
+  revenue: {
+    label: string;
+    data: TrendDataPoint[];
+    total: number;
+    trend: TrendDirection;
+    changePercentage: number;
+  };
+  productionVsSales: {
+    produced: TrendDataPoint[];
+    sold: TrendDataPoint[];
   };
 }
 
@@ -116,38 +166,34 @@ export interface DashboardHighlights {
 export type AlertSeverity = 'critical' | 'warning' | 'info';
 
 /**
- * Low Stock Alert
+ * Alert Types
  */
-export interface LowStockAlert {
-  productId: string;
-  productName: string;
-  currentStock: number;
-  threshold: number;
-  severity: AlertSeverity;
-}
+export type AlertType = 'low_stock' | 'overstock' | 'expiring_soon' | 'expired';
 
 /**
- * Batch Expiry Alert
+ * Inventory Alert
  */
-export interface BatchExpiryAlert {
-  batchId: string;
-  batchNumber: string;
-  productName: string;
-  expiryDate: string;
-  daysUntilExpiry: number;
-  quantityRemaining: number;
+export interface InventoryAlert {
+  type: AlertType;
   severity: AlertSeverity;
+  productId?: string;
+  productName?: string;
+  batchId?: string;
+  batchNumber?: string;
+  message: string;
+  value: number;
+  threshold?: number;
+  daysUntilExpiry?: number;
 }
 
 /**
  * Dashboard Alerts Response
  */
 export interface DashboardAlerts {
-  lowStockAlerts: LowStockAlert[];
-  expiringBatches: BatchExpiryAlert[];
-  totalAlerts: number;
-  criticalCount: number;
-  warningCount: number;
+  total: number;
+  critical: number;
+  warnings: number;
+  alerts: InventoryAlert[];
 }
 
 /**
@@ -166,12 +212,11 @@ export interface RecentSale {
  * Recent Batch Activity
  */
 export interface RecentBatch {
-  id: string;
+  batchId: string;
   batchNumber: string;
   productName: string;
   quantity: number;
   productionDate: string;
-  createdAt: string;
 }
 
 /**
@@ -191,5 +236,5 @@ export interface RecentInventoryChange {
 export interface DashboardActivity {
   recentSales: RecentSale[];
   recentBatches: RecentBatch[];
-  recentInventoryChanges: RecentInventoryChange[];
+  recentChanges: RecentInventoryChange[];
 }

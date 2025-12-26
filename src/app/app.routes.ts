@@ -98,6 +98,20 @@ export const routes: Routes = [
     ],
   },
   {
+    path: APP_ROUTES.auditLogs.path,
+    loadComponent: () =>
+      import('./layout/dashboard-layout/dashboard-layout.component').then(
+        (m) => m.DashboardLayoutComponent,
+      ),
+    canActivate: [authGuard],
+    children: [
+      {
+        path: '',
+        loadChildren: () => import('./features/audit-logs/routes').then((m) => m.AUDIT_LOGS_ROUTES),
+      },
+    ],
+  },
+  {
     path: '**',
     redirectTo: APP_ROUTES.dashboard.fullPath,
   },

@@ -1,12 +1,12 @@
+@use '../../styles/mixins' as mixins;
+
 .dashboard {
   padding: 2rem;
   max-width: 1600px;
   margin: 0 auto;
 }
 .dashboard-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
+  @include mixins.flex-between;
   margin-bottom: 2rem;
 }
 .page-title {
@@ -14,9 +14,7 @@
   font-weight: 700;
   color: var(--p-text-color);
   margin: 0;
-  display: flex;
-  align-items: center;
-  gap: 0.75rem;
+  @include mixins.flex-start(0.75rem);
 }
 .kpi-section {
   margin-bottom: 2rem;
@@ -31,32 +29,26 @@
   transition: all 0.2s ease;
   &:hover {
     transform: translateY(-2px);
-    box-shadow: var(--p-shadow-lg);
+    @include mixins.elevation(4);
   }
   ::ng-deep .p-card-body {
     padding: 1.5rem;
   }
   .kpi-content {
-    display: flex;
-    align-items: center;
-    gap: 1rem;
+    @include mixins.flex-start(1rem);
   }
   .kpi-icon {
     width: 56px;
     height: 56px;
     border-radius: 12px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
+    @include mixins.flex-center;
     i {
       font-size: 1.5rem;
       color: white;
     }
   }
   .kpi-details {
-    display: flex;
-    flex-direction: column;
-    gap: 0.25rem;
+    @include mixins.flex-column(0.25rem);
   }
   .kpi-label {
     font-size: 0.875rem;
@@ -67,12 +59,14 @@
     font-weight: 700;
     color: var(--p-text-color);
   }
+  .kpi-info {
+    font-size: 0.75rem;
+    color: var(--p-text-muted-color);
+  }
   .kpi-trend {
     font-size: 0.875rem;
     font-weight: 600;
-    display: flex;
-    align-items: center;
-    gap: 0.25rem;
+    @include mixins.flex-start(0.25rem);
     &.positive {
       color: var(--p-green-600);
     }
@@ -103,9 +97,7 @@ section {
   margin-bottom: 2rem;
 }
 .section-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
+  @include mixins.flex-between;
   margin-bottom: 1rem;
 }
 .section-title {
@@ -113,15 +105,69 @@ section {
   font-weight: 600;
   color: var(--p-text-color);
   margin: 0;
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
+  @include mixins.flex-start(0.5rem);
 }
 .charts-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(450px, 1fr));
   gap: 1.5rem;
 }
+
+// Chart Card Styles
+.chart-card {
+  ::ng-deep .p-card-header {
+    padding: 1.5rem 1.5rem 0;
+  }
+
+  .chart-header {
+    @include mixins.flex-between(flex-start);
+
+    .chart-title {
+      font-size: 1rem;
+      font-weight: 600;
+      color: var(--p-text-color);
+      margin: 0;
+    }
+
+    .chart-meta {
+      @include mixins.flex-column(0.25rem, flex-end);
+
+      .chart-subtitle {
+        font-size: 0.875rem;
+        color: var(--p-text-muted-color);
+        font-weight: 500;
+      }
+
+      .trend-indicator {
+        @include mixins.flex-start(0.25rem);
+        font-size: 0.875rem;
+        font-weight: 600;
+        padding: 0.25rem 0.5rem;
+        border-radius: 4px;
+
+        i {
+          font-size: 0.75rem;
+        }
+
+        &.up {
+          color: var(--p-green-600);
+          background: var(--p-green-50);
+        }
+
+        &.down {
+          color: var(--p-red-600);
+          background: var(--p-red-50);
+        }
+
+        &.stable {
+          color: var(--p-text-muted-color);
+          background: var(--p-surface-100);
+        }
+      }
+    }
+  }
+}
+
 .highlights-alerts-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
@@ -164,9 +210,7 @@ section {
       font-weight: 600;
       color: var(--p-text-color);
       margin: 0 0 1rem 0;
-      display: flex;
-      align-items: center;
-      gap: 0.5rem;
+      @include mixins.flex-start(0.5rem);
       i {
         font-size: 1rem;
         &.success { color: var(--p-green-600); }
@@ -180,9 +224,7 @@ section {
     margin: 0;
   }
   .highlight-item {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
+    @include mixins.flex-between;
     padding: 0.75rem 0;
     border-bottom: 1px solid var(--p-surface-50);
     &:last-child { border-bottom: none; }
@@ -218,10 +260,7 @@ section {
     padding-bottom: 1.5rem;
     border-bottom: 1px solid var(--p-surface-border);
     .alert-stat {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 0.25rem;
+      @include mixins.flex-column(0.25rem, center);
       .stat-value {
         font-size: 1.75rem;
         font-weight: 700;
@@ -252,16 +291,12 @@ section {
     margin: 0;
   }
   .alert-item {
-    display: flex;
-    align-items: center;
-    gap: 0.75rem;
+    @include mixins.flex-start(0.75rem);
     padding: 0.75rem 0;
     border-bottom: 1px solid var(--p-surface-50);
     &:last-child { border-bottom: none; }
     .alert-details {
-      display: flex;
-      flex-direction: column;
-      gap: 0.25rem;
+      @include mixins.flex-column(0.25rem);
       flex: 1;
       .alert-name {
         font-size: 0.875rem;
@@ -292,18 +327,14 @@ section {
 // Activity Card Styles
 .activity-card {
   .activity-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
+    @include mixins.flex-between;
     padding: 1rem 1.5rem;
     .activity-title {
       font-size: 1rem;
       font-weight: 600;
       color: var(--p-text-color);
       margin: 0;
-      display: flex;
-      align-items: center;
-      gap: 0.5rem;
+      @include mixins.flex-start(0.5rem);
       i { color: var(--p-primary-color); }
     }
   }
@@ -316,16 +347,12 @@ section {
     margin: 0;
   }
   .activity-item {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
+    @include mixins.flex-between;
     padding: 0.75rem 0;
     border-bottom: 1px solid var(--p-surface-50);
     &:last-child { border-bottom: none; }
     .activity-info {
-      display: flex;
-      flex-direction: column;
-      gap: 0.25rem;
+      @include mixins.flex-column(0.25rem);
       flex: 1;
       .activity-main {
         font-size: 0.875rem;
@@ -338,10 +365,7 @@ section {
       }
     }
     .activity-meta {
-      display: flex;
-      flex-direction: column;
-      gap: 0.25rem;
-      align-items: flex-end;
+      @include mixins.flex-column(0.25rem, flex-end);
       .activity-amount {
         font-size: 0.875rem;
         color: var(--p-text-color);

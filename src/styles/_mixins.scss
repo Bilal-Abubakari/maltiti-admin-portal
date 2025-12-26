@@ -12,16 +12,26 @@
   justify-content: center;
 }
 
-@mixin flex-between {
+@mixin flex-between($align: center) {
   display: flex;
-  align-items: center;
+  align-items: $align;
   justify-content: space-between;
 }
 
-@mixin flex-start {
+@mixin flex-start($gap: 0) {
   display: flex;
   align-items: center;
   justify-content: flex-start;
+  @if $gap != 0 {
+    gap: $gap;
+  }
+}
+
+@mixin flex-column($gap: 0, $align: flex-start) {
+  display: flex;
+  flex-direction: column;
+  gap: $gap;
+  align-items: $align;
 }
 
 // Responsive Breakpoints
@@ -128,7 +138,7 @@
   background: linear-gradient(90deg, var(--surface-200) 25%, var(--surface-100) 50%, var(--surface-200) 75%);
   background-size: 200% 100%;
   animation: skeleton-loading 1.5s ease-in-out infinite;
-  border-radius: $border-radius-md;
+  border-radius: variables.$border-radius-md;
 
   @keyframes skeleton-loading {
     0% {
@@ -143,17 +153,17 @@
 // Elevation (Box Shadow)
 @mixin elevation($level: 1) {
   @if $level == 1 {
-    box-shadow: $shadow-sm;
+    box-shadow: variables.$shadow-sm;
   } @else if $level == 2 {
-    box-shadow: $shadow-base;
+    box-shadow: variables.$shadow-base;
   } @else if $level == 3 {
-    box-shadow: $shadow-md;
+    box-shadow: variables.$shadow-md;
   } @else if $level == 4 {
-    box-shadow: $shadow-lg;
+    box-shadow: variables.$shadow-lg;
   } @else if $level == 5 {
-    box-shadow: $shadow-xl;
+    box-shadow: variables.$shadow-xl;
   } @else if $level == 6 {
-    box-shadow: $shadow-2xl;
+    box-shadow: variables.$shadow-2xl;
   }
 }
 
@@ -162,9 +172,9 @@
   display: inline-flex;
   align-items: center;
   padding: 0.25rem 0.75rem;
-  border-radius: $border-radius-full;
-  font-size: $font-size-xs;
-  font-weight: $font-weight-semibold;
+  border-radius: variables.$border-radius-full;
+  font-size: variables.$font-size-xs;
+  font-weight: variables.$font-weight-semibold;
   background-color: $bg-color;
   color: $text-color;
   text-transform: uppercase;

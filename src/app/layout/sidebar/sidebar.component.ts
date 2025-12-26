@@ -109,6 +109,11 @@ export class SidebarComponent {
         icon: 'pi pi-user',
         route: APP_ROUTES.users.fullPath,
       });
+      baseItems.splice(5, 0, {
+        label: 'Audit Logs',
+        icon: 'pi pi-history',
+        route: APP_ROUTES.auditLogs.fullPath,
+      });
     }
 
     return baseItems;

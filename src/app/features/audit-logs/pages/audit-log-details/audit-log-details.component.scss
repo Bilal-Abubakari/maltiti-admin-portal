@@ -1,0 +1,218 @@
+.audit-details-container {
+  padding: 1.5rem;
+  max-width: 1200px;
+  margin: 0 auto;
+
+  @media (max-width: 768px) {
+    padding: 1rem;
+  }
+}
+
+.loading-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 3rem;
+  gap: 1rem;
+
+  p {
+    color: var(--text-color-secondary);
+  }
+}
+
+.error-actions {
+  margin-top: 1.5rem;
+}
+
+.details-content {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.page-header {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 1rem;
+
+  .header-info {
+    flex: 1;
+
+    h1 {
+      font-size: 2rem;
+      font-weight: 700;
+      color: var(--text-color);
+      margin: 0 0 0.25rem 0;
+    }
+
+    .log-id {
+      font-family: 'Courier New', monospace;
+      font-size: 0.875rem;
+      color: var(--text-color-secondary);
+      margin: 0;
+    }
+  }
+}
+
+.card-header {
+  padding: 1rem 1.5rem;
+
+  h2 {
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: var(--text-color);
+    margin: 0;
+  }
+}
+
+.info-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 1.5rem;
+
+  @media (max-width: 768px) {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+}
+
+.info-item {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+
+  &.full-width {
+    grid-column: 1 / -1;
+  }
+
+  .info-label {
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: var(--text-color-secondary);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+
+  span {
+    font-size: 1rem;
+    color: var(--text-color);
+  }
+
+  .code-value {
+    font-family: 'Courier New', monospace;
+    font-size: 0.875rem;
+    background: var(--surface-ground);
+    padding: 0.5rem;
+    border-radius: 4px;
+    color: var(--text-color);
+    word-break: break-all;
+
+    &.user-agent {
+      font-size: 0.75rem;
+      line-height: 1.4;
+    }
+  }
+}
+
+.timestamp {
+  font-family: 'Courier New', monospace;
+  font-size: 1rem;
+  color: var(--text-color);
+}
+
+.description-section {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+
+  .info-label {
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: var(--text-color-secondary);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+
+  .description {
+    font-size: 1rem;
+    line-height: 1.6;
+    color: var(--text-color);
+    margin: 0;
+  }
+}
+
+.before-after-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 1.5rem;
+  margin-bottom: 1rem;
+
+  @media (max-width: 768px) {
+    grid-template-columns: 1fr;
+  }
+
+  .before-section,
+  .after-section {
+    h3 {
+      font-size: 1rem;
+      font-weight: 600;
+      color: var(--text-color);
+      margin: 0 0 0.75rem 0;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+  }
+
+  .before-section h3 {
+    color: var(--red-500);
+  }
+
+  .after-section h3 {
+    color: var(--green-500);
+  }
+}
+
+.full-metadata {
+  h3 {
+    font-size: 1rem;
+    font-weight: 600;
+    color: var(--text-color);
+    margin: 0 0 0.75rem 0;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+}
+
+.json-display {
+  font-family: 'Courier New', monospace;
+  font-size: 0.875rem;
+  background: var(--surface-ground);
+  border: 1px solid var(--surface-border);
+  border-radius: 6px;
+  padding: 1rem;
+  overflow-x: auto;
+  margin: 0;
+  line-height: 1.5;
+  color: var(--text-color);
+  white-space: pre-wrap;
+  word-wrap: break-word;
+}
+
+// Card specific styles
+::ng-deep {
+  .main-info-card,
+  .user-info-card,
+  .technical-info-card,
+  .metadata-card {
+    .p-card-header {
+      padding: 0;
+    }
+
+    .p-card-body {
+      padding: 1.5rem;
+    }
+  }
+}
+
