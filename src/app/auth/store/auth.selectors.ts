@@ -17,3 +17,15 @@ export const selectMustChangePassword = createSelector(
 );
 
 export const selectUserId = createSelector(selectUser, (user) => user?.id);
+
+export const selectUserAvatarUrl = createSelector(selectUser, (user) => user?.avatarUrl);
+
+export const selectUserName = createSelector(selectUser, (user) => user?.name);
+
+export const selectUserInitialsFromName = createSelector(selectUserName, (fullName) =>
+  fullName
+    ?.trim()
+    .split(/\s+/) // split by one or more spaces
+    .map((name) => name[0].toUpperCase())
+    .join(''),
+);

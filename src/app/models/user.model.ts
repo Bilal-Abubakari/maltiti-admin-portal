@@ -19,6 +19,7 @@ export interface User {
   permissions?: string;
   mustChangePassword: boolean;
   rememberToken?: string;
+  avatarUrl?: string;
   status: Status;
   dob?: string;
   createdAt: string;
