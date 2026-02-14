@@ -17,6 +17,7 @@ import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
 import { FormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { first } from 'rxjs';
+import { debounceTime } from 'rxjs/operators';
 
 // PrimeNG Imports
 import { TableModule, TablePageEvent } from 'primeng/table';
@@ -26,10 +27,11 @@ import { ConfirmDialogModule } from 'primeng/confirmdialog';
 import { ConfirmationService, MenuItem, MessageService } from 'primeng/api';
 import { TooltipModule } from 'primeng/tooltip';
 import { MenuModule } from 'primeng/menu';
+import { InputTextModule } from 'primeng/inputtext';
 
 // Local imports
 import { Store } from '@ngrx/store';
-import { Sale, SaleStatus } from '../../models/sale.model';
+import { OrderStatus, PaymentStatus, Sale } from '../../models/sale.model';
 import { loadSales, updateSaleStatus } from '../../store/sales.actions';
 import {
   selectError,
@@ -64,6 +66,7 @@ import { WaybillGenerationModalComponent } from '../waybill-generation-modal/way
     ConfirmDialogModule,
     TooltipModule,
     MenuModule,
+    InputTextModule,
     ButtonComponent,
     SelectComponent,
     ReceiptGenerationModalComponent,
@@ -73,7 +76,7 @@ import { WaybillGenerationModalComponent } from '../waybill-generation-modal/way
   providers: [ConfirmationService],
 })
 export class SalesListComponent implements OnInit {
-  private destroyRef = inject(DestroyRef);
+  private readonly destroyRef = inject(DestroyRef);
   private readonly store = inject(Store);
   private readonly router = inject(Router);
   private readonly confirmationService = inject(ConfirmationService);
@@ -97,17 +100,27 @@ export class SalesListComponent implements OnInit {
   // Local state
   public readonly statusOptions = [
     { label: 'All Statuses', value: null },
-    { label: 'Invoice Requested', value: SaleStatus.InvoiceRequested },
-    { label: 'Pending Payment', value: SaleStatus.PendingPayment },
-    { label: 'Paid', value: SaleStatus.Paid },
-    { label: 'Packaging', value: SaleStatus.Packaging },
-    { label: 'In Transit', value: SaleStatus.InTransit },
-    { label: 'Delivered', value: SaleStatus.Delivered },
+    { label: 'Pending', value: OrderStatus.PENDING },
+    { label: 'Packaging', value: OrderStatus.PACKAGING },
+    { label: 'In Transit', value: OrderStatus.IN_TRANSIT },
+    { label: 'Delivered', value: OrderStatus.DELIVERED },
+    { label: 'Cancelled', value: OrderStatus.CANCELLED },
   ];
 
-  public statusFilterControl = new FormControl<SaleStatus | null>(null);
+  public readonly paymentStatusOptions = [
+    { label: 'All Payment Statuses', value: null },
+    { label: 'Invoice Requested', value: PaymentStatus.INVOICE_REQUESTED },
+    { label: 'Pending Payment', value: PaymentStatus.PENDING_PAYMENT },
+    { label: 'Paid', value: PaymentStatus.PAID },
+    { label: 'Refunded', value: PaymentStatus.REFUNDED },
+  ];
 
-  public selectedStatus: SaleStatus | null = null;
+  public statusFilterControl = new FormControl<OrderStatus | null>(null);
+  public paymentStatusFilterControl = new FormControl<PaymentStatus | null>(null);
+  public customerNameFilterControl = new FormControl<string>('');
+
+  public selectedStatus: OrderStatus | null = null;
+  public selectedPaymentStatus: PaymentStatus | null = null;
 
   public ngOnInit(): void {
     this.loadSales();
@@ -115,18 +128,44 @@ export class SalesListComponent implements OnInit {
     this.statusFilterControl.valueChanges
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe((status) => {
-        this.onStatusFilterChange(status);
+        this.onOrderStatusFilterChange(status);
+      });
+    this.paymentStatusFilterControl.valueChanges
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe((status) => {
+        this.onPaymentStatusFilterChange(status);
+      });
+    this.customerNameFilterControl.valueChanges
+      .pipe(
+        takeUntilDestroyed(this.destroyRef),
+        debounceTime(300), // Add debounce time here
+      )
+      .subscribe((name) => {
+        this.onCustomerNameFilterChange(name);
       });
   }
 
-  public onStatusFilterChange(status: SaleStatus | null): void {
+  public onOrderStatusFilterChange(status: OrderStatus | null): void {
     this.selectedStatus = status;
-    this.loadSales({ status: status ?? undefined, page: 1 });
+    this.loadSales({ orderStatus: status ?? undefined, page: 1 });
+  }
+
+  public onPaymentStatusFilterChange(status: PaymentStatus | null): void {
+    this.selectedPaymentStatus = status;
+    this.loadSales({ paymentStatus: status ?? undefined, page: 1 });
+  }
+
+  public onCustomerNameFilterChange(name: string | null): void {
+    this.loadSales({ customerName: name ?? undefined, page: 1 });
   }
 
   public onPageChange(event: TablePageEvent): void {
     const page = event.first / event.rows + 1;
-    this.loadSales({ page });
+    this.loadSales({
+      orderStatus: this.selectedStatus ?? undefined,
+      paymentStatus: this.selectedPaymentStatus ?? undefined,
+      page,
+    });
   }
 
   public onCreateSale(): void {
@@ -137,12 +176,12 @@ export class SalesListComponent implements OnInit {
     void this.router.navigate([APP_ROUTES.sales.edit(sale.id)]);
   }
 
-  public onUpdateStatus(sale: Sale, newStatus: SaleStatus): void {
+  public onUpdateStatus(sale: Sale, newStatus: OrderStatus): void {
     this.confirmationService.confirm({
       message: `Are you sure you want to change the status to ${newStatus.replace('_', ' ')}?`,
       header: 'Confirm Status Change',
       icon: 'pi pi-exclamation-triangle',
-      accept: () => this.store.dispatch(updateSaleStatus({ id: sale.id, status: newStatus })),
+      accept: () => this.store.dispatch(updateSaleStatus({ id: sale.id, orderStatus: newStatus })),
     });
   }
 
@@ -153,12 +192,12 @@ export class SalesListComponent implements OnInit {
       .subscribe({
         next: (blob: Blob) => {
           // Create a download link for the PDF
-          const url = window.URL.createObjectURL(blob);
+          const url = globalThis.URL.createObjectURL(blob);
           const link = document.createElement('a');
           link.href = url;
           link.download = `invoice-${sale.id}.pdf`;
           link.click();
-          window.URL.revokeObjectURL(url);
+          globalThis.URL.revokeObjectURL(url);
 
           this.messageService.add({
             severity: 'success',
@@ -183,56 +222,72 @@ export class SalesListComponent implements OnInit {
     this.waybillModal().open(sale.id);
   }
 
-  public getStatusSeverity(status: SaleStatus): 'success' | 'info' | 'warn' | 'danger' {
+  public getStatusSeverity(status: OrderStatus): 'success' | 'info' | 'warn' | 'danger' {
     switch (status) {
-      case SaleStatus.Delivered:
-      case SaleStatus.Paid:
+      case OrderStatus.DELIVERED:
         return 'success';
-      case SaleStatus.InTransit:
-      case SaleStatus.Packaging:
+      case OrderStatus.IN_TRANSIT:
+      case OrderStatus.PACKAGING:
         return 'info';
-      case SaleStatus.PendingPayment:
+      case OrderStatus.PENDING:
         return 'warn';
-      case SaleStatus.InvoiceRequested:
-        return 'danger';
       default:
         return 'info';
     }
   }
 
-  public getStatusLabel(status: SaleStatus): string {
-    return status.replace('_', ' ').replace(/\b\w/g, (l) => l.toUpperCase());
+  public getStatusLabel(status: OrderStatus): string {
+    return status.replace('_', ' ').replaceAll(/\b\w/g, (l) => l.toUpperCase());
   }
 
-  public getNextStatuses(currentStatus: SaleStatus): SaleStatus[] {
+  public getPaymentStatusSeverity(status: PaymentStatus): 'success' | 'info' | 'warn' | 'danger' {
+    switch (status) {
+      case PaymentStatus.PAID:
+        return 'success';
+      case PaymentStatus.PENDING_PAYMENT:
+        return 'warn';
+      case PaymentStatus.INVOICE_REQUESTED:
+        return 'danger';
+      case PaymentStatus.REFUNDED:
+        return 'info';
+      default:
+        return 'info';
+    }
+  }
+
+  public getPaymentStatusLabel(status: PaymentStatus): string {
+    return status.replace('_', ' ').replaceAll(/\b\w/g, (l) => l.toUpperCase());
+  }
+
+  public getNextStatuses(currentStatus: OrderStatus): OrderStatus[] {
     // Define allowed transitions
-    const transitions: Record<SaleStatus, SaleStatus[]> = {
-      [SaleStatus.InvoiceRequested]: [SaleStatus.PendingPayment],
-      [SaleStatus.PendingPayment]: [SaleStatus.Paid, SaleStatus.Packaging],
-      [SaleStatus.Packaging]: [SaleStatus.InTransit],
-      [SaleStatus.InTransit]: [SaleStatus.Delivered],
-      [SaleStatus.Delivered]: [SaleStatus.Paid],
-      [SaleStatus.Paid]: [], // Final state
+    const transitions: Record<OrderStatus, OrderStatus[]> = {
+      [OrderStatus.PENDING]: [OrderStatus.PACKAGING],
+      [OrderStatus.PACKAGING]: [OrderStatus.IN_TRANSIT],
+      [OrderStatus.IN_TRANSIT]: [OrderStatus.DELIVERED],
+      [OrderStatus.DELIVERED]: [],
+      [OrderStatus.CANCELLED]: [],
     };
     return transitions[currentStatus] || [];
   }
 
   public getActionMenuItems(sale: Sale): void {
-    const statusItems: MenuItem[] = [];
-
     // Add status change options
-    const nextStatuses = this.getNextStatuses(sale.status);
-    if (nextStatuses.length > 0) {
-      statusItems.push({ separator: true });
-      statusItems.push({
-        label: 'Change Status',
-        icon: 'pi pi-refresh',
-        items: nextStatuses.map((status) => ({
-          label: this.getStatusLabel(status),
-          command: (): void => this.onUpdateStatus(sale, status),
-        })),
-      });
-    }
+    const nextStatuses = this.getNextStatuses(sale.orderStatus);
+    const statusItems: MenuItem[] =
+      nextStatuses.length > 0
+        ? [
+            { separator: true },
+            {
+              label: 'Change Status',
+              icon: 'pi pi-refresh',
+              items: nextStatuses.map((status) => ({
+                label: this.getStatusLabel(status),
+                command: (): void => this.onUpdateStatus(sale, status),
+              })),
+            },
+          ]
+        : [];
 
     const actionItems: MenuItem[] = [
       {
@@ -250,16 +305,16 @@ export class SalesListComponent implements OnInit {
         icon: 'pi pi-truck',
         command: (): void => this.onGenerateWaybill(sale),
       },
+      ...(sale.paymentStatus === PaymentStatus.PAID
+        ? [
+            {
+              label: 'Generate Receipt',
+              icon: 'pi pi-receipt',
+              command: (): void => this.onGenerateReceipt(sale),
+            },
+          ]
+        : []),
     ];
-
-    // Add receipt generation option only for paid sales
-    if (sale.status === SaleStatus.Paid) {
-      actionItems.push({
-        label: 'Generate Receipt',
-        icon: 'pi pi-receipt',
-        command: (): void => this.onGenerateReceipt(sale),
-      });
-    }
 
     const menuItems: MenuItem[] = [
       {
@@ -271,10 +326,17 @@ export class SalesListComponent implements OnInit {
     this.menuItems.set(menuItems);
   }
 
-  private loadSales(params?: { status?: SaleStatus; page?: number }): void {
+  private loadSales(params?: {
+    orderStatus?: OrderStatus;
+    paymentStatus?: PaymentStatus;
+    customerName?: string;
+    page?: number;
+  }): void {
     this.store.dispatch(
       loadSales({
-        status: params?.status ?? this.selectedStatus ?? undefined,
+        orderStatus: params?.orderStatus ?? this.selectedStatus ?? undefined,
+        paymentStatus: params?.paymentStatus ?? this.selectedPaymentStatus ?? undefined,
+        customerName: params?.customerName ?? undefined,
         page: params?.page ?? 1,
         limit: 10,
       }),

@@ -32,7 +32,7 @@ import { TextareaComponent } from '@shared/components/textarea/textarea.componen
 import { toSignal } from '@angular/core/rxjs-interop';
 import { map, take } from 'rxjs/operators';
 import { Actions, ofType } from '@ngrx/effects';
-import { createBatchSuccess } from '../../store/batches.actions';
+import { createBatchFailure, createBatchSuccess } from '../../store/batches.actions';
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'app-batch-dialog',
@@ -90,7 +90,7 @@ export class BatchDialogComponent {
   public readonly batchForm = this.fb.group({
     productId: ['', [Validators.required]],
     quantity: [0, [Validators.required, Validators.min(1)]],
-    productionDate: [new Date() as Date],
+    productionDate: [new Date()],
     expiryDate: [null as Date | null],
     manufacturingLocation: [''],
     qualityCheckStatus: [''],
@@ -136,11 +136,15 @@ export class BatchDialogComponent {
       notes: formValue.notes || undefined,
     };
 
-    this.actions.pipe(ofType(createBatchSuccess), take(1)).subscribe(() => {
-      this.loading.set(false);
-      this.saveSuccess.emit();
-      this.visibleChange.emit(false);
-    });
+    this.actions
+      .pipe(ofType(createBatchSuccess, createBatchFailure), take(1))
+      .subscribe((action) => {
+        this.loading.set(false);
+        if (action.type === createBatchSuccess.type) {
+          this.saveSuccess.emit();
+          this.visibleChange.emit(false);
+        }
+      });
 
     this.save.emit(batchData);
   }

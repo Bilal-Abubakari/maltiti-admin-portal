@@ -10,6 +10,7 @@
       label="Create Sale"
       severity="primary"
       (click)="onCreateSale()"
+      (keyDown.enter)="onCreateSale()"
     />
   </div>
 </div>
@@ -17,14 +18,31 @@
 <!-- Filters Section -->
 <div class="filters-section">
   <div class="filters-row">
-    <!-- Status Filter -->
+    <!-- Order Status Filter -->
     <app-select
-      id="status-filter"
+      id="order-status-filter"
       [control]="statusFilterControl"
       [options]="statusOptions"
-      [placeholder]="'Filter by Status'"
+      [placeholder]="'Filter by Order Status'"
       [showClear]="true"
       [styleClass]="'filter-dropdown'"
+    />
+    <!-- Payment Status Filter -->
+    <app-select
+      id="payment-status-filter"
+      [control]="paymentStatusFilterControl"
+      [options]="paymentStatusOptions"
+      [placeholder]="'Filter by Payment Status'"
+      [showClear]="true"
+      [styleClass]="'filter-dropdown'"
+    />
+    <!-- Customer Name Filter -->
+    <input
+      class="filter-input"
+      id="customer-name-filter"
+      pInputText
+      placeholder="Search by Customer Name"
+      [formControl]="customerNameFilterControl"
     />
   </div>
 </div>
@@ -45,12 +63,13 @@
   >
     <ng-template pTemplate="header">
       <tr>
-        <th>ID</th>
-        <th>Customer</th>
-        <th>Status</th>
-        <th>Total Amount</th>
-        <th>Created At</th>
-        <th>Actions</th>
+        <th scope="col">ID</th>
+        <th scope="col">Customer</th>
+        <th scope="col">Order Status</th>
+        <th scope="col">Payment Status</th>
+        <th scope="col">Total Amount</th>
+        <th scope="col">Created At</th>
+        <th scope="col">Actions</th>
       </tr>
     </ng-template>
     <ng-template let-sale pTemplate="body">
@@ -59,8 +78,14 @@
         <td>{{ sale.customer?.name || 'N/A' }}</td>
         <td>
           <p-tag
-            [severity]="getStatusSeverity(sale.status)"
-            [value]="getStatusLabel(sale.status)"
+            [severity]="getStatusSeverity(sale.orderStatus)"
+            [value]="getStatusLabel(sale.orderStatus)"
+          />
+        </td>
+        <td>
+          <p-tag
+            [severity]="getPaymentStatusSeverity(sale.paymentStatus)"
+            [value]="getPaymentStatusLabel(sale.paymentStatus)"
           />
         </td>
         <td>{{ lineItemsTotalPrice(sale.lineItems) | currency: 'GH₵ ' }}</td>
@@ -82,7 +107,7 @@
     </ng-template>
     <ng-template pTemplate="emptymessage">
       <tr>
-        <td class="empty-state" colspan="8">
+        <td class="empty-state" colspan="9">
           <div class="empty-state-content">
             <i class="pi pi-inbox empty-icon"></i>
             <h3>No Sales Found</h3>
@@ -91,6 +116,7 @@
               [icon]="'pi pi-plus'"
               [label]="'Add Your First Sale'"
               (click)="onCreateSale()"
+              (keyDown.enter)="onCreateSale()"
             />
           </div>
         </td>
@@ -113,4 +139,3 @@
 
 <!-- Waybill Generation Modal -->
 <app-waybill-generation-modal />
-

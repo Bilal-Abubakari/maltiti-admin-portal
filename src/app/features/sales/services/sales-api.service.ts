@@ -14,9 +14,10 @@ import {
   GenerateInvoiceDto,
   GenerateReceiptDto,
   GenerateWaybillDto,
+  OrderStatus,
+  PaymentStatus,
   Sale,
   SaleLineItemDto,
-  SaleStatus,
   UpdateSaleDto,
   UpdateSaleStatusDto,
 } from '../models/sale.model';
@@ -42,18 +43,26 @@ export class SalesApiService {
    * GET /sales
    */
   public getSales(
-    status?: SaleStatus,
+    orderStatus?: OrderStatus,
+    paymentStatus?: PaymentStatus,
     customerId?: string,
+    customerName?: string,
     page = 1,
     limit = 10,
   ): Observable<IPaginationResponse<Sale>> {
     let params = new HttpParams().set('page', page.toString()).set('limit', limit.toString());
 
-    if (status) {
-      params = params.set('status', status);
+    if (orderStatus) {
+      params = params.set('orderStatus', orderStatus);
+    }
+    if (paymentStatus) {
+      params = params.set('paymentStatus', paymentStatus);
     }
     if (customerId) {
-      params = params.set('customer_id', customerId);
+      params = params.set('customerId', customerId);
+    }
+    if (customerName) {
+      params = params.set('customerName', customerName);
     }
 
     return this.http.get<IPaginationResponse<Sale>>(this.baseUrl, { params });

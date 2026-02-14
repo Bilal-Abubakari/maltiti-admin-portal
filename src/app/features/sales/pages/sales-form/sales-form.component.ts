@@ -10,6 +10,7 @@ import {
   DestroyRef,
   inject,
   OnInit,
+  signal,
   viewChild,
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
@@ -21,8 +22,6 @@ import {
   ReactiveFormsModule,
   Validators,
 } from '@angular/forms';
-
-// PrimeNG Imports
 import { ButtonModule } from 'primeng/button';
 import { CardModule } from 'primeng/card';
 import { InputTextModule } from 'primeng/inputtext';
@@ -31,13 +30,12 @@ import { DialogModule } from 'primeng/dialog';
 import { ConfirmDialogModule } from 'primeng/confirmdialog';
 import { ConfirmationService, MessageService } from 'primeng/api';
 import { Store } from '@ngrx/store';
-import { signal } from '@angular/core';
 import { takeUntilDestroyed, toSignal } from '@angular/core/rxjs-interop';
 import {
   CreateSaleDto,
+  OrderStatus,
   Sale,
   SaleLineItemDto,
-  SaleStatus,
   UpdateSaleDto,
 } from '../../models/sale.model';
 import { createSale, updateSale } from '../../store/sales.actions';
@@ -104,18 +102,17 @@ export class SalesFormComponent implements OnInit {
     { initialValue: 0 },
   );
   public customerControl = new FormControl<string>('', Validators.required);
-  public statusControl = new FormControl(SaleStatus.InvoiceRequested, Validators.required);
+  public statusControl = new FormControl(OrderStatus.PENDING, Validators.required);
   public isEditMode = false;
   public saleId: string | null = null;
 
   // Status options
   public readonly statusOptions = [
-    { label: 'Invoice Requested', value: SaleStatus.InvoiceRequested },
-    { label: 'Pending Payment', value: SaleStatus.PendingPayment },
-    { label: 'Packaging', value: SaleStatus.Packaging },
-    { label: 'In Transit', value: SaleStatus.InTransit },
-    { label: 'Delivered', value: SaleStatus.Delivered },
-    { label: 'Paid', value: SaleStatus.Paid },
+    { label: 'Pending', value: OrderStatus.PENDING },
+    { label: 'Packaging', value: OrderStatus.PACKAGING },
+    { label: 'In Transit', value: OrderStatus.IN_TRANSIT },
+    { label: 'Delivered', value: OrderStatus.DELIVERED },
+    { label: 'Cancelled', value: OrderStatus.CANCELLED },
   ];
 
   public ngOnInit(): void {
@@ -126,12 +123,7 @@ export class SalesFormComponent implements OnInit {
   public get isBatchRequired(): boolean {
     const statusValue = this.statusControl.value;
     return statusValue
-      ? [
-          SaleStatus.Packaging,
-          SaleStatus.InTransit,
-          SaleStatus.Delivered,
-          SaleStatus.Paid,
-        ].includes(statusValue)
+      ? [OrderStatus.PACKAGING, OrderStatus.IN_TRANSIT, OrderStatus.DELIVERED].includes(statusValue)
       : false;
   }
 
@@ -169,7 +161,7 @@ export class SalesFormComponent implements OnInit {
     this.customerControl.setValue(sale.customer?.id || sale.customerId);
 
     // Set status
-    this.statusControl.setValue(sale.status);
+    this.statusControl.setValue(sale.orderStatus);
 
     // Clear existing line items
     this.lineItems.clear();
@@ -219,7 +211,7 @@ export class SalesFormComponent implements OnInit {
     this.lineItemValidationErrors.set(reIndexedErrors);
 
     // Check if any line item has errors
-    const hasAnyError = Array.from(reIndexedErrors.values()).some((error) => error);
+    const hasAnyError = Array.from(reIndexedErrors.values()).some(Boolean);
     this.hasLineItemErrors.set(hasAnyError);
   }
 
@@ -236,7 +228,7 @@ export class SalesFormComponent implements OnInit {
     this.lineItemValidationErrors.set(new Map(errors));
 
     // Check if any line item has errors
-    const hasAnyError = Array.from(errors.values()).some((error) => error);
+    const hasAnyError = Array.from(errors.values()).some(Boolean);
     this.hasLineItemErrors.set(hasAnyError);
   }
 
@@ -259,7 +251,7 @@ export class SalesFormComponent implements OnInit {
         // Handle update
         const updateData: UpdateSaleDto = {
           customerId: String(this.customerControl.value),
-          status: this.statusControl.value as SaleStatus,
+          orderStatus: this.statusControl.value as OrderStatus,
           lineItems: lineItems.map((item: SaleLineItemDto) => ({
             productId: item.productId,
             requestedQuantity: item.requestedQuantity,
@@ -273,7 +265,7 @@ export class SalesFormComponent implements OnInit {
         // Handle create
         const saleData: CreateSaleDto = {
           customerId: String(this.customerControl.value),
-          status: this.statusControl.value as SaleStatus,
+          status: this.statusControl.value as OrderStatus,
           lineItems: lineItems.map((item: SaleLineItemDto) => ({
             productId: item.productId,
             requestedQuantity: item.requestedQuantity,

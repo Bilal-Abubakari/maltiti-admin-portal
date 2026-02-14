@@ -2,16 +2,29 @@ import { inject } from '@angular/core';
 import { Actions, createEffect, ofType, ROOT_EFFECTS_INIT } from '@ngrx/effects';
 import { map, tap } from 'rxjs/operators';
 import * as AuthActions from './auth.actions';
-import { StorageService } from '../../services/storage.service';
+import { StorageService } from '@services/storage.service';
 
 export class AuthStorageEffects {
   private readonly actions$ = inject(Actions);
 
-  // Save user to localStorage on successful login
+  // Save user and token to localStorage on successful login
   public readonly saveUserOnLogin$ = createEffect(
     () =>
       this.actions$.pipe(
-        ofType(AuthActions.authLoginSuccess, AuthActions.changePasswordSuccess),
+        ofType(AuthActions.authLoginSuccess),
+        tap(({ user, accessToken }) => {
+          StorageService.saveUser(user);
+          StorageService.saveToken(accessToken);
+        }),
+      ),
+    { dispatch: false },
+  );
+
+  // Update user in localStorage when password changes
+  public readonly updateUserOnPasswordChange$ = createEffect(
+    () =>
+      this.actions$.pipe(
+        ofType(AuthActions.changePasswordSuccess),
         tap(({ user }) => {
           StorageService.saveUser(user);
         }),
@@ -26,6 +39,7 @@ export class AuthStorageEffects {
         ofType(AuthActions.authLogoutSuccess),
         tap(() => {
           StorageService.clearUser();
+          StorageService.clearToken();
         }),
       ),
     { dispatch: false },
@@ -38,6 +52,7 @@ export class AuthStorageEffects {
         ofType(AuthActions.sessionExpired),
         tap(() => {
           StorageService.clearUser();
+          StorageService.clearToken();
         }),
       ),
     { dispatch: false },

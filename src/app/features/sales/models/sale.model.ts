@@ -1,13 +1,19 @@
 import { User } from '@models/user.model';
 import { Product } from '../../products/models/product.model';
 
-export enum SaleStatus {
-  InvoiceRequested = 'invoice_requested',
-  PendingPayment = 'pending_payment',
-  Paid = 'paid',
-  Packaging = 'packaging',
-  InTransit = 'in_transit',
-  Delivered = 'delivered',
+export enum PaymentStatus {
+  INVOICE_REQUESTED = 'invoice_requested',
+  PENDING_PAYMENT = 'pending_payment',
+  PAID = 'paid',
+  REFUNDED = 'refunded',
+}
+
+export enum OrderStatus {
+  PENDING = 'pending',
+  PACKAGING = 'packaging',
+  IN_TRANSIT = 'in_transit',
+  DELIVERED = 'delivered',
+  CANCELLED = 'cancelled',
 }
 
 export interface BatchAllocationDto {
@@ -24,7 +30,7 @@ export interface SaleLineItemDto {
 
 export interface CreateSaleDto {
   customerId: string;
-  status?: SaleStatus;
+  status?: OrderStatus;
   lineItems: SaleLineItemDto[];
 }
 
@@ -37,12 +43,12 @@ export interface UpdateSaleLineItemDto {
 
 export interface UpdateSaleDto {
   customerId?: string;
-  status?: SaleStatus;
+  orderStatus?: OrderStatus;
   lineItems?: UpdateSaleLineItemDto[];
 }
 
 export interface UpdateSaleStatusDto {
-  status: SaleStatus;
+  orderStatus: OrderStatus;
 }
 
 export interface AssignBatchesDto {
@@ -98,7 +104,8 @@ export interface Sale {
   id: string;
   customerId: string;
   customer?: User;
-  status: SaleStatus;
+  orderStatus: OrderStatus;
+  paymentStatus: PaymentStatus;
   lineItems: SaleLineItem[];
   totalAmount: number;
   createdAt: string;
