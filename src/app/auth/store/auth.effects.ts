@@ -18,7 +18,7 @@ export class AuthEffects {
       ofType(AuthActions.authLogin),
       exhaustMap(({ credentials }) =>
         this.authService.login(credentials).pipe(
-          map(({ user }) => AuthActions.authLoginSuccess({ user })),
+          map(({ user, accessToken }) => AuthActions.authLoginSuccess({ user, accessToken })),
           catchError((error) => {
             const errorMessage = error?.error?.message || 'Login failed. Please try again.';
             return of(AuthActions.authLoginFailure({ error: errorMessage }));

@@ -18,17 +18,19 @@ export class SalesEffects {
   public loadSales$ = createEffect(() =>
     this.actions$.pipe(
       ofType(SalesActions.loadSales),
-      mergeMap(({ page, limit, status, customerId }) =>
-        this.salesApi.getSales(status, customerId, page, limit).pipe(
-          map((response) => SalesActions.loadSalesSuccess({ response })),
-          catchError((error) =>
-            of(
-              SalesActions.loadSalesFailure({
-                error: error.error.message || 'Failed to load sales',
-              }),
+      mergeMap(({ page, limit, orderStatus, paymentStatus, customerId, customerName }) =>
+        this.salesApi
+          .getSales(orderStatus, paymentStatus, customerId, customerName, page, limit)
+          .pipe(
+            map((response) => SalesActions.loadSalesSuccess({ response })),
+            catchError((error) =>
+              of(
+                SalesActions.loadSalesFailure({
+                  error: error.error.message || 'Failed to load sales',
+                }),
+              ),
             ),
           ),
-        ),
       ),
     ),
   );
@@ -88,8 +90,8 @@ export class SalesEffects {
   public updateSaleStatus$ = createEffect(() =>
     this.actions$.pipe(
       ofType(SalesActions.updateSaleStatus),
-      mergeMap(({ id, status }) =>
-        this.salesApi.updateSaleStatus(id, { status }).pipe(
+      mergeMap(({ id, orderStatus }) =>
+        this.salesApi.updateSaleStatus(id, { orderStatus }).pipe(
           map((sale) => SalesActions.updateSaleStatusSuccess({ sale })),
           catchError((error) =>
             of(

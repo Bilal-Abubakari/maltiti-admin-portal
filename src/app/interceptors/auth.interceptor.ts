@@ -5,14 +5,26 @@ import { catchError, switchMap, throwError } from 'rxjs';
 import { sessionExpired } from '@auth/store/auth.actions';
 import { environment } from '@environments/environment';
 
+import { StorageService } from '@services/storage.service';
+
 export const authInterceptor: HttpInterceptorFn = (req, next) => {
   const store = inject(Store);
   const http = inject(HttpClient);
 
-  // Add withCredentials to all requests
-  const clonedRequest = req.clone({
+  const token = StorageService.getToken();
+
+  // Add withCredentials to all requests and Authorization header if token exists
+  let clonedRequest = req.clone({
     withCredentials: true,
   });
+
+  if (token) {
+    clonedRequest = clonedRequest.clone({
+      setHeaders: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+  }
 
   // Skip session expiration check for login and refresh endpoints
   if (
@@ -28,9 +40,26 @@ export const authInterceptor: HttpInterceptorFn = (req, next) => {
       if (error.status === 401) {
         // Try to refresh token
         return http
-          .post(`${environment.apiUrl}/authentication/refresh-token`, {}, { withCredentials: true })
+          .post<string>(
+            `${environment.apiUrl}/authentication/refresh-token`,
+            {},
+            { withCredentials: true },
+          )
           .pipe(
-            switchMap(() => {
+            switchMap((newToken) => {
+              if (newToken) {
+                StorageService.saveToken(newToken);
+
+                // Retry request with new token
+                const newRequest = req.clone({
+                  withCredentials: true,
+                  setHeaders: {
+                    Authorization: `Bearer ${newToken}`,
+                  },
+                });
+                return next(newRequest);
+              }
+
               // If refresh succeeds, retry the original request
               return next(clonedRequest);
             }),

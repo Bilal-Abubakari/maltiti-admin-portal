@@ -27,9 +27,15 @@ export class ButtonComponent {
 
   public readonly tooltip = input<string>('');
 
+  public readonly keyDown = output<KeyboardEvent>();
+
   public readonly clicked = output<Event>();
 
   public handleClick(event: Event): void {
     this.clicked.emit(event);
+  }
+
+  public handleKeydown(event: KeyboardEvent): void {
+    this.keyDown.emit(event);
   }
 }

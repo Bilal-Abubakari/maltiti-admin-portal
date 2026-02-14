@@ -66,13 +66,6 @@ export class BatchesEffects {
       ofType(BatchesActions.createBatch),
       switchMap(({ dto }) =>
         this.batchApi.createBatch(dto).pipe(
-          tap(() =>
-            this.messageService.add({
-              severity: 'success',
-              summary: 'Success',
-              detail: 'Batch created successfully',
-            }),
-          ),
           map((batch) => BatchesActions.createBatchSuccess({ batch })),
           catchError((error) => {
             this.messageService.add({

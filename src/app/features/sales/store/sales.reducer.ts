@@ -1,5 +1,5 @@
 import { createReducer, on } from '@ngrx/store';
-import { Sale, SaleStatus } from '../models/sale.model';
+import { OrderStatus, PaymentStatus, Sale } from '../models/sale.model';
 import * as SalesActions from './sales.actions';
 
 export interface SalesState {
@@ -11,8 +11,10 @@ export interface SalesState {
   page: number;
   limit: number;
   filters: {
-    status?: SaleStatus;
+    orderStatus?: OrderStatus;
+    paymentStatus?: PaymentStatus;
     customerId?: string;
+    customerName?: string;
   };
 }
 
@@ -29,17 +31,22 @@ export const initialState: SalesState = {
 
 export const salesReducer = createReducer(
   initialState,
-  on(SalesActions.loadSales, (state, { page, limit, status, customerId }) => ({
-    ...state,
-    loading: true,
-    error: null,
-    page: page ?? state.page,
-    limit: limit ?? state.limit,
-    filters: {
-      status: status ?? state.filters.status,
-      customerId: customerId ?? state.filters.customerId,
-    },
-  })),
+  on(
+    SalesActions.loadSales,
+    (state, { page, limit, orderStatus, paymentStatus, customerId, customerName }) => ({
+      ...state,
+      loading: true,
+      error: null,
+      page: page ?? state.page,
+      limit: limit ?? state.limit,
+      filters: {
+        orderStatus: orderStatus ?? state.filters.orderStatus,
+        paymentStatus: paymentStatus ?? state.filters.paymentStatus,
+        customerId: customerId ?? state.filters.customerId,
+        customerName: customerName ?? state.filters.customerName,
+      },
+    }),
+  ),
   on(SalesActions.loadSalesSuccess, (state, { response }) => ({
     ...state,
     sales: response.data.items,

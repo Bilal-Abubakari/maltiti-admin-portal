@@ -1,5 +1,11 @@
 import { createAction, props } from '@ngrx/store';
-import { CreateSaleDto, Sale, SaleStatus, UpdateSaleDto } from '../models/sale.model';
+import {
+  CreateSaleDto,
+  OrderStatus,
+  PaymentStatus,
+  Sale,
+  UpdateSaleDto,
+} from '../models/sale.model';
 import { IPaginationResponse } from '@models/response.model';
 
 export const loadSales = createAction(
@@ -7,8 +13,10 @@ export const loadSales = createAction(
   props<{
     page?: number;
     limit?: number;
-    status?: SaleStatus;
+    orderStatus?: OrderStatus;
+    paymentStatus?: PaymentStatus;
     customerId?: string;
+    customerName?: string;
   }>(),
 );
 
@@ -60,7 +68,7 @@ export const updateSaleFailure = createAction(
 
 export const updateSaleStatus = createAction(
   '[Sales] Update Sale Status',
-  props<{ id: string; status: SaleStatus }>(),
+  props<{ id: string; orderStatus: OrderStatus }>(),
 );
 
 export const updateSaleStatusSuccess = createAction(

@@ -1,6 +1,7 @@
-import { User } from '../models/user.model';
+import { User } from '@models/user.model';
 
 const AUTH_STORAGE_KEY = 'auth_user';
+const TOKEN_STORAGE_KEY = 'auth_token';
 
 export class StorageService {
   public static saveUser(user: User): void {
@@ -26,6 +27,31 @@ export class StorageService {
       localStorage.removeItem(AUTH_STORAGE_KEY);
     } catch (error) {
       console.error('Error clearing user from localStorage:', error);
+    }
+  }
+
+  public static saveToken(token: string): void {
+    try {
+      localStorage.setItem(TOKEN_STORAGE_KEY, token);
+    } catch (error) {
+      console.error('Error saving token to localStorage:', error);
+    }
+  }
+
+  public static getToken(): string | null {
+    try {
+      return localStorage.getItem(TOKEN_STORAGE_KEY);
+    } catch (error) {
+      console.error('Error reading token from localStorage:', error);
+      return null;
+    }
+  }
+
+  public static clearToken(): void {
+    try {
+      localStorage.removeItem(TOKEN_STORAGE_KEY);
+    } catch (error) {
+      console.error('Error clearing token from localStorage:', error);
     }
   }
 }
