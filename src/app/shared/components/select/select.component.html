@@ -1,0 +1,36 @@
+<div class="main-wrapper">
+  @if (label()) {
+    <label [for]="id()">{{ label() }}</label>
+  }
+  @if (isMultiSelect()) {
+    <p-multiSelect
+      selectedItemsLabel="{0} items selected"
+      [class]="styleClass()"
+      [formControl]="control()"
+      [id]="id()"
+      [invalid]="this.control().touched && this.control().invalid"
+      [maxSelectedLabels]="3"
+      [optionLabel]="optionLabel()"
+      [optionValue]="optionValue()"
+      [options]="options()"
+      [placeholder]="placeholder()"
+    />
+  } @else {
+    <p-select
+      [class]="styleClass()"
+      [filter]="true"
+      [formControl]="control()"
+      [id]="id()"
+      [invalid]="this.control().touched && this.control().invalid"
+      [optionLabel]="optionLabel()"
+      [optionValue]="optionValue()"
+      [options]="options()"
+      [placeholder]="placeholder()"
+      [showClear]="showClear()"
+
+    />
+  }
+  @if (this.control().touched && this.control().invalid) {
+    <p-message severity="error" size="small" variant="simple">{{ errorMessage() }}</p-message>
+  }
+</div>

@@ -1,0 +1,167 @@
+<p-dialog
+  header="Generate Waybill"
+  [closable]="true"
+  [modal]="true"
+  [style]="{'width': '600px', 'max-height': '90vh'}"
+  [(visible)]="visible"
+  (onHide)="close()"
+>
+  <form class="waybill-form" [formGroup]="waybillForm">
+    <!-- Driver Details Section (Required) -->
+    <div class="section-header">
+      <h3>Driver Details <span class="required-indicator">*Required</span></h3>
+      <p class="section-description">Enter the driver and vehicle information</p>
+    </div>
+
+    <div class="form-grid">
+      <div class="form-field">
+        <label for="driverName">Driver Name *</label>
+        <input
+          id="driverName"
+          pInputText
+          placeholder="Enter driver's full name"
+          [class.ng-invalid]="waybillForm.controls.driverName.touched && waybillForm.controls.driverName.invalid"
+          [formControl]="waybillForm.controls.driverName"
+        />
+        @if (waybillForm.controls.driverName.touched && waybillForm.controls.driverName.invalid) {
+          <small class="error-message">Driver name is required</small>
+        }
+      </div>
+
+      <div class="form-field">
+        <label for="vehicleNumber">Vehicle/Truck Number *</label>
+        <input
+          id="vehicleNumber"
+          pInputText
+          placeholder="Enter vehicle number"
+          [class.ng-invalid]="waybillForm.controls.vehicleNumber.touched && waybillForm.controls.vehicleNumber.invalid"
+          [formControl]="waybillForm.controls.vehicleNumber"
+        />
+        @if (waybillForm.controls.vehicleNumber.touched && waybillForm.controls.vehicleNumber.invalid) {
+          <small class="error-message">Vehicle number is required</small>
+        }
+      </div>
+
+      <div class="form-field">
+        <label for="driverPhone">Driver Phone Number *</label>
+        <input
+          id="driverPhone"
+          pInputText
+          placeholder="Enter phone number"
+          [class.ng-invalid]="waybillForm.controls.driverPhone.touched && waybillForm.controls.driverPhone.invalid"
+          [formControl]="waybillForm.controls.driverPhone"
+        />
+        @if (waybillForm.controls.driverPhone.touched && waybillForm.controls.driverPhone.invalid) {
+          <small class="error-message">Driver phone number is required</small>
+        }
+      </div>
+
+      <div class="form-field">
+        <label for="driverEmail">Driver Email</label>
+        <input
+          id="driverEmail"
+          pInputText
+          placeholder="Enter email address (optional)"
+          type="email"
+          [class.ng-invalid]="waybillForm.controls.driverEmail.touched && waybillForm.controls.driverEmail.invalid"
+          [formControl]="waybillForm.controls.driverEmail"
+        />
+        @if (waybillForm.controls.driverEmail.touched && waybillForm.controls.driverEmail.invalid) {
+          <small class="error-message">Please enter a valid email</small>
+        }
+      </div>
+    </div>
+
+    <p-divider />
+
+    <!-- Receiver Details Section (Optional) -->
+    <div class="section-header">
+      <h3>Receiver Details <span class="optional-indicator">Optional</span></h3>
+      <p class="section-description">Leave empty to use customer details from the sale</p>
+    </div>
+
+    <div class="form-grid">
+      <div class="form-field">
+        <label for="receiverName">Receiver Name</label>
+        <input
+          id="receiverName"
+          pInputText
+          placeholder="Enter receiver's name (optional)"
+          [formControl]="waybillForm.controls.receiverName"
+        />
+      </div>
+
+      <div class="form-field">
+        <label for="receiverPhone">Receiver Phone Number</label>
+        <input
+          id="receiverPhone"
+          pInputText
+          placeholder="Enter phone number (optional)"
+          [formControl]="waybillForm.controls.receiverPhone"
+        />
+      </div>
+
+      <div class="form-field">
+        <label for="receiverEmail">Receiver Email</label>
+        <input
+          id="receiverEmail"
+          pInputText
+          placeholder="Enter email address (optional)"
+          type="email"
+          [class.ng-invalid]="waybillForm.controls.receiverEmail.touched && waybillForm.controls.receiverEmail.invalid"
+          [formControl]="waybillForm.controls.receiverEmail"
+        />
+        @if (waybillForm.controls.receiverEmail.touched && waybillForm.controls.receiverEmail.invalid) {
+          <small class="error-message">Please enter a valid email</small>
+        }
+      </div>
+
+      <div class="form-field full-width">
+        <label for="receiverAddress">Receiver Address</label>
+        <textarea
+          id="receiverAddress"
+          pInputTextarea
+          placeholder="Enter delivery address (optional)"
+          [formControl]="waybillForm.controls.receiverAddress"
+          [rows]="2"
+        ></textarea>
+      </div>
+    </div>
+
+    <p-divider />
+
+    <!-- Remarks Section (Optional) -->
+    <div class="section-header">
+      <h3>Remarks</h3>
+    </div>
+
+    <div class="form-field">
+      <label for="remarks">Condition of Goods</label>
+      <textarea
+        id="remarks"
+        pInputTextarea
+        placeholder="Enter remarks about the condition of goods"
+        [formControl]="waybillForm.controls.remarks"
+        [rows]="3"
+      ></textarea>
+      <small class="field-hint">Default: "All In Good Condition"</small>
+    </div>
+  </form>
+
+  <ng-template pTemplate="footer">
+    <p-button
+      label="Cancel"
+      severity="secondary"
+      [outlined]="true"
+      (onClick)="close()"
+    />
+    <p-button
+      icon="pi pi-file-pdf"
+      label="Generate Waybill"
+      severity="primary"
+      [loading]="loading()"
+      (onClick)="onSubmit()"
+    />
+  </ng-template>
+</p-dialog>
+

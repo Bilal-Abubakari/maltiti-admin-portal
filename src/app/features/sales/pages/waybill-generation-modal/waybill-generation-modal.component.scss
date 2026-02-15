@@ -1,0 +1,91 @@
+.waybill-form {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  padding: 0.5rem 0;
+  max-height: 60vh;
+  overflow-y: auto;
+}
+
+.section-header {
+  margin-bottom: 0.75rem;
+
+  h3 {
+    font-size: 1rem;
+    font-weight: 600;
+    color: var(--text-color);
+    margin: 0 0 0.25rem 0;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+
+  .section-description {
+    font-size: 0.875rem;
+    color: var(--text-color-secondary);
+    margin: 0;
+  }
+
+  .required-indicator {
+    font-size: 0.75rem;
+    color: var(--red-500);
+    font-weight: 500;
+  }
+
+  .optional-indicator {
+    font-size: 0.75rem;
+    color: var(--blue-500);
+    font-weight: 500;
+  }
+}
+
+.form-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 1rem;
+}
+
+.form-field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+
+  &.full-width {
+    grid-column: 1 / -1;
+  }
+
+  label {
+    font-weight: 600;
+    font-size: 0.875rem;
+    color: var(--text-color);
+  }
+
+  input,
+  textarea {
+    width: 100%;
+  }
+
+  .error-message {
+    color: var(--red-500);
+    font-size: 0.75rem;
+    margin-top: -0.25rem;
+  }
+
+  .field-hint {
+    color: var(--text-color-secondary);
+    font-size: 0.75rem;
+    font-style: italic;
+    margin-top: -0.25rem;
+  }
+}
+
+:host ::ng-deep {
+  .p-divider {
+    margin: 1rem 0;
+  }
+
+  .ng-invalid.ng-touched {
+    border-color: var(--red-500);
+  }
+}
+

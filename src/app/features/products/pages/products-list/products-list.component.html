@@ -1,0 +1,219 @@
+<div class="products-list-container">
+  <!-- Page Header -->
+  <div class="page-header">
+    <div class="page-title">
+      <h1>Products Management</h1>
+      <p class="page-description">Manage your product inventory, prices, and stock levels</p>
+    </div>
+    <div class="page-actions">
+      <app-button
+        [icon]="'pi pi-plus'"
+        [label]="'Add Product'"
+        [severity]="'primary'"
+        (click)="onCreateProduct()"
+      />
+      <app-button
+        [icon]="'pi pi-download'"
+        [label]="'Export Excel'"
+        [outlined]="true"
+        [severity]="'success'"
+        (click)="onExportExcel()"
+      />
+    </div>
+  </div>
+
+  <!-- Filters Section -->
+  <div class="filters-section">
+    <div class="filters-row">
+      <!-- Search -->
+      <app-input
+        class="search-input"
+        [control]="searchControl"
+        [id]="'search'"
+        [placeholder]="'Search products...'"
+        [showPrefixAddon]="true"
+        [type]="'search'"
+        [useInputGroup]="true"
+        (keyup.enter)="onSearch()"
+      >
+        <i class="pi pi-search" prefixAddon></i>
+      </app-input>
+
+      <!-- Category Filter -->
+      <app-select
+        id="category"
+        [control]="categoryControl"
+        [options]="categoryOptions"
+        [placeholder]="'Category'"
+        [showClear]="true"
+        [styleClass]="'filter-dropdown'"
+      />
+
+      <!-- Status Filter -->
+      <app-select
+        id="status"
+        [control]="statusControl"
+        [options]="statusOptions"
+        [placeholder]="'Status'"
+        [showClear]="true"
+        [styleClass]="'filter-dropdown'"
+      />
+    </div>
+  </div>
+
+  <!-- Products Table -->
+  <div class="table-card">
+    <p-table
+      class="p-datatable-sm"
+      currentPageReportTemplate="Showing {first} to {last} of {totalRecords} products"
+      [lazy]="true"
+      [loading]="loading()"
+      [paginator]="true"
+      [rows]="pageSize()"
+      [rowsPerPageOptions]="[10, 25, 50, 100]"
+      [showCurrentPageReport]="true"
+      [totalRecords]="totalItems()"
+      [value]="products()"
+      (onPage)="onPageChange($event)"
+    >
+      <!-- Image Column -->
+      <ng-template #header>
+        <tr>
+          <th style="width: 80px">Image</th>
+          <th pSortableColumn="name">
+            Name <p-sortIcon field="name" />
+          </th>
+          <th>Category</th>
+          <th pSortableColumn="retail">
+            Retail Price <p-sortIcon field="retail" />
+          </th>
+          <th>Status</th>
+          <th style="width: 150px">Actions</th>
+        </tr>
+      </ng-template>
+
+      <ng-template #body let-product>
+        <tr>
+          <!-- Image -->
+          <td>
+            <img
+              class="product-image"
+              [alt]="product.name"
+              [src]="product.image || 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjQiIGhlaWdodD0iNjQiIHZpZXdCb3g9IjAgMCA2NCA2NCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHJlY3Qgd2lkdGg9IjY0IiBoZWlnaHQ9IjY0IiBmaWxsPSIjRjNGNEY2Ii8+CjxwYXRoIGQ9Ik0yNCAyMEgxNmEyIDIgMCAwIDAtMi0yVjE2YTIgMiAwIDAgMCAyLTJoOFYyMGEyIDIgMCAwIDAgMiAydjhoOFptMC0xMEgxNmEyIDIgMCAwIDAtMi0yVjE2YTIgMiAwIDAgMCAyLTJoOFYyMGEyIDIgMCAwIDAgMiAydjhoOFoiIGZpbGw9IiM5Q0E0QUYiLz4KPHBhdGggZD0iTTMyIDI4YTEyIDEyIDAgMSAwIDAtMjQgMTIgMTIgMCAwIDAgMCAyNFoiIGZpbGw9IiM5Q0E0QUYiLz4KPHBhdGggZD0iTTQwIDI4YTEyIDEyIDAgMSAwIDAtMjQgMTIgMTIgMCAwIDAgMCAyNFoiIGZpbGw9IiM5Q0E0QUYiLz4KPC9zdmc+'"
+            />
+          </td>
+
+          <!-- Name -->
+          <td>
+            <div class="product-name-cell">
+              <span class="product-name">{{ product | productName }}</span>
+              @if (product.isFeatured) {
+                <i class="pi pi-star-fill featured-icon" pTooltip="Featured Product"></i>
+              }
+              @if (product.isOrganic) {
+                <span class="organic-badge" pTooltip="Organic Certified">🌿</span>
+              }
+            </div>
+          </td>
+
+          <!-- Category -->
+          <td>
+            <span class="category-tag">{{ product.category | titlecase }}</span>
+          </td>
+
+          <!-- Retail Price -->
+          <td>
+            <span class="price">{{ formatCurrency(product.retail) }}</span>
+          </td>
+
+          <!-- Status -->
+          <td>
+            <p-tag
+              [severity]="getStatusSeverity(product.status)"
+              [value]="product.status | titlecase"
+            />
+          </td>
+
+          <!-- Actions -->
+          <td>
+            <div class="action-buttons">
+              <app-button
+                [icon]="'pi pi-eye'"
+                [rounded]="true"
+                [severity]="'secondary'"
+                [text]="true"
+                [tooltip]="'View Details'"
+                (click)="onViewProduct(product)"
+              />
+              <app-button
+                [icon]="'pi pi-pencil'"
+                [rounded]="true"
+                [severity]="'info'"
+                [text]="true"
+                [tooltip]="'Edit Product'"
+                (click)="onEditProduct(product)"
+              />
+              <app-button
+                [icon]="product.status === 'active' ? 'pi pi-ban' : 'pi pi-check-circle'"
+                [rounded]="true"
+                [severity]="product.status === 'active' ? 'warn' : 'success'"
+                [text]="true"
+                [tooltip]="product.status === 'active' ? 'Deactivate' : 'Activate'"
+                (click)="onToggleStatus(product)"
+              />
+              <app-button
+                [icon]="'pi pi-trash'"
+                [rounded]="true"
+                [severity]="'danger'"
+                [text]="true"
+                [tooltip]="'Delete Product'"
+                (click)="onDeleteProduct(product)"
+              />
+            </div>
+          </td>
+        </tr>
+      </ng-template>
+
+      <!-- Loading Template -->
+      <ng-template pTemplate="loadingbody">
+        <tr>
+          @for (i of [1, 2, 3, 4, 5, 6]; track i) {
+            <td>
+              <p-skeleton />
+            </td>
+          }
+        </tr>
+      </ng-template>
+
+      <!-- Empty State -->
+      <ng-template pTemplate="emptymessage">
+        <tr>
+          <td class="empty-state" colspan="6">
+            <div class="empty-state-content">
+              <i class="pi pi-inbox empty-icon"></i>
+              <h3>No Products Found</h3>
+              <p>Try adjusting your search or filters to find what you're looking for</p>
+              <app-button
+                [icon]="'pi pi-plus'"
+                [label]="'Add Your First Product'"
+                (click)="onCreateProduct()"
+              />
+            </div>
+          </td>
+        </tr>
+      </ng-template>
+    </p-table>
+  </div>
+
+  <!-- Product Dialog (Create/Edit) -->
+  <app-product-dialog
+    [product]="selectedProduct()"
+    [viewMode]="viewMode()"
+    [visible]="showProductDialog()"
+    (saveSuccess)="onProductSaved()"
+    (visibleChange)="showProductDialog.set($event)"
+  />
+
+  <!-- Confirmation Dialog -->
+  <p-confirmDialog />
+</div>

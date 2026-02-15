@@ -1,0 +1,114 @@
+<div class="field-container">
+  @if (mode() === 'view') {
+    <span class="form-label">{{ label() }}</span>
+    <span class="view-value">
+      @switch (type()) {
+        @case ('input') {
+          {{ value() || 'N/A' }}
+        }
+        @case ('textarea') {
+          {{ value() || 'N/A' }}
+        }
+        @case ('select') {
+          {{ selectDisplay() }}
+        }
+        @case ('multiselect') {
+          {{ multiselectDisplay() }}
+        }
+        @case ('number') {
+          @if (numberMode() === 'currency') {
+            {{ Number(value()) | currency:currency():'symbol':'1.2-2' }}
+          } @else {
+            {{ value() }}
+          }
+        }
+        @case ('date') {
+          {{ dateDisplay() ? (dateDisplay() | date:'mediumDate') : 'N/A' }}
+        }
+        @case ('checkbox') {
+          {{ value() ? 'Yes' : 'No' }}
+        }
+      }
+    </span>
+  } @else {
+    @switch (type()) {
+      @case ('input') {
+        <app-input
+          [control]="control()!"
+          [id]="id()"
+          [label]="label()"
+          [placeholder]="placeholder()"
+          [required]="required()"
+          [styleClass]="styleClass()"
+        />
+      }
+      @case ('textarea') {
+        <app-textarea
+          [control]="control()!"
+          [id]="id()"
+          [label]="label()"
+          [placeholder]="placeholder()"
+          [rows]="3"
+          [styleClass]="styleClass()"
+        />
+      }
+      @case ('select') {
+        <app-select
+          [control]="control()!"
+          [id]="id()"
+          [label]="label()"
+          [options]="options()"
+          [placeholder]="placeholder()"
+          [showClear]="showClear()"
+          [styleClass]="styleClass()"
+        />
+      }
+      @case ('multiselect') {
+        <app-select
+          [control]="control()!"
+          [id]="id()"
+          [isMultiSelect]="true"
+          [label]="label()"
+          [options]="options()"
+          [placeholder]="placeholder()"
+          [styleClass]="styleClass()"
+        />
+      }
+      @case ('number') {
+        <app-number-input
+          [control]="control()!"
+          [currency]="currency()"
+          [id]="id()"
+          [label]="label()"
+          [locale]="locale()"
+          [max]="max() ?? undefined"
+          [min]="min() ?? undefined"
+          [mode]="numberMode() ?? 'decimal'"
+          [placeholder]="placeholder()"
+        />
+      }
+      @case ('date') {
+        <label class="form-label" [for]="id()">{{ label() }}</label>
+        <p-date-picker
+          class="form-calendar"
+          [formControl]="control()!"
+          [id]="id()"
+          [maxDate]="maxDate()"
+          [minDate]="minDate()"
+          [placeholder]="placeholder()"
+          [showIcon]="showIcon()"
+        />
+      }
+      @case ('checkbox') {
+        <div class="checkbox-group">
+          <p-checkbox
+            class="form-checkbox"
+            [formControl]="control()!"
+            [inputId]="id()"
+          />
+          <label class="ml-2" [for]="id()">{{ label() }}</label>
+        </div>
+      }
+    }
+  }
+</div>

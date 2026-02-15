@@ -1,0 +1,228 @@
+@use '../../../../../styles/variables' as variables;
+@use '../../../../../styles/mixins';
+
+.products-list-container {
+  max-width: 100%;
+  margin: 0 auto;
+}
+
+// Page Header
+.page-header {
+  @include mixins.flex-between;
+  margin-bottom: variables.$spacing-xl;
+  flex-wrap: wrap;
+  gap: variables.$spacing-md;
+}
+
+.page-title {
+  h1 {
+    font-size: variables.$font-size-3xl;
+    font-weight: variables.$font-weight-bold;
+    color: var(--text-color);
+    margin: 0 0 variables.$spacing-xs 0;
+  }
+
+  .page-description {
+    font-size: variables.$font-size-base;
+    color: var(--text-color-secondary);
+    margin: 0;
+  }
+}
+
+// Filters Section
+.filters-section {
+  @include mixins.card;
+  margin-bottom: variables.$spacing-lg;
+}
+
+.filters-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: variables.$spacing-md;
+  align-items: center;
+
+  .search-input {
+    flex: 1;
+    min-width: 200px;
+  }
+
+  .filter-dropdown {
+    min-width: 180px;
+    flex: 1;
+  }
+}
+
+// Table Card
+.table-card {
+  @include mixins.card;
+  padding: 0;
+
+  ::ng-deep .p-datatable {
+    .p-datatable-thead > tr > th {
+      background-color: var(--surface-50);
+      padding: variables.$spacing-md;
+      font-weight: variables.$font-weight-semibold;
+      color: var(--text-color);
+      border-bottom: 2px solid var(--surface-border);
+    }
+
+    .p-datatable-tbody > tr > td {
+      padding: variables.$spacing-md;
+      border-bottom: 1px solid var(--surface-border);
+    }
+
+    .p-datatable-tbody > tr {
+      &:hover {
+        background-color: var(--surface-hover);
+      }
+    }
+  }
+}
+
+// Product Image
+.product-image {
+  width: 50px;
+  height: 50px;
+  object-fit: cover;
+  border-radius: variables.$border-radius-md;
+  border: 1px solid var(--surface-border);
+}
+
+// SKU Badge
+.sku-badge {
+  display: inline-block;
+  padding: 0.25rem 0.5rem;
+  background-color: var(--surface-100);
+  color: var(--text-color-secondary);
+  border-radius: variables.$border-radius-sm;
+  font-family: variables.$font-family-mono;
+  font-size: variables.$font-size-xs;
+  font-weight: variables.$font-weight-medium;
+}
+
+// Product Name Cell
+.product-name-cell {
+  @include mixins.flex-start;
+  gap: variables.$spacing-sm;
+
+  .product-name {
+    font-weight: variables.$font-weight-medium;
+    color: var(--text-color);
+  }
+
+  .featured-icon {
+    color: var(--yellow-500);
+    font-size: variables.$font-size-sm;
+  }
+
+  .organic-badge {
+    font-size: variables.$font-size-sm;
+  }
+}
+
+// Category Tag
+.category-tag {
+  display: inline-block;
+  padding: 0.25rem 0.75rem;
+  background-color: var(--blue-50);
+  color: var(--blue-700);
+  border-radius: variables.$border-radius-full;
+  font-size: variables.$font-size-xs;
+  font-weight: variables.$font-weight-medium;
+}
+
+// Price
+.price {
+  font-weight: variables.$font-weight-semibold;
+  color: var(--green-600);
+  font-size: variables.$font-size-base;
+}
+
+// Stock Badge
+.stock-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 40px;
+  padding: 0.25rem 0.5rem;
+  background-color: var(--green-50);
+  color: var(--green-700);
+  border-radius: variables.$border-radius-sm;
+  font-weight: variables.$font-weight-semibold;
+  font-size: variables.$font-size-sm;
+
+  &.low-stock {
+    background-color: var(--yellow-50);
+    color: var(--yellow-700);
+  }
+
+  &.out-of-stock {
+    background-color: var(--red-50);
+    color: var(--red-700);
+  }
+}
+
+// Action Buttons
+.action-buttons {
+  @include mixins.flex-start;
+  gap: variables.$spacing-xs;
+}
+
+// Empty State
+.empty-state {
+  padding: variables.$spacing-3xl variables.$spacing-md !important;
+  text-align: center;
+}
+
+.empty-state-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: variables.$spacing-md;
+
+  .empty-icon {
+    font-size: 4rem;
+    color: var(--text-color-secondary);
+    opacity: 0.5;
+  }
+
+  h3 {
+    margin: 0;
+    font-size: variables.$font-size-xl;
+    font-weight: variables.$font-weight-semibold;
+    color: var(--text-color);
+  }
+
+  p {
+    margin: 0;
+    font-size: variables.$font-size-base;
+    color: var(--text-color-secondary);
+    max-width: 400px;
+  }
+}
+
+// Responsive Design
+@include mixins.responsive(md) {
+  .page-header {
+    flex-direction: column;
+    align-items: flex-start;
+
+    ::ng-deep .p-button {
+      width: 100%;
+    }
+  }
+
+  .filters-row {
+    // Removed width: 100% for search-input and filter-dropdown to allow flex wrapping
+  }
+
+  .action-buttons {
+    flex-wrap: wrap;
+  }
+}
+
+.page-actions {
+  display: flex;
+  align-items: center;
+  gap: variables.$spacing-md;
+}

@@ -1,0 +1,26 @@
+.receipt-form {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  padding: 0.5rem 0;
+}
+
+.form-field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+
+  label {
+    font-weight: 600;
+    font-size: 0.875rem;
+    color: var(--text-color);
+  }
+
+  .field-hint {
+    color: var(--text-color-secondary);
+    font-size: 0.75rem;
+    font-style: italic;
+    margin-top: -0.25rem;
+  }
+}
+

@@ -1,11 +1,11 @@
-import { Injectable, inject } from '@angular/core';
+import { inject, Injectable } from '@angular/core';
 import { Router } from '@angular/router';
 import { Actions, createEffect, ofType } from '@ngrx/effects';
 import { of } from 'rxjs';
-import { map, catchError, exhaustMap, tap } from 'rxjs/operators';
+import { catchError, exhaustMap, map, tap } from 'rxjs/operators';
 import { AuthService } from '../services/auth.service';
 import * as AuthActions from './auth.actions';
-import {APP_ROUTES} from '../../config/routes.config';
+import { APP_ROUTES } from '@config/routes.config';
 
 @Injectable()
 export class AuthEffects {
@@ -16,17 +16,16 @@ export class AuthEffects {
   public readonly login$ = createEffect(() =>
     this.actions$.pipe(
       ofType(AuthActions.authLogin),
-      exhaustMap((credentials) =>
+      exhaustMap(({ credentials }) =>
         this.authService.login(credentials).pipe(
-          map(({ user }) => AuthActions.authLoginSuccess({ user })),
+          map(({ user, accessToken }) => AuthActions.authLoginSuccess({ user, accessToken })),
           catchError((error) => {
-            const errorMessage =
-              error?.error?.message || 'Login failed. Please try again.';
+            const errorMessage = error?.error?.message || 'Login failed. Please try again.';
             return of(AuthActions.authLoginFailure({ error: errorMessage }));
-          })
-        )
-      )
-    )
+          }),
+        ),
+      ),
+    ),
   );
 
   public readonly loginSuccess$ = createEffect(
@@ -34,10 +33,10 @@ export class AuthEffects {
       this.actions$.pipe(
         ofType(AuthActions.authLoginSuccess),
         tap(() => {
-          void this.router.navigate([APP_ROUTES.dashboard]);
-        })
+          void this.router.navigate([APP_ROUTES.dashboard.path]);
+        }),
       ),
-    { dispatch: false }
+    { dispatch: false },
   );
 
   public readonly logout$ = createEffect(() =>
@@ -46,10 +45,10 @@ export class AuthEffects {
       exhaustMap(() =>
         this.authService.logout().pipe(
           map(() => AuthActions.authLogoutSuccess()),
-          catchError(() => of(AuthActions.authLogoutSuccess()))
-        )
-      )
-    )
+          catchError(() => of(AuthActions.authLogoutSuccess())),
+        ),
+      ),
+    ),
   );
 
   public readonly logoutSuccess$ = createEffect(
@@ -57,10 +56,27 @@ export class AuthEffects {
       this.actions$.pipe(
         ofType(AuthActions.authLogoutSuccess, AuthActions.sessionExpired),
         tap(() => {
-          void this.router.navigate([APP_ROUTES.auth.login]);
-        })
+          void this.router.navigate([APP_ROUTES.auth.login.fullPath]);
+        }),
       ),
-    { dispatch: false }
+    { dispatch: false },
+  );
+
+  public readonly changePassword$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(AuthActions.changePassword),
+      exhaustMap(({ id, currentPassword, newPassword, confirmPassword }) =>
+        this.authService.changePassword(id, currentPassword, newPassword, confirmPassword).pipe(
+          map(({ user }) => AuthActions.changePasswordSuccess({ user })),
+          catchError((error) =>
+            of(
+              AuthActions.changePasswordFailure({
+                error: error?.error?.message || 'Change password failed. Please try again.',
+              }),
+            ),
+          ),
+        ),
+      ),
+    ),
   );
 }
-

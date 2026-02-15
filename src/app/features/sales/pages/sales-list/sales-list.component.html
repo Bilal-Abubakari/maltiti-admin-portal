@@ -1,0 +1,144 @@
+<!-- Page Header -->
+<div class="page-header">
+  <div class="page-title">
+    <h1>Sales Management</h1>
+    <p class="page-description">Manage sales, track orders, and handle customer transactions</p>
+  </div>
+  <div class="page-actions">
+    <app-button
+      icon="pi pi-plus"
+      label="Create Sale"
+      severity="primary"
+      (click)="onCreateSale()"
+      (keyDown.enter)="onCreateSale()"
+    />
+  </div>
+</div>
+
+<!-- Filters Section -->
+<div class="filters-section">
+  <div class="filters-row">
+    <!-- Order Status Filter -->
+    <app-select
+      id="order-status-filter"
+      [control]="statusFilterControl"
+      [options]="statusOptions"
+      [placeholder]="'Filter by Order Status'"
+      [showClear]="true"
+      [styleClass]="'filter-dropdown'"
+    />
+    <!-- Payment Status Filter -->
+    <app-select
+      id="payment-status-filter"
+      [control]="paymentStatusFilterControl"
+      [options]="paymentStatusOptions"
+      [placeholder]="'Filter by Payment Status'"
+      [showClear]="true"
+      [styleClass]="'filter-dropdown'"
+    />
+    <!-- Customer Name Filter -->
+    <input
+      class="filter-input"
+      id="customer-name-filter"
+      pInputText
+      placeholder="Search by Customer Name"
+      [formControl]="customerNameFilterControl"
+    />
+  </div>
+</div>
+
+<!-- Sales Table -->
+<div class="table-container">
+  <p-table
+    currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
+    [lazy]="true"
+    [loading]="loading()"
+    [paginator]="true"
+    [rows]="10"
+    [rowsPerPageOptions]="[10, 25, 50]"
+    [showCurrentPageReport]="true"
+    [totalRecords]="total()"
+    [value]="sales()"
+    (onPage)="onPageChange($event)"
+  >
+    <ng-template pTemplate="header">
+      <tr>
+        <th scope="col">ID</th>
+        <th scope="col">Customer</th>
+        <th scope="col">Order Status</th>
+        <th scope="col">Payment Status</th>
+        <th scope="col">Total Amount</th>
+        <th scope="col">Created At</th>
+        <th scope="col">Actions</th>
+      </tr>
+    </ng-template>
+    <ng-template let-sale pTemplate="body">
+      <tr>
+        <td class="sale-id-column">{{ sale.id.split('-')[0] }}</td>
+        <td>{{ sale.customer?.name || 'N/A' }}</td>
+        <td>
+          <p-tag
+            [severity]="getStatusSeverity(sale.orderStatus)"
+            [value]="getStatusLabel(sale.orderStatus)"
+          />
+        </td>
+        <td>
+          <p-tag
+            [severity]="getPaymentStatusSeverity(sale.paymentStatus)"
+            [value]="getPaymentStatusLabel(sale.paymentStatus)"
+          />
+        </td>
+        <td>{{ lineItemsTotalPrice(sale.lineItems) | currency: 'GH₵ ' }}</td>
+        <td>{{ sale.createdAt | date:'short' }}</td>
+        <td>
+          <div class="action-buttons">
+            <p-button
+              icon="pi pi-ellipsis-v"
+              pTooltip="Actions"
+              tooltipPosition="top"
+              [rounded]="true"
+              [text]="true"
+              (onClick)="actionMenu.toggle($event)"
+            />
+            <p-menu #actionMenu appendTo="body" [model]="menuItems()" [popup]="true" [tabindex]="undefined" (onShow)="getActionMenuItems(sale)" />
+          </div>
+        </td>
+      </tr>
+    </ng-template>
+    <ng-template pTemplate="emptymessage">
+      <tr>
+        <td class="empty-state" colspan="9">
+          <div class="empty-state-content">
+            <i class="pi pi-inbox empty-icon"></i>
+            <h3>No Sales Found</h3>
+            <p>Try adjusting your search or filters to find what you're looking for</p>
+            <app-button
+              [icon]="'pi pi-plus'"
+              [label]="'Add Your First Sale'"
+              (click)="onCreateSale()"
+              (keyDown.enter)="onCreateSale()"
+            />
+          </div>
+        </td>
+      </tr>
+    </ng-template>
+  </p-table>
+</div>
+
+<!-- Error Message -->
+@if (error(); as error) {
+  <div class="error-message">
+    <p>{{ error }}</p>
+  </div>
+}
+
+<p-confirmDialog />
+
+<!-- Receipt Generation Modal -->
+<app-receipt-generation-modal />
+
+<!-- Waybill Generation Modal -->
+<app-waybill-generation-modal />
+
+<!-- Delivery Cost Update Modal -->
+<app-delivery-cost-update-modal />

@@ -20,44 +20,29 @@
   --secondary-700: #44403c;
   --secondary-800: #292524;
   --secondary-900: #1c1917;
-
-  /* Override PrimeNG v20 CSS Variables */
-  --p-primary-50: var(--primary-100);
-  --p-primary-100: var(--primary-200);
-  --p-primary-200: var(--primary-300);
-  --p-primary-300: var(--primary-400);
-  --p-primary-400: var(--primary-500);
-  --p-primary-500: var(--primary-600);
-  --p-primary-600: var(--primary-700);
-  --p-primary-700: var(--primary-800);
-  --p-primary-800: var(--primary-900);
-  --p-primary-900: var(--primary-900);
-
-  /* Main colors */
-  --p-primary-color: var(--primary-500);
-  --p-primary-contrast-color: #ffffff;
 }
 
 /* Override button primary styles */
 .p-button {
-  &:not(.p-button-outlined):not(.p-button-text) {
-    background: var(--primary-500);
-    border-color: var(--primary-500);
-
-    &:hover {
-      background: var(--primary-600);
-      border-color: var(--primary-600);
-    }
-
-    &:active {
-      background: var(--primary-700);
-      border-color: var(--primary-700);
-    }
-
-    &:focus-visible {
-      box-shadow: 0 0 0 0.2rem rgba(15, 105, 56, 0.25);
-    }
-  }
+  //&:not(.p-button-outlined):not(.p-button-text) {
+  //  background: var(--primary-500);
+  //  border-color: var(--primary-500);
+  //
+  //  &:hover {
+  //    background: var(--primary-600);
+  //    border-color: var(--primary-600);
+  //  }
+  //
+  //  &:active {
+  //    background: var(--primary-700);
+  //    border-color: var(--primary-700);
+  //    color: white;
+  //  }
+  //
+  //  &:focus-visible {
+  //    box-shadow: 0 0 0 0.2rem rgba(15, 105, 56, 0.25);
+  //  }
+  //}
 
   &.p-button-secondary {
     background: var(--secondary-500);
@@ -112,3 +97,6 @@ a {
   color: white;
 }
 
+.p-paginator-page.p-paginator-page-selected, .p-select-option.p-select-option-selected {
+  color: white !important;
+}

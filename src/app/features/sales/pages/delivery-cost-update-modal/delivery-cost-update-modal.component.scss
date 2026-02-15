@@ -1,0 +1,17 @@
+.delivery-cost-form {
+  .form-field {
+    margin-bottom: 1.5rem;
+    label {
+      display: block;
+      margin-bottom: 0.5rem;
+      font-weight: 500;
+      color: var(--text-color);
+    }
+    .field-hint {
+      display: block;
+      margin-top: 0.25rem;
+      font-size: 0.875rem;
+      color: var(--text-color-secondary);
+    }
+  }
+}

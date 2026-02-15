@@ -1,0 +1,175 @@
+<div class="batches-list-container">
+  <!-- Page Header -->
+  <div class="page-header">
+    <div class="page-title">
+      <h1>Batches Management</h1>
+      <p class="page-description">Track product batches, quality checks, and production dates</p>
+    </div>
+    <app-button
+      [icon]="'pi pi-plus'"
+      [label]="'Create Batch'"
+      [severity]="'primary'"
+      (clicked)="onCreateBatch()"
+    />
+  </div>
+
+  <!-- Filters Section -->
+  <div class="filters-section">
+    <div class="filters-grid">
+      <div class="filter-field">
+        <app-select
+          id="productFilter"
+          [control]="productFilterControl"
+          [label]="'Filter by Product'"
+          [options]="productOptions()"
+          [placeholder]="'Select product'"
+          [showClear]="true"
+        />
+      </div>
+
+      <div class="filter-field">
+        <app-input
+          id="batchNumberFilter"
+          [control]="batchNumberFilterControl"
+          [label]="'Search Batch Number'"
+          [placeholder]="'Enter batch number'"
+        />
+      </div>
+
+      <div class="filter-field">
+        <app-select
+          id="qualityStatusFilter"
+          [control]="qualityStatusFilterControl"
+          [label]="'Quality Status'"
+          [options]="[
+            { label: 'Passed', value: 'Passed' },
+            { label: 'Pending', value: 'Pending' },
+            { label: 'Failed', value: 'Failed' }
+          ]"
+          [placeholder]="'Select status'"
+          [showClear]="true"
+        />
+      </div>
+
+      <div class="filter-actions">
+        <app-button
+          [icon]="'pi pi-filter-slash'"
+          [label]="'Clear Filters'"
+          [severity]="'secondary'"
+          [size]="'small'"
+          (clicked)="onClearFilters()"
+        />
+      </div>
+    </div>
+  </div>
+
+  <!-- Batches Table -->
+  <div class="table-card">
+    <p-table
+      class="p-datatable-sm"
+      [loading]="loading()"
+      [value]="batches()"
+    >
+      <ng-template pTemplate="header">
+        <tr>
+          <th pSortableColumn="batchNumber">
+            Batch Number <p-sortIcon field="batchNumber" />
+          </th>
+          <th>Product</th>
+          <th pSortableColumn="quantity">
+            Quantity <p-sortIcon field="quantity" />
+          </th>
+          <th pSortableColumn="productionDate">
+            Production Date <p-sortIcon field="productionDate" />
+          </th>
+          <th pSortableColumn="expiryDate">
+            Expiry Date <p-sortIcon field="expiryDate" />
+          </th>
+          <th>Manufacturing Location</th>
+          <th>Quality Status</th>
+          <th style="width: 120px">Actions</th>
+        </tr>
+      </ng-template>
+
+      <ng-template let-batch pTemplate="body">
+        <tr>
+          <!-- Batch Number -->
+          <td>
+            <span class="batch-number">{{ batch.batchNumber }}</span>
+          </td>
+
+          <!-- Product -->
+          <td>{{ batch.product | productName }}</td>
+
+          <!-- Quantity -->
+          <td>{{ batch.quantity }}</td>
+
+          <!-- Production Date -->
+          <td>{{ formatDate(batch.productionDate) }}</td>
+
+          <!-- Expiry Date -->
+          <td>{{ formatDate(batch.expiryDate) }}</td>
+
+          <!-- Manufacturing Location -->
+          <td>{{ batch.manufacturingLocation || 'N/A' }}</td>
+
+          <!-- Quality Status -->
+          <td>
+            <p-tag
+              [severity]="getQualityStatusSeverity(batch.qualityCheckStatus)"
+              [value]="batch.qualityCheckStatus || 'Pending'"
+            />
+          </td>
+
+          <!-- Actions -->
+          <td>
+            <div class="action-buttons">
+              <p-button
+                icon="pi pi-eye"
+                pTooltip="View Details"
+                severity="secondary"
+                [rounded]="true"
+                [text]="true"
+                (onClick)="onViewBatch(batch)"
+              />
+            </div>
+          </td>
+        </tr>
+      </ng-template>
+
+      <!-- Loading Template -->
+      <ng-template pTemplate="loadingbody">
+        <tr>
+         @for (i of [1, 2, 3, 4, 5, 6, 7, 8]; track i) {
+           <td>
+             <p-skeleton />
+           </td>
+         }
+        </tr>
+      </ng-template>
+
+      <!-- Empty State -->
+      <ng-template pTemplate="emptymessage">
+        <tr>
+          <td class="empty-state" colspan="8">
+            <div class="empty-state-content">
+              <i class="pi pi-inbox empty-icon"></i>
+              <h3>No Batches Found</h3>
+              <p>Create your first batch to start tracking production</p>
+              <p-button icon="pi pi-plus" label="Create Batch" (onClick)="onCreateBatch()" />
+            </div>
+          </td>
+        </tr>
+      </ng-template>
+    </p-table>
+  </div>
+</div>
+
+<!-- Batch Dialog -->
+<app-batch-dialog
+  [batch]="selectedBatch()"
+  [viewMode]="!!selectedBatch()"
+  [visible]="showBatchDialog()"
+  (save)="onSaveBatch($event)"
+  (visibleChange)="onBatchDialogVisibleChange($event)"
+/>

@@ -1,0 +1,97 @@
+<div class="report-filters">
+  <form class="filters-form" [formGroup]="filterForm">
+    <div class="filters-grid">
+      @if (showDateRange()) {
+        <div class="filter-field">
+          <label for="fromDate">From Date</label>
+          <p-date-picker
+            dateFormat="yy-mm-dd"
+            formControlName="fromDate"
+            inputId="fromDate"
+            placeholder="Select start date"
+            [showIcon]="true" />
+        </div>
+        <div class="filter-field">
+          <label for="toDate">To Date</label>
+          <p-date-picker
+            dateFormat="yy-mm-dd"
+            formControlName="toDate"
+            inputId="toDate"
+            placeholder="Select end date"
+            [showIcon]="true"
+          />
+        </div>
+      }
+
+      @if (showCategory()) {
+        <div class="filter-field">
+          <label for="category">Category</label>
+          <p-select
+            formControlName="category"
+            inputId="category"
+            placeholder="Select category"
+            [options]="categories"
+            [showClear]="true"
+          />
+        </div>
+      }
+
+      @if (showProduct()) {
+        <div class="filter-field">
+          <label for="productId">Product ID</label>
+          <input
+            formControlName="productId"
+            id="productId"
+            pInputText
+            placeholder="Enter product ID"
+            type="text"
+          />
+        </div>
+      }
+
+      @if (showBatch()) {
+        <div class="filter-field">
+          <label for="batchId">Batch ID</label>
+          <input
+            formControlName="batchId"
+            id="batchId"
+            pInputText
+            placeholder="Enter batch ID"
+            type="text"
+          />
+        </div>
+      }
+
+      @if (showAggregation()) {
+        <div class="filter-field">
+          <label for="aggregation">Aggregation</label>
+          <p-select
+            formControlName="aggregation"
+            inputId="aggregation"
+            optionLabel="label"
+            optionValue="value"
+            placeholder="Select aggregation level"
+            [options]="aggregationLevels"
+          />
+        </div>
+      }
+    </div>
+
+    <div class="filter-actions">
+      <p-button
+        icon="pi pi-refresh"
+        label="Reset"
+        severity="secondary"
+        [outlined]="true"
+        (onClick)="onResetFilters()"
+      />
+      <p-button
+        icon="pi pi-filter"
+        label="Apply Filters"
+        severity="primary"
+        (onClick)="onApplyFilters()"
+      />
+    </div>
+  </form>
+</div>
+

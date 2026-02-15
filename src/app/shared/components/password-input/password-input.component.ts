@@ -1,24 +1,20 @@
-import { Component, ChangeDetectionStrategy, input, model } from '@angular/core';
-import { FormsModule } from '@angular/forms';
+import { ChangeDetectionStrategy, Component, input } from '@angular/core';
+import { ReactiveFormsModule } from '@angular/forms';
 import { PasswordModule } from 'primeng/password';
 import { FloatLabelModule } from 'primeng/floatlabel';
+import { MessageModule } from 'primeng/message';
+import { FormFieldBaseComponent } from '../base/form-field-base.component';
 
 @Component({
   selector: 'app-password-input',
   templateUrl: './password-input.component.html',
+  styleUrls: ['password-input.component.scss', '../base/form-field-base.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [FormsModule, PasswordModule, FloatLabelModule],
+  imports: [ReactiveFormsModule, PasswordModule, FloatLabelModule, MessageModule],
 })
-export class PasswordInputComponent {
-  id = input.required<string>();
-  label = input<string>('');
-  placeholder = input<string>('');
-  disabled = input<boolean>(false);
-  required = input<boolean>(false);
-  feedback = input<boolean>(true);
-  toggleMask = input<boolean>(true);
-  styleClass = input<string>('w-full');
-
-  value = model<string>('');
+export class PasswordInputComponent extends FormFieldBaseComponent {
+  public readonly disabled = input<boolean>(false);
+  public readonly required = input<boolean>(false);
+  public readonly feedback = input<boolean>(true);
+  public readonly toggleMask = input<boolean>(true);
 }
-

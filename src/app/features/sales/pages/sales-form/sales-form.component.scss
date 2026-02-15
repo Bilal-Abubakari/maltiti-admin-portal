@@ -1,0 +1,174 @@
+@use '../../../../../styles/mixins';
+@use '../../../../../styles/variables' as variables;
+
+.sales-form {
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+// Page Header
+.page-header {
+  @include mixins.flex-between;
+  margin-bottom: variables.$spacing-xl;
+  flex-wrap: wrap;
+  gap: variables.$spacing-md;
+}
+
+.page-title {
+  h1 {
+    font-size: variables.$font-size-3xl;
+    font-weight: variables.$font-weight-bold;
+    color: var(--text-color);
+    margin: 0 0 variables.$spacing-xs 0;
+  }
+
+  .page-description {
+    font-size: variables.$font-size-base;
+    color: var(--text-color-secondary);
+    margin: 0;
+  }
+}
+
+.page-actions {
+  display: flex;
+  gap: variables.$spacing-sm;
+}
+
+// Form Styles
+.form-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: variables.$spacing-md;
+  margin-bottom: variables.$spacing-md;
+
+  .form-field {
+    flex: 1;
+    min-width: 200px;
+
+    label {
+      display: block;
+      font-weight: variables.$font-weight-medium;
+      margin-bottom: variables.$spacing-xs;
+      color: var(--text-color);
+    }
+
+    .form-help {
+      display: block;
+      font-size: variables.$font-size-sm;
+      color: var(--text-color-secondary);
+      margin-top: variables.$spacing-xs;
+    }
+  }
+}
+
+// Line Items
+.line-items-header {
+  @include mixins.flex-between;
+  align-items: center;
+  margin-bottom: variables.$spacing-lg;
+
+  h3 {
+    margin: 0;
+  }
+}
+
+.line-item-card {
+  border: 1px solid var(--surface-border);
+  border-radius: variables.$border-radius-md;
+  padding: variables.$spacing-lg;
+  margin-bottom: variables.$spacing-md;
+  background-color: var(--surface-card);
+
+  .line-item-header {
+    @include mixins.flex-between;
+    align-items: center;
+    margin-bottom: variables.$spacing-md;
+
+    h4 {
+      margin: 0;
+      color: var(--text-color);
+    }
+  }
+}
+
+.batch-allocations {
+  margin-top: variables.$spacing-md;
+  padding: variables.$spacing-md;
+  background-color: var(--surface-section);
+  border-radius: variables.$border-radius-sm;
+
+  h5 {
+    margin: 0 0 variables.$spacing-md 0;
+    color: var(--text-color);
+  }
+
+  .batch-row {
+    display: flex;
+    align-items: center;
+    gap: variables.$spacing-sm;
+    margin-bottom: variables.$spacing-sm;
+
+    &:last-child {
+      margin-bottom: 0;
+    }
+  }
+}
+
+.line-item-actions {
+  margin-top: variables.$spacing-md;
+  padding-top: variables.$spacing-md;
+  border-top: 1px solid var(--surface-border);
+}
+
+.empty-state {
+  text-align: center;
+  padding: variables.$spacing-xl;
+  color: var(--text-color-secondary);
+
+  p {
+    margin: 0;
+    font-size: variables.$font-size-lg;
+  }
+}
+
+// Error Message
+.error-message {
+  @include mixins.card;
+  background-color: var(--red-50);
+  border-color: var(--red-200);
+  color: var(--red-700);
+  margin-top: variables.$spacing-lg;
+
+  p {
+    margin: 0;
+  }
+}
+
+.non-form-field {
+  display: flex;
+  align-items: center;
+}
+
+.sales-details {
+  display: flex;
+  justify-content: space-between;
+
+  .form-field {
+    max-width: 300px;
+  }
+  .total-wrapper {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: variables.$spacing-xs;
+    align-self: flex-end;
+
+    .total-amount {
+      font-size: variables.$font-size-xl;
+      font-weight: variables.$font-weight-bold;
+      color: var(--primary-color);
+      background-color: var(--primary-color-50);
+      border-radius: variables.$border-radius-md;
+    }
+  }
+}

@@ -1,0 +1,198 @@
+@use '../../../../../styles/mixins';
+@use '../../../../../styles/variables' as variables;
+
+.line-item-editor {
+  border: 1px solid var(--surface-border);
+  border-radius: variables.$border-radius-md;
+  padding: variables.$spacing-lg;
+  background-color: var(--surface-card);
+  margin-bottom: variables.$spacing-md;
+}
+
+.editor-header {
+  @include mixins.flex-between;
+  align-items: center;
+  margin-bottom: variables.$spacing-md;
+
+  h4 {
+    margin: 0;
+    color: var(--text-color);
+  }
+}
+
+.line-item-form {
+  .form-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: variables.$spacing-md;
+    margin-bottom: variables.$spacing-md;
+
+    &.product-selection {
+      justify-content: space-between;
+      column-gap: 4rem;
+    }
+
+    .form-field {
+      flex: 1;
+      min-width: 150px;
+
+      &.price-type-selector-wrapper {
+        display: flex;
+        flex-direction: column;
+        justify-content: flex-end;
+      }
+
+      label {
+        display: block;
+        font-weight: variables.$font-weight-medium;
+        margin-bottom: variables.$spacing-xs;
+        color: var(--text-color);
+      }
+
+      .error-message {
+        color: var(--red-600);
+        font-size: variables.$font-size-sm;
+        margin-top: variables.$spacing-xs;
+        display: block;
+      }
+    }
+  }
+
+  .price-display {
+    display: flex;
+    align-items: center;
+    gap: variables.$spacing-xs;
+    margin-bottom: variables.$spacing-sm;
+
+    .custom-price {
+      font-weight: variables.$font-weight-bold;
+      color: var(--orange-600);
+    }
+
+    .default-price {
+      font-weight: variables.$font-weight-medium;
+      color: var(--text-color);
+    }
+
+    .price-note {
+      color: var(--text-color-secondary);
+      font-size: variables.$font-size-sm;
+    }
+  }
+
+  .price-type-selector {
+    margin-bottom: variables.$spacing-sm;
+
+    .radio-group {
+      display: flex;
+      gap: variables.$spacing-lg;
+
+      .radio-option {
+        display: flex;
+        align-items: center;
+        gap: variables.$spacing-xs;
+
+        .radio-label {
+          display: flex;
+          flex-direction: column;
+          cursor: pointer;
+          font-weight: variables.$font-weight-medium;
+          font-size: 0.875rem;
+
+          .price-value {
+            font-size: variables.$font-size-sm;
+            color: var(--text-color-secondary);
+            margin-top: 2px;
+          }
+        }
+      }
+    }
+  }
+
+  .helper-text {
+    display: block;
+    color: var(--text-color-secondary);
+    font-size: variables.$font-size-sm;
+    margin-top: variables.$spacing-xs;
+  }
+
+  .total-price {
+    display: flex;
+    flex-direction: column;
+    font-size: variables.$font-size-lg;
+    font-weight: variables.$font-weight-bold;
+    color: var(--primary-color);
+    padding: variables.$spacing-sm variables.$spacing-md;
+    background-color: var(--primary-color-50);
+    border-radius: variables.$border-radius-sm;
+    margin-top: 0.5rem;
+  }
+}
+
+.batch-section {
+  margin-top: variables.$spacing-lg;
+  padding: variables.$spacing-md;
+  background-color: var(--surface-section);
+  border-radius: variables.$border-radius-sm;
+
+  .batch-header {
+    @include mixins.flex-between;
+    align-items: center;
+    margin-bottom: variables.$spacing-md;
+
+    h5 {
+      margin: 0;
+      color: var(--text-color);
+    }
+  }
+
+  .batch-allocations {
+    .empty-batches {
+      text-align: center;
+      padding: variables.$spacing-md;
+      color: var(--text-color-secondary);
+
+      p {
+        margin: 0 0 variables.$spacing-xs 0;
+      }
+
+      .required-note {
+        color: var(--red-600);
+        font-weight: variables.$font-weight-medium;
+      }
+    }
+
+    .batch-allocation {
+      display: flex;
+      align-items: center;
+      gap: variables.$spacing-sm;
+      margin-bottom: variables.$spacing-sm;
+      padding: variables.$spacing-sm;
+      background-color: var(--surface-card);
+      border-radius: variables.$border-radius-sm;
+      border: 1px solid var(--surface-border);
+
+      .batch-info {
+        flex: 1;
+
+        .batch-details {
+          color: var(--text-color-secondary);
+          font-size: variables.$font-size-sm;
+        }
+      }
+    }
+  }
+
+  .allocation-summary {
+    margin-top: variables.$spacing-md;
+    padding: variables.$spacing-sm;
+    background-color: var(--blue-50);
+    border-radius: variables.$border-radius-sm;
+    text-align: center;
+
+    small {
+      color: var(--blue-700);
+      font-weight: variables.$font-weight-medium;
+    }
+  }
+}

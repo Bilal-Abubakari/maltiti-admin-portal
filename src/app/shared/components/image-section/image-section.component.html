@@ -1,0 +1,63 @@
+<div class="form-section">
+  <h3 class="section-title">Images</h3>
+  <div class="form-grid">
+    <div class="form-field full-width">
+      <label class="form-label" for="image">Primary Image</label>
+      @if (!viewMode()) {
+        <p-fileupload
+          accept="image/*"
+          chooseLabel="Choose Primary Image"
+          class="image-upload"
+          id="image"
+          maxFileSize="5000000"
+          mode="basic"
+          (onSelect)="onPrimaryImageUpload($event)"
+        />
+      }
+      @if (primaryImageControl()?.value) {
+        <div class="image-preview">
+          <img alt="Primary image" class="preview-image" [src]="primaryImageControl()?.value" />
+          <input
+            class="image-url-input"
+            pInputText
+            readonly
+            type="text"
+            [value]="primaryImageControl()?.value"
+          />
+        </div>
+      }
+    </div>
+
+    <div class="form-field full-width">
+      <label class="form-label" for="images">Additional Images</label>
+      @if (!viewMode()) {
+        <p-fileupload
+          accept="image/*"
+          chooseLabel="Choose Images"
+          class="image-upload"
+          id="images"
+          maxFileSize="5000000"
+          mode="basic"
+          multiple="true"
+          (onSelect)="onAdditionalImagesUpload($event)"
+        />
+      }
+      @if (additionalImagesControl()?.value && additionalImagesControl()?.value.length > 0) {
+        <div class="images-preview">
+          @for (imageUrl of additionalImagesControl()?.value; track imageUrl) {
+            <div class="image-item">
+              <img alt="Product image" class="preview-image" [src]="imageUrl" />
+              <input
+                class="image-url-input"
+                pInputText
+                readonly
+                type="text"
+                [value]="imageUrl"
+              />
+            </div>
+          }
+        </div>
+      }
+    </div>
+  </div>
+</div>

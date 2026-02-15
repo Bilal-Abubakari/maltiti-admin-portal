@@ -1,0 +1,29 @@
+@use '../../../../../styles/mixins';
+@use '../../../../../styles/variables' as variables;
+
+.customer-form {
+  .form-field {
+    margin-bottom: variables.$spacing-lg;
+
+    label {
+      display: block;
+      font-weight: variables.$font-weight-medium;
+      margin-bottom: variables.$spacing-xs;
+      color: var(--text-color);
+    }
+
+    .error-message {
+      color: var(--red-600);
+      font-size: variables.$font-size-sm;
+      margin-top: variables.$spacing-xs;
+      display: block;
+    }
+
+    .form-help {
+      color: var(--text-color-secondary);
+      font-size: variables.$font-size-sm;
+      margin-top: variables.$spacing-xs;
+      display: block;
+    }
+  }
+}

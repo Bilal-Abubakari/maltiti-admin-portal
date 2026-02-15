@@ -14,17 +14,17 @@
         </p-message>
       }
 
-      <form [formGroup]="loginForm" (ngSubmit)="onSubmit()" class="login-form">
+      <form class="login-form" [formGroup]="loginForm" (ngSubmit)="onSubmit()">
         <div class="form-field">
           <p-floatlabel>
             <input
-              id="email"
-              type="email"
-              formControlName="email"
-              pInputText
               class="w-full"
-              [class.ng-invalid]="emailControl.invalid && emailControl.touched"
+              formControlName="email"
+              id="email"
+              pInputText
+              type="email"
               [class.ng-dirty]="emailControl.touched"
+              [class.ng-invalid]="emailControl.invalid && emailControl.touched"
             />
             <label for="email">Email</label>
           </p-floatlabel>
@@ -43,12 +43,12 @@
         <div class="form-field">
           <p-floatlabel>
             <p-password
-              inputId="password"
-              formControlName="password"
-              [toggleMask]="true"
-              [feedback]="false"
               class="w-full"
+              formControlName="password"
+              inputId="password"
+              [feedback]="false"
               [inputStyleClass]="(passwordControl.invalid && passwordControl.touched) ? 'ng-invalid ng-dirty' : ''"
+              [toggleMask]="true"
             />
             <label for="password">Password</label>
           </p-floatlabel>
@@ -65,12 +65,12 @@
         </div>
 
         <p-button
-          type="submit"
-          label="Login"
           icon="pi pi-sign-in"
-          [loading]="loading()"
-          [disabled]="loginForm.invalid"
+          label="Login"
           styleClass="w-full"
+          type="submit"
+          [disabled]="loginForm.invalid"
+          [loading]="loading()"
         />
       </form>
     </p-card>

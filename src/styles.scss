@@ -3,6 +3,10 @@
 /* Custom Theme */
 @use "styles/theme.scss";
 
+/* SCSS Variables and Mixins */
+@use 'styles/variables';
+@use 'styles/mixins';
+
 /* Global Reset */
 * {
   margin: 0;
@@ -68,4 +72,3 @@ html {
 .gap-4 {
   gap: 2rem;
 }
-

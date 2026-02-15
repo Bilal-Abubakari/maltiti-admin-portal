@@ -1,0 +1,17 @@
+<div class="main-wrapper">
+  @if (label()) {
+    <label class="form-label" [for]="id()">{{ label() }}</label>
+  }
+  <textarea
+    pTextarea
+    [class]="styleClass()"
+    [formControl]="control()"
+    [id]="id()"
+    [invalid]="this.control().touched && this.control().invalid"
+    [placeholder]="placeholder()"
+    [rows]="rows()"
+  ></textarea>
+  @if (this.control().touched && this.control().invalid) {
+    <p-message severity="error" size="small" variant="simple">{{ errorMessage() }}</p-message>
+  }
+</div>

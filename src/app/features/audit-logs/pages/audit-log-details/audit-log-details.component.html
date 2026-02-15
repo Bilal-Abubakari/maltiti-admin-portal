@@ -1,0 +1,198 @@
+<div class="audit-details-container">
+  <!-- Loading State -->
+  @if (isLoading()) {
+    <div class="loading-container">
+      <p-progressSpinner />
+      <p>Loading audit log details...</p>
+    </div>
+  }
+
+  <!-- Error State -->
+  @if (error()) {
+    <p-card>
+      <p-message severity="error" [text]="error()!" />
+      <div class="error-actions">
+        <p-button
+          icon="pi pi-arrow-left"
+          label="Back to Audit Logs"
+          (onClick)="onBack()"
+        />
+      </div>
+    </p-card>
+  }
+
+  <!-- Details Content -->
+  @if (auditLog() && !isLoading()) {
+    <div class="details-content">
+      <!-- Header -->
+      <div class="page-header">
+        <p-button
+          icon="pi pi-arrow-left"
+          severity="secondary"
+          [text]="true"
+          (onClick)="onBack()"
+        />
+        <div class="header-info">
+          <h1>Audit Log Details</h1>
+          <p class="log-id">ID: {{ auditLog()!.id }}</p>
+        </div>
+      </div>
+
+      <!-- Main Information Card -->
+      <p-card styleClass="main-info-card">
+        <ng-template pTemplate="header">
+          <div class="card-header">
+            <h2>General Information</h2>
+          </div>
+        </ng-template>
+
+        <div class="info-grid">
+          <!-- Timestamp -->
+          <div class="info-item">
+            <div class="info-label">Timestamp</div>
+            <span class="timestamp">
+              {{ auditLog()!.timestamp | date: 'full' }}
+            </span>
+          </div>
+
+          <!-- Action Type -->
+          <div class="info-item">
+            <div class="info-label">Action Type</div>
+            <p-tag
+              [severity]="getActionSeverity(auditLog()!.actionType)"
+              [value]="formatEnumLabel(auditLog()!.actionType)"
+            />
+          </div>
+
+          <!-- Entity Type -->
+          <div class="info-item">
+            <div class="info-label">Entity Type</div>
+            <p-tag
+              [severity]="getEntitySeverity(auditLog()!.entityType)"
+              [value]="formatEnumLabel(auditLog()!.entityType)"
+            />
+          </div>
+
+          <!-- Entity ID -->
+          @if (auditLog()!.entityId) {
+            <div class="info-item">
+              <div class="info-label">Entity ID</div>
+              <code class="code-value">{{ auditLog()!.entityId }}</code>
+            </div>
+          }
+        </div>
+
+        <p-divider />
+
+        <!-- Description -->
+        <div class="description-section">
+          <div class="info-label">Description</div>
+          <p class="description">{{ auditLog()!.description }}</p>
+        </div>
+      </p-card>
+
+      <!-- User Information Card -->
+      <p-card styleClass="user-info-card">
+        <ng-template pTemplate="header">
+          <div class="card-header">
+            <h2>User Information</h2>
+          </div>
+        </ng-template>
+
+        <div class="info-grid">
+          <!-- User Name -->
+          @if (auditLog()!.performedByUserName) {
+            <div class="info-item">
+              <div class="info-label">User Name</div>
+              <span>{{ auditLog()!.performedByUserName }}</span>
+            </div>
+          }
+
+          <!-- User ID -->
+          <div class="info-item">
+            <div class="info-label">User ID</div>
+            <code class="code-value">{{ auditLog()!.performedByUserId }}</code>
+          </div>
+
+          <!-- Role -->
+          <div class="info-item">
+            <div class="info-label">Role</div>
+            <p-tag
+              severity="secondary"
+              [value]="formatEnumLabel(auditLog()!.performedByRole)"
+            />
+          </div>
+        </div>
+      </p-card>
+
+      <!-- Technical Information Card -->
+      <p-card styleClass="technical-info-card">
+        <ng-template pTemplate="header">
+          <div class="card-header">
+            <h2>Technical Information</h2>
+          </div>
+        </ng-template>
+
+        <div class="info-grid">
+          <!-- IP Address -->
+          @if (auditLog()!.ipAddress) {
+            <div class="info-item">
+              <div class="info-label">IP Address</div>
+              <code class="code-value">{{ auditLog()!.ipAddress }}</code>
+            </div>
+          }
+
+          <!-- User Agent -->
+          @if (auditLog()!.userAgent) {
+            <div class="info-item full-width">
+              <div class="info-label">User Agent</div>
+              <code class="code-value user-agent">{{ auditLog()!.userAgent }}</code>
+            </div>
+          }
+        </div>
+      </p-card>
+
+      <!-- Metadata Card -->
+      @if (auditLog()!.metadata) {
+        <p-card styleClass="metadata-card">
+          <ng-template pTemplate="header">
+            <div class="card-header">
+              <h2>Metadata</h2>
+            </div>
+          </ng-template>
+
+          <!-- Before/After Values -->
+          @if (hasBeforeAfter(auditLog()!.metadata)) {
+            <div class="before-after-grid">
+              @if (auditLog()!.metadata!['before']) {
+                <div class="before-section">
+                  <h3>Before</h3>
+                  <pre class="json-display">{{ formatJson(auditLog()!.metadata!['before']) }}</pre>
+                </div>
+              }
+
+              @if (auditLog()!.metadata!['after']) {
+                <div class="after-section">
+                  <h3>After</h3>
+                  <pre class="json-display">{{ formatJson(auditLog()!.metadata!['after']) }}</pre>
+                </div>
+              }
+            </div>
+
+            @if (hasAuditLogMeta() ||
+                 (!auditLog()!.metadata!['before'] && !auditLog()!.metadata!['after'])) {
+              <p-divider />
+            }
+          }
+
+          <!-- Full Metadata -->
+          <div class="full-metadata">
+            <h3>Raw Metadata</h3>
+            <pre class="json-display">{{ formatJson(auditLog()!.metadata) }}</pre>
+          </div>
+        </p-card>
+      }
+    </div>
+  }
+</div>
+

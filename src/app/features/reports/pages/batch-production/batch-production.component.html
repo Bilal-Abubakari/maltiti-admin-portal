@@ -1,0 +1,149 @@
+<div class="batch-production">
+  <div class="page-header">
+    <h1 class="page-title">
+      <i class="pi pi-tag"></i>
+      Batch & Production Reports
+    </h1>
+    <p class="page-description">Track batch production, utilization, and lifecycle data.</p>
+  </div>
+
+  <app-report-filters
+    [showAggregation]="true"
+    [showBatch]="true"
+    [showCategory]="true"
+    [showDateRange]="true"
+    [showProduct]="true"
+    (filtersApplied)="onFiltersApplied($event)"
+    (filtersReset)="onFiltersReset()"
+  />
+
+  @if (isLoading()) {
+    <div class="loading-state">
+      <p-skeleton height="150px" styleClass="mb-3" />
+      <p-skeleton height="400px" styleClass="mb-3" />
+      <p-skeleton height="300px" />
+    </div>
+  } @else {
+    @if (batchReport()) {
+      <!-- Summary Cards -->
+      <div class="kpi-cards">
+        <p-card class="kpi-card">
+          <div class="kpi-content">
+            <div class="kpi-icon batches">
+              <i class="pi pi-tag"></i>
+            </div>
+            <div class="kpi-details">
+              <span class="kpi-label">Total Batches</span>
+              <span class="kpi-value">{{ batchReport()!.summary.totalBatches | number }}</span>
+            </div>
+          </div>
+        </p-card>
+
+        <p-card class="kpi-card">
+          <div class="kpi-content">
+            <div class="kpi-icon produced">
+              <i class="pi pi-plus-circle"></i>
+            </div>
+            <div class="kpi-details">
+              <span class="kpi-label">Total Produced</span>
+              <span class="kpi-value">{{ batchReport()!.summary.totalProduced | number }}</span>
+            </div>
+          </div>
+        </p-card>
+
+        <p-card class="kpi-card">
+          <div class="kpi-content">
+            <div class="kpi-icon sold">
+              <i class="pi pi-check-circle"></i>
+            </div>
+            <div class="kpi-details">
+              <span class="kpi-label">Total Sold</span>
+              <span class="kpi-value">{{ batchReport()!.summary.totalSold | number }}</span>
+            </div>
+          </div>
+        </p-card>
+
+        <p-card class="kpi-card">
+          <div class="kpi-content">
+            <div class="kpi-icon utilization">
+              <i class="pi pi-chart-pie"></i>
+            </div>
+            <div class="kpi-details">
+              <span class="kpi-label">Avg Utilization</span>
+              <span class="kpi-value"
+                >{{ batchReport()!.summary.averageUtilizationRate | number: '1.1-1' }}%</span
+              >
+            </div>
+          </div>
+        </p-card>
+      </div>
+
+      <!-- Batch Production Chart -->
+      @if (chartData()) {
+        <p-card class="chart-card">
+          <ng-template pTemplate="header">
+            <h3 class="card-title">Batch Production Overview</h3>
+          </ng-template>
+          <p-chart height="400px" type="bar" [data]="chartData()" [options]="chartOptions()" />
+        </p-card>
+      }
+
+      <!-- Batch Aging Table -->
+      @if (agingReport() && agingReport()!.batches.length > 0) {
+        <p-card class="table-card">
+          <ng-template pTemplate="header">
+            <h3 class="card-title">Batch Aging & Expiry</h3>
+          </ng-template>
+          <p-table
+            [paginator]="true"
+            
+            [rows]="10"
+            [value]="agingReport()!.batches"
+          >
+            <ng-template pTemplate="header">
+              <tr>
+                <th pSortableColumn="batchNumber">
+                  Batch Number <p-sortIcon field="batchNumber" />
+                </th>
+                <th pSortableColumn="productName">
+                  Product <p-sortIcon field="productName" />
+                </th>
+                <th pSortableColumn="ageInDays">
+                  Age (Days) <p-sortIcon field="ageInDays" />
+                </th>
+                <th pSortableColumn="daysUntilExpiry">
+                  Days to Expiry <p-sortIcon field="daysUntilExpiry" />
+                </th>
+                <th pSortableColumn="quantityRemaining">
+                  Remaining <p-sortIcon field="quantityRemaining" />
+                </th>
+                <th pSortableColumn="urgencyLevel">Urgency</th>
+              </tr>
+            </ng-template>
+            <ng-template let-batch pTemplate="body">
+              <tr>
+                <td>{{ batch.batchNumber }}</td>
+                <td>{{ batch.productName }}</td>
+                <td>{{ batch.ageInDays | number }}</td>
+                <td>{{ batch.daysUntilExpiry | number }}</td>
+                <td>{{ batch.quantityRemaining | number }}</td>
+                <td>
+                  <p-tag [severity]="getUrgencySeverity(batch.urgencyLevel)" [value]="batch.urgencyLevel" />
+                </td>
+              </tr>
+            </ng-template>
+          </p-table>
+        </p-card>
+      }
+    }
+
+    @if (!batchReport() || batchReport()!.batches.length === 0) {
+      <div class="empty-state">
+        <i class="pi pi-tag"></i>
+        <h3>No Batch Data Available</h3>
+        <p>Apply filters to view batch reports</p>
+      </div>
+    }
+  }
+</div>
+

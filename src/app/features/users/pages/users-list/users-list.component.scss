@@ -1,0 +1,146 @@
+@use '../../../../../styles/variables';
+@use '../../../../../styles/mixins';
+
+.users-list-container {
+  max-width: 100%;
+  margin: 0 auto;
+}
+
+// Page Header
+.page-header {
+  @include mixins.flex-between;
+  margin-bottom: variables.$spacing-xl;
+  flex-wrap: wrap;
+  gap: variables.$spacing-md;
+}
+
+.page-title {
+  h1 {
+    font-size: variables.$font-size-3xl;
+    font-weight: variables.$font-weight-bold;
+    color: var(--text-color);
+    margin: 0 0 variables.$spacing-xs 0;
+  }
+
+  .page-description {
+    font-size: variables.$font-size-base;
+    color: var(--text-color-secondary);
+    margin: 0;
+  }
+}
+
+// Filters Section
+.filters-section {
+  @include mixins.card;
+  margin-bottom: variables.$spacing-lg;
+}
+
+.filters-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: variables.$spacing-md;
+  align-items: center;
+
+  .search-input {
+    flex: 1;
+    min-width: 200px;
+  }
+
+  .filter-dropdown {
+    min-width: 180px;
+    flex: 1;
+  }
+}
+
+// Table Card
+.table-card {
+  @include mixins.card;
+  padding: 0;
+
+  ::ng-deep .p-datatable {
+    .p-datatable-thead > tr > th {
+      background-color: var(--surface-50);
+      padding: variables.$spacing-md;
+      font-weight: variables.$font-weight-semibold;
+      color: var(--text-color);
+      border-bottom: 2px solid var(--surface-border);
+    }
+
+    .p-datatable-tbody > tr > td {
+      padding: variables.$spacing-md;
+      border-bottom: 1px solid var(--surface-border);
+    }
+
+    .p-datatable-tbody > tr {
+      &:hover {
+        background-color: var(--surface-hover);
+      }
+    }
+  }
+}
+
+// User Name Cell
+.user-name-cell {
+  .user-name {
+    font-weight: variables.$font-weight-medium;
+    color: var(--text-color);
+  }
+}
+
+// User Email
+.user-email {
+  color: var(--text-color);
+  font-family: variables.$font-family-mono;
+  font-size: variables.$font-size-sm;
+}
+
+// User Phone
+.user-phone {
+  color: var(--text-color-secondary);
+  font-size: variables.$font-size-sm;
+}
+
+// Created At
+.created-at {
+  color: var(--text-color-secondary);
+  font-size: variables.$font-size-sm;
+}
+
+// Action Buttons
+.action-buttons {
+  @include mixins.flex-start;
+  gap: variables.$spacing-xs;
+}
+
+// Empty State
+.empty-state {
+  padding: variables.$spacing-3xl variables.$spacing-md !important;
+  text-align: center;
+}
+
+.empty-state-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: variables.$spacing-md;
+
+  .empty-icon {
+    font-size: 4rem;
+    color: var(--text-color-secondary);
+    opacity: 0.5;
+  }
+
+  h3 {
+    margin: 0;
+    font-size: variables.$font-size-xl;
+    font-weight: variables.$font-weight-semibold;
+    color: var(--text-color);
+  }
+
+  p {
+    margin: 0;
+    font-size: variables.$font-size-base;
+    color: var(--text-color-secondary);
+    max-width: 400px;
+  }
+}

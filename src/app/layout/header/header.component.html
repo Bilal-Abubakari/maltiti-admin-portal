@@ -1,0 +1,30 @@
+<header class="header">
+  <div class="header-left">
+    <p-button
+      icon="pi pi-bars"
+      severity="secondary"
+      [rounded]="true"
+      [text]="true"
+      (onClick)="onToggleSidebar()"
+    />
+    <div class="header-title">
+      <h2>Maltiti Admin Portal</h2>
+    </div>
+  </div>
+
+  <div class="header-right">
+    <p-menu #userMenu [model]="userMenuItems()" [popup]="true" />
+       <p-avatar
+         shape="circle"
+         style="cursor:pointer; margin-left: 0.5rem;"
+         [image]="avatarUrl()"
+         [label]="!avatarUrl ? userInitials() : undefined"
+         [style.background-color]="!avatarUrl() ? '#d9eaff' : null"
+         [style.color]="avatarUrl() ? '#2a3b4d' : null"
+         [style.font-size.px]="18"
+         [style.height.px]="36"
+         [style.width.px]="36"
+         (click)="userMenu.toggle($event)"
+       />
+  </div>
+</header>

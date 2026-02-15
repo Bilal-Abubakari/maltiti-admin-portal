@@ -1,6 +1,7 @@
 export enum Role {
   Admin = 'admin',
   User = 'user',
+  SuperAdmin = 'superadmin',
 }
 
 export enum Status {
@@ -18,10 +19,10 @@ export interface User {
   permissions?: string;
   mustChangePassword: boolean;
   rememberToken?: string;
+  avatarUrl?: string;
   status: Status;
   dob?: string;
   createdAt: string;
   emailVerifiedAt?: string;
   updatedAt: string;
 }
-

@@ -1,0 +1,247 @@
+<div class="comparative-reports">
+  <div class="page-header">
+    <h1 class="page-title">
+      <i class="pi pi-arrows-h"></i>
+      Comparative Analysis
+    </h1>
+    <p class="page-description">
+      Compare performance across different time periods and identify trends.
+    </p>
+  </div>
+
+  <!-- Period Selection Form -->
+  <div class="period-filters">
+    <form class="filters-form" [formGroup]="filterForm">
+      <div class="period-section">
+        <h3 class="section-title">Current Period</h3>
+        <div class="period-grid">
+          <div class="filter-field">
+            <label for="currentFromDate">From Date *</label>
+            <p-date-picker
+              dateFormat="yy-mm-dd"
+              formControlName="currentFromDate"
+              inputId="currentFromDate"
+              placeholder="Select start date"
+              [showIcon]="true"
+            />
+          </div>
+          <div class="filter-field">
+            <label for="currentToDate">To Date *</label>
+            <p-date-picker
+              dateFormat="yy-mm-dd"
+              formControlName="currentToDate"
+              inputId="currentToDate"
+              placeholder="Select end date"
+              [showIcon]="true"
+            />
+          </div>
+        </div>
+      </div>
+
+      <div class="period-section">
+        <h3 class="section-title">Previous Period</h3>
+        <div class="period-grid">
+          <div class="filter-field">
+            <label for="previousFromDate">From Date *</label>
+            <p-date-picker
+              dateFormat="yy-mm-dd"
+              formControlName="previousFromDate"
+              inputId="previousFromDate"
+              placeholder="Select start date"
+              [showIcon]="true"
+            />
+          </div>
+          <div class="filter-field">
+            <label for="previousToDate">To Date *</label>
+            <p-date-picker
+              dateFormat="yy-mm-dd"
+              formControlName="previousToDate"
+              inputId="previousToDate"
+              placeholder="Select end date"
+              [showIcon]="true"
+            />
+          </div>
+        </div>
+      </div>
+
+      <div class="filter-field">
+        <label for="category">Category (Optional)</label>
+        <p-select
+          formControlName="category"
+          inputId="category"
+          placeholder="Select category"
+          [options]="categories"
+          [showClear]="true"
+        />
+      </div>
+
+      <div class="filter-actions">
+        <p-button
+          icon="pi pi-refresh"
+          label="Reset"
+          severity="secondary"
+          [outlined]="true"
+          (onClick)="onResetFilters()"
+        />
+        <p-button
+          icon="pi pi-chart-bar"
+          label="Compare Periods"
+          severity="primary"
+          [disabled]="filterForm.invalid"
+          (onClick)="onApplyFilters()"
+        />
+      </div>
+    </form>
+  </div>
+
+  @if (isLoading()) {
+    <div class="loading-state">
+      <p-skeleton height="150px" styleClass="mb-3" />
+      <p-skeleton height="400px" />
+    </div>
+  } @else if (report()) {
+    <!-- Comparison Cards -->
+    <div class="comparison-grid">
+      <p-card class="comparison-card revenue">
+        <div class="comparison-content">
+          <div class="metric-header">
+            <i class="pi pi-dollar"></i>
+            <span class="metric-label">Revenue</span>
+          </div>
+          <div class="metric-values">
+            <div class="period-value">
+              <span class="label">Previous</span>
+              <span class="value">{{ report()!.previousPeriod.revenue | currency: 'GHS ' }}</span>
+            </div>
+            <div class="arrow">
+              <i
+                [class]="
+                  report()!.comparison.revenueGrowth >= 0 ? 'pi pi-arrow-up' : 'pi pi-arrow-down'
+                "
+                [class.negative]="report()!.comparison.revenueGrowth < 0"
+                [class.positive]="report()!.comparison.revenueGrowth >= 0"
+              ></i>
+            </div>
+            <div class="period-value">
+              <span class="label">Current</span>
+              <span class="value">{{ report()!.currentPeriod.revenue | currency: 'GHS ' }}</span>
+            </div>
+          </div>
+          <div class="growth-indicator">
+            <span
+              class="growth-value"
+              [class.negative]="report()!.comparison.revenueGrowthPercentage < 0"
+              [class.positive]="report()!.comparison.revenueGrowthPercentage >= 0"
+            >
+              {{ report()!.comparison.revenueGrowthPercentage | number: '1.2-2' }}%
+            </span>
+            <span class="growth-label">
+              {{ report()!.comparison.revenueGrowth | currency: 'GHS ' }}
+            </span>
+          </div>
+        </div>
+      </p-card>
+
+      <p-card class="comparison-card sales">
+        <div class="comparison-content">
+          <div class="metric-header">
+            <i class="pi pi-shopping-bag"></i>
+            <span class="metric-label">Sales Count</span>
+          </div>
+          <div class="metric-values">
+            <div class="period-value">
+              <span class="label">Previous</span>
+              <span class="value">{{ report()!.previousPeriod.salesCount | number }}</span>
+            </div>
+            <div class="arrow">
+              <i
+                [class]="
+                  report()!.comparison.salesGrowth >= 0 ? 'pi pi-arrow-up' : 'pi pi-arrow-down'
+                "
+                [class.negative]="report()!.comparison.salesGrowth < 0"
+                [class.positive]="report()!.comparison.salesGrowth >= 0"
+              ></i>
+            </div>
+            <div class="period-value">
+              <span class="label">Current</span>
+              <span class="value">{{ report()!.currentPeriod.salesCount | number }}</span>
+            </div>
+          </div>
+          <div class="growth-indicator">
+            <span
+              class="growth-value"
+              [class.negative]="report()!.comparison.salesGrowthPercentage < 0"
+              [class.positive]="report()!.comparison.salesGrowthPercentage >= 0"
+            >
+              {{ report()!.comparison.salesGrowthPercentage | number: '1.2-2' }}%
+            </span>
+            <span class="growth-label">{{ report()!.comparison.salesGrowth | number }} sales</span>
+          </div>
+        </div>
+      </p-card>
+
+      <p-card class="comparison-card average">
+        <div class="comparison-content">
+          <div class="metric-header">
+            <i class="pi pi-chart-bar"></i>
+            <span class="metric-label">Avg Order Value</span>
+          </div>
+          <div class="metric-values">
+            <div class="period-value">
+              <span class="label">Previous</span>
+              <span class="value">{{
+                report()!.previousPeriod.averageOrderValue | currency: 'GHS '
+              }}</span>
+            </div>
+            <div class="arrow">
+              <i
+                [class]="
+                  report()!.comparison.averageOrderValueGrowth >= 0
+                    ? 'pi pi-arrow-up'
+                    : 'pi pi-arrow-down'
+                "
+                [class.negative]="report()!.comparison.averageOrderValueGrowth < 0"
+                [class.positive]="report()!.comparison.averageOrderValueGrowth >= 0"
+              ></i>
+            </div>
+            <div class="period-value">
+              <span class="label">Current</span>
+              <span class="value">{{
+                report()!.currentPeriod.averageOrderValue | currency: 'GHS '
+              }}</span>
+            </div>
+          </div>
+          <div class="growth-indicator">
+            <span
+              class="growth-value"
+              [class.negative]="report()!.comparison.averageOrderValueGrowthPercentage < 0"
+              [class.positive]="report()!.comparison.averageOrderValueGrowthPercentage >= 0"
+            >
+              {{ report()!.comparison.averageOrderValueGrowthPercentage | number: '1.2-2' }}%
+            </span>
+            <span class="growth-label">{{
+              report()!.comparison.averageOrderValueGrowth | currency: 'GHS '
+            }}</span>
+          </div>
+        </div>
+      </p-card>
+    </div>
+
+    <!-- Comparison Chart -->
+    @if (chartData()) {
+      <p-card class="chart-card">
+        <ng-template pTemplate="header">
+          <h3 class="card-title">Period Comparison</h3>
+        </ng-template>
+        <p-chart height="400px" type="bar" [data]="chartData()" [options]="chartOptions()" />
+      </p-card>
+    }
+  } @else {
+    <div class="empty-state">
+      <i class="pi pi-arrows-h"></i>
+      <h3>Select Periods to Compare</h3>
+      <p>Choose current and previous periods to view comparative analysis</p>
+    </div>
+  }
+</div>
+
