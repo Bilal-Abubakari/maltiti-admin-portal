@@ -34,6 +34,7 @@ import { takeUntilDestroyed, toSignal } from '@angular/core/rxjs-interop';
 import {
   CreateSaleDto,
   OrderStatus,
+  PaymentStatus,
   Sale,
   SaleLineItemDto,
   UpdateSaleDto,
@@ -103,6 +104,10 @@ export class SalesFormComponent implements OnInit {
   );
   public customerControl = new FormControl<string>('', Validators.required);
   public statusControl = new FormControl(OrderStatus.PENDING, Validators.required);
+  public paymentStatusControl = new FormControl<PaymentStatus>(
+    PaymentStatus.INVOICE_REQUESTED,
+    Validators.required,
+  );
   public isEditMode = false;
   public saleId: string | null = null;
 
@@ -113,6 +118,13 @@ export class SalesFormComponent implements OnInit {
     { label: 'In Transit', value: OrderStatus.IN_TRANSIT },
     { label: 'Delivered', value: OrderStatus.DELIVERED },
     { label: 'Cancelled', value: OrderStatus.CANCELLED },
+  ];
+
+  public readonly paymentStatusOptions = [
+    { label: 'Invoice Requested', value: PaymentStatus.INVOICE_REQUESTED },
+    { label: 'Pending Payment', value: PaymentStatus.PENDING_PAYMENT },
+    { label: 'Paid', value: PaymentStatus.PAID },
+    { label: 'Refunded', value: PaymentStatus.REFUNDED },
   ];
 
   public ngOnInit(): void {
@@ -162,6 +174,7 @@ export class SalesFormComponent implements OnInit {
 
     // Set status
     this.statusControl.setValue(sale.orderStatus);
+    this.paymentStatusControl.setValue(sale.paymentStatus);
 
     // Clear existing line items
     this.lineItems.clear();
@@ -244,7 +257,12 @@ export class SalesFormComponent implements OnInit {
       return;
     }
 
-    if (this.salesForm.valid && this.customerControl.valid && this.statusControl.valid) {
+    if (
+      this.salesForm.valid &&
+      this.customerControl.valid &&
+      this.statusControl.valid &&
+      this.paymentStatusControl.valid
+    ) {
       const formValue = this.salesForm.value;
       const lineItems = formValue.line_items as SaleLineItemDto[];
       if (this.isEditMode && this.saleId) {
@@ -252,6 +270,7 @@ export class SalesFormComponent implements OnInit {
         const updateData: UpdateSaleDto = {
           customerId: String(this.customerControl.value),
           orderStatus: this.statusControl.value as OrderStatus,
+          paymentStatus: this.paymentStatusControl.value as PaymentStatus,
           lineItems: lineItems.map((item: SaleLineItemDto) => ({
             productId: item.productId,
             requestedQuantity: item.requestedQuantity,
@@ -265,7 +284,8 @@ export class SalesFormComponent implements OnInit {
         // Handle create
         const saleData: CreateSaleDto = {
           customerId: String(this.customerControl.value),
-          status: this.statusControl.value as OrderStatus,
+          orderStatus: this.statusControl.value as OrderStatus,
+          paymentStatus: this.paymentStatusControl.value as PaymentStatus,
           lineItems: lineItems.map((item: SaleLineItemDto) => ({
             productId: item.productId,
             requestedQuantity: item.requestedQuantity,
@@ -280,6 +300,7 @@ export class SalesFormComponent implements OnInit {
       this.salesForm.markAllAsTouched();
       this.customerControl.markAsTouched();
       this.statusControl.markAsTouched();
+      this.paymentStatusControl.markAsTouched();
       this.messageService.add({
         severity: 'error',
         summary: 'Error',

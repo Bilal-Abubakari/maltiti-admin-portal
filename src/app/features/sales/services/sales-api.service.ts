@@ -18,6 +18,7 @@ import {
   PaymentStatus,
   Sale,
   SaleLineItemDto,
+  UpdateDeliveryCostDto,
   UpdateSaleDto,
   UpdateSaleStatusDto,
 } from '../models/sale.model';
@@ -144,5 +145,13 @@ export class SalesApiService {
     return this.http.post(`${this.baseUrl}/${id}/waybill`, dto, {
       responseType: 'blob',
     });
+  }
+
+  /**
+   * Update delivery cost for a sale
+   * PUT /sales/{id}/delivery-cost
+   */
+  public updateDeliveryCost(id: string, dto: UpdateDeliveryCostDto): Observable<Sale> {
+    return this.http.patch<Sale>(`${this.baseUrl}/${id}/delivery-cost`, dto);
   }
 }
