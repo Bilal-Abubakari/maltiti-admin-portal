@@ -33,6 +33,8 @@ import { toSignal } from '@angular/core/rxjs-interop';
 import { map, take } from 'rxjs/operators';
 import { Actions, ofType } from '@ngrx/effects';
 import { createBatchFailure, createBatchSuccess } from '../../store/batches.actions';
+import { productName } from '@shared/utils/product-name';
+
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'app-batch-dialog',
@@ -81,7 +83,7 @@ export class BatchDialogComponent {
   );
   public readonly productOptions = computed(() =>
     this.products().map((product) => ({
-      label: product.name,
+      label: productName(product),
       value: product.id,
     })),
   );
@@ -151,12 +153,5 @@ export class BatchDialogComponent {
 
   public onCancel(): void {
     this.visibleChange.emit(false);
-  }
-
-  public formatDate(dateString: string): string {
-    if (!dateString) {
-      return 'N/A';
-    }
-    return new Date(dateString).toLocaleDateString('en-GB');
   }
 }
