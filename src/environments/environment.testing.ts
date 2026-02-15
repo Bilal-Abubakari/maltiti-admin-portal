@@ -5,9 +5,8 @@
 export const environment = {
   production: false,
   environment: 'testing',
-  apiUrl: 'https://maltiti-backend-testing.onrender.com',
+  apiUrl: 'https://api-testing.maltitiaenterprise.com',
   enableDebug: true,
   enableDevTools: true,
   logLevel: 'info',
 } as const;
-
