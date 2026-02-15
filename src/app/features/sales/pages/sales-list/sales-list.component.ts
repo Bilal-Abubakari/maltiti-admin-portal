@@ -50,6 +50,7 @@ import { SalesApiService } from '../../services/sales-api.service';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { ReceiptGenerationModalComponent } from '../receipt-generation-modal/receipt-generation-modal.component';
 import { WaybillGenerationModalComponent } from '../waybill-generation-modal/waybill-generation-modal.component';
+import { DeliveryCostUpdateModalComponent } from '../delivery-cost-update-modal/delivery-cost-update-modal.component';
 
 @Component({
   selector: 'app-sales-list',
@@ -71,6 +72,7 @@ import { WaybillGenerationModalComponent } from '../waybill-generation-modal/way
     SelectComponent,
     ReceiptGenerationModalComponent,
     WaybillGenerationModalComponent,
+    DeliveryCostUpdateModalComponent,
   ],
   changeDetection: ChangeDetectionStrategy.OnPush,
   providers: [ConfirmationService],
@@ -96,6 +98,7 @@ export class SalesListComponent implements OnInit {
   // ViewChild references
   public readonly receiptModal = viewChild.required(ReceiptGenerationModalComponent);
   public readonly waybillModal = viewChild.required(WaybillGenerationModalComponent);
+  public readonly deliveryCostModal = viewChild.required(DeliveryCostUpdateModalComponent);
 
   // Local state
   public readonly statusOptions = [
@@ -113,6 +116,7 @@ export class SalesListComponent implements OnInit {
     { label: 'Pending Payment', value: PaymentStatus.PENDING_PAYMENT },
     { label: 'Paid', value: PaymentStatus.PAID },
     { label: 'Refunded', value: PaymentStatus.REFUNDED },
+    { label: 'Awaiting Delivery', value: PaymentStatus.AWAITING_DELIVERY },
   ];
 
   public statusFilterControl = new FormControl<OrderStatus | null>(null);
@@ -222,6 +226,10 @@ export class SalesListComponent implements OnInit {
     this.waybillModal().open(sale.id);
   }
 
+  public onUpdateDeliveryCost(sale: Sale): void {
+    this.deliveryCostModal().open(sale.id);
+  }
+
   public getStatusSeverity(status: OrderStatus): 'success' | 'info' | 'warn' | 'danger' {
     switch (status) {
       case OrderStatus.DELIVERED:
@@ -311,6 +319,15 @@ export class SalesListComponent implements OnInit {
               label: 'Generate Receipt',
               icon: 'pi pi-receipt',
               command: (): void => this.onGenerateReceipt(sale),
+            },
+          ]
+        : []),
+      ...(sale.paymentStatus === PaymentStatus.AWAITING_DELIVERY
+        ? [
+            {
+              label: 'Update Delivery Cost',
+              icon: 'pi pi-dollar',
+              command: (): void => this.onUpdateDeliveryCost(sale),
             },
           ]
         : []),

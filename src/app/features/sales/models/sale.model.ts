@@ -6,6 +6,7 @@ export enum PaymentStatus {
   PENDING_PAYMENT = 'pending_payment',
   PAID = 'paid',
   REFUNDED = 'refunded',
+  AWAITING_DELIVERY = 'awaiting_delivery',
 }
 
 export enum OrderStatus {
@@ -30,7 +31,8 @@ export interface SaleLineItemDto {
 
 export interface CreateSaleDto {
   customerId: string;
-  status?: OrderStatus;
+  orderStatus?: OrderStatus;
+  paymentStatus?: PaymentStatus;
   lineItems: SaleLineItemDto[];
 }
 
@@ -44,6 +46,7 @@ export interface UpdateSaleLineItemDto {
 export interface UpdateSaleDto {
   customerId?: string;
   orderStatus?: OrderStatus;
+  paymentStatus?: PaymentStatus;
   lineItems?: UpdateSaleLineItemDto[];
 }
 
@@ -110,4 +113,8 @@ export interface Sale {
   totalAmount: number;
   createdAt: string;
   updatedAt: string;
+}
+
+export interface UpdateDeliveryCostDto {
+  deliveryCost: number;
 }

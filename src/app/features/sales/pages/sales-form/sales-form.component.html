@@ -58,12 +58,22 @@
     <div class="form-row sales-details">
       <div class="form-field">
         <app-select
-          id="status"
-          label="Status*"
+          id="orderStatus"
+          label="Order Status*"
           [control]="statusControl"
           [options]="statusOptions"
-          [placeholder]="'Select status'"
+          [placeholder]="'Select order status'"
           [styleClass]="'status-select'"
+        />
+      </div>
+      <div class="form-field">
+        <app-select
+          id="paymentStatus"
+          label="Payment Status*"
+          [control]="paymentStatusControl"
+          [options]="paymentStatusOptions"
+          [placeholder]="'Select payment status'"
+          [styleClass]="'payment-status-select'"
         />
       </div>
       <div class="total-wrapper">
