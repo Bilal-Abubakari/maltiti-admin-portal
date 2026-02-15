@@ -141,4 +141,7 @@
 <app-waybill-generation-modal />
 
 <!-- Delivery Cost Update Modal -->
-<app-delivery-cost-update-modal />
+<app-delivery-cost-update-modal (deliveryCostUpdated)="onDeliveryCostUpdated()" />
+
+<!-- Cancel Sale By Admin Modal -->
+<app-cancel-sale-by-admin-modal (saleCancelled)="onSaleCancelled()" />

@@ -1,0 +1,50 @@
+.cancel-form-content {
+  .warning-message {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 1rem;
+    background-color: #fff3cd;
+    border: 1px solid #ffeaa7;
+    border-radius: 4px;
+    color: #856404;
+    margin-bottom: 1.5rem;
+
+    i {
+      font-size: 1.2rem;
+    }
+  }
+
+  .cancel-form {
+    .form-field {
+      margin-bottom: 1.5rem;
+
+      textarea {
+        width: 100%;
+      }
+
+      .waive-checkbox {
+        display: flex;
+        align-items: center;
+
+        label {
+          margin-left: 0.5rem;
+        }
+      }
+
+      label {
+        display: block;
+        margin-bottom: 0.5rem;
+        font-weight: 500;
+        color: #374151;
+      }
+
+      .field-hint {
+        display: block;
+        margin-top: 0.25rem;
+        font-size: 0.875rem;
+        color: #6b7280;
+      }
+    }
+  }
+}

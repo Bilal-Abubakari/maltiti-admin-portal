@@ -29,3 +29,4 @@ export const selectUserInitialsFromName = createSelector(selectUserName, (fullNa
     .map((name) => name[0].toUpperCase())
     .join(''),
 );
+export const selectUserRole = createSelector(selectUser, (user) => user?.userType);

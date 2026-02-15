@@ -42,6 +42,7 @@ import {
   selectTotal,
   selectTotalPages,
 } from '../../store/sales.selectors';
+import { selectUserRole } from '@auth/store/auth.selectors';
 import { ButtonComponent } from '@shared/components/button/button.component';
 import { SelectComponent } from '@shared/components/select/select.component';
 import { lineItemsTotalPrice } from '@shared/utils/totalPriceCalculator';
@@ -51,6 +52,8 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { ReceiptGenerationModalComponent } from '../receipt-generation-modal/receipt-generation-modal.component';
 import { WaybillGenerationModalComponent } from '../waybill-generation-modal/waybill-generation-modal.component';
 import { DeliveryCostUpdateModalComponent } from '../delivery-cost-update-modal/delivery-cost-update-modal.component';
+import { CancelSaleByAdminModalComponent } from '../cancel-sale-by-admin-modal/cancel-sale-by-admin-modal.component';
+import { Role } from '@models/user.model';
 
 @Component({
   selector: 'app-sales-list',
@@ -73,6 +76,7 @@ import { DeliveryCostUpdateModalComponent } from '../delivery-cost-update-modal/
     ReceiptGenerationModalComponent,
     WaybillGenerationModalComponent,
     DeliveryCostUpdateModalComponent,
+    CancelSaleByAdminModalComponent,
   ],
   changeDetection: ChangeDetectionStrategy.OnPush,
   providers: [ConfirmationService],
@@ -93,12 +97,14 @@ export class SalesListComponent implements OnInit {
   public readonly page = this.store.selectSignal(selectPage);
   public readonly limit = this.store.selectSignal(selectLimit);
   public readonly totalPages = this.store.selectSignal(selectTotalPages);
+  public readonly userRole = this.store.selectSignal(selectUserRole);
   public readonly menuItems = signal<MenuItem[]>([]);
 
   // ViewChild references
   public readonly receiptModal = viewChild.required(ReceiptGenerationModalComponent);
   public readonly waybillModal = viewChild.required(WaybillGenerationModalComponent);
   public readonly deliveryCostModal = viewChild.required(DeliveryCostUpdateModalComponent);
+  public readonly cancelModal = viewChild.required(CancelSaleByAdminModalComponent);
 
   // Local state
   public readonly statusOptions = [
@@ -230,6 +236,18 @@ export class SalesListComponent implements OnInit {
     this.deliveryCostModal().open(sale.id);
   }
 
+  public onCancelSale(sale: Sale): void {
+    this.cancelModal().open(sale.id);
+  }
+
+  public onSaleCancelled(): void {
+    this.loadSales();
+  }
+
+  public onDeliveryCostUpdated(): void {
+    this.loadSales();
+  }
+
   public getStatusSeverity(status: OrderStatus): 'success' | 'info' | 'warn' | 'danger' {
     switch (status) {
       case OrderStatus.DELIVERED:
@@ -280,6 +298,10 @@ export class SalesListComponent implements OnInit {
   }
 
   public getActionMenuItems(sale: Sale): void {
+    // Check if user is admin and sale is not cancelled
+    const isAdmin = this.userRole() === Role.Admin || this.userRole() === Role.SuperAdmin;
+    const canCancel = isAdmin && sale.orderStatus !== OrderStatus.CANCELLED;
+
     // Add status change options
     const nextStatuses = this.getNextStatuses(sale.orderStatus);
     const statusItems: MenuItem[] =
@@ -328,6 +350,18 @@ export class SalesListComponent implements OnInit {
               label: 'Update Delivery Cost',
               icon: 'pi pi-dollar',
               command: (): void => this.onUpdateDeliveryCost(sale),
+            },
+          ]
+        : []),
+      ...(canCancel
+        ? [
+            {
+              separator: true,
+            },
+            {
+              label: 'Cancel Order',
+              icon: 'pi pi-times',
+              command: (): void => this.onCancelSale(sale),
             },
           ]
         : []),

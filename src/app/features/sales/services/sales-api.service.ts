@@ -10,6 +10,7 @@ import { Observable } from 'rxjs';
 import { environment } from '@environments/environment';
 import {
   AssignBatchesDto,
+  CancelSaleByAdminDto,
   CreateSaleDto,
   GenerateInvoiceDto,
   GenerateReceiptDto,
@@ -153,5 +154,13 @@ export class SalesApiService {
    */
   public updateDeliveryCost(id: string, dto: UpdateDeliveryCostDto): Observable<Sale> {
     return this.http.patch<Sale>(`${this.baseUrl}/${id}/delivery-cost`, dto);
+  }
+
+  /**
+   * Cancel sale by admin
+   * POST /sales/{id}/cancel-by-admin
+   */
+  public cancelSaleByAdmin(id: string, dto: CancelSaleByAdminDto): Observable<Sale> {
+    return this.http.post<Sale>(`${this.baseUrl}/${id}/cancel-by-admin`, dto);
   }
 }

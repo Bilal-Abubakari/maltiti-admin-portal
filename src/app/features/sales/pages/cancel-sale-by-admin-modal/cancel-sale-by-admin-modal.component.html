@@ -1,0 +1,60 @@
+<p-dialog
+  header="Cancel Sale by Admin"
+  [closable]="true"
+  [modal]="true"
+  [style]="{'width': '500px'}"
+  [visible]="visible()"
+  (onHide)="close()"
+>
+  <div class="cancel-form-content">
+    <p class="warning-message">
+      <i class="pi pi-exclamation-triangle"></i>
+      You are about to cancel this sale as an administrator. This action cannot be undone.
+    </p>
+
+    <form class="cancel-form" [formGroup]="cancelForm">
+      <div class="form-field">
+        <div class="waive-checkbox">
+        <p-checkbox
+          [binary]="true"
+          id="waivePenalty"
+          [formControl]="cancelForm.controls.waivePenalty"
+        />
+        <label class="" for="waivePenalty"> Waive Cancellation Penalty </label>
+        </div>
+        <small class="field-hint">
+          Check this box to waive the 10% cancellation penalty fee
+        </small>
+      </div>
+
+      <div class="form-field">
+        <label for="reason">Reason for Cancellation (Optional)</label>
+        <textarea
+          id="reason"
+          pTextarea
+          placeholder="Enter the reason for cancelling this sale..."
+          [formControl]="cancelForm.controls.reason"
+        ></textarea>
+        <small class="field-hint">
+          Provide a reason for the cancellation (visible to customer)
+        </small>
+      </div>
+    </form>
+  </div>
+
+  <ng-template pTemplate="footer">
+    <p-button
+      label="Cancel"
+      severity="secondary"
+      [outlined]="true"
+      (onClick)="close()"
+    />
+    <p-button
+      icon="pi pi-times"
+      label="Cancel Sale"
+      severity="danger"
+      [loading]="loading()"
+      (onClick)="onSubmit()"
+    />
+  </ng-template>
+</p-dialog>
