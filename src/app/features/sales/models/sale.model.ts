@@ -118,3 +118,8 @@ export interface Sale {
 export interface UpdateDeliveryCostDto {
   deliveryCost: number;
 }
+
+export interface CancelSaleByAdminDto {
+  waivePenalty: boolean;
+  reason?: string;
+}
