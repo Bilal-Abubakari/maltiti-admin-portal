@@ -6,6 +6,7 @@ import { sessionExpired } from '@auth/store/auth.actions';
 import { environment } from '@environments/environment';
 
 import { StorageService } from '@services/storage.service';
+import { IResponse } from '@models/response.model';
 
 export const authInterceptor: HttpInterceptorFn = (req, next) => {
   const store = inject(Store);
@@ -38,23 +39,21 @@ export const authInterceptor: HttpInterceptorFn = (req, next) => {
     catchError((error: HttpErrorResponse) => {
       // Handle 401 Unauthorized - Try to refresh token
       if (error.status === 401) {
-        // Try to refresh token
         return http
-          .post<string>(
-            `${environment.apiUrl}/authentication/refresh-token`,
-            {},
-            { withCredentials: true },
-          )
+          .post<
+            IResponse<string>
+          >(`${environment.apiUrl}/authentication/refresh-token`, {}, { withCredentials: true })
           .pipe(
-            switchMap((newToken) => {
-              if (newToken) {
-                StorageService.saveToken(newToken);
+            switchMap(({ data: accessToken }) => {
+              console.log('New token', accessToken);
+              if (accessToken) {
+                StorageService.saveToken(accessToken);
 
                 // Retry request with new token
                 const newRequest = req.clone({
                   withCredentials: true,
                   setHeaders: {
-                    Authorization: `Bearer ${newToken}`,
+                    Authorization: `Bearer ${accessToken}`,
                   },
                 });
                 return next(newRequest);
