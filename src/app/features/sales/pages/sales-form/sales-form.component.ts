@@ -17,8 +17,8 @@ import { CommonModule } from '@angular/common';
 import { ActivatedRoute, Router } from '@angular/router';
 import {
   FormArray,
-  FormBuilder,
   FormControl,
+  NonNullableFormBuilder,
   ReactiveFormsModule,
   Validators,
 } from '@angular/forms';
@@ -77,7 +77,7 @@ import { lineItemsTotalPrice } from '@shared/utils/totalPriceCalculator';
   providers: [ConfirmationService],
 })
 export class SalesFormComponent implements OnInit {
-  private readonly fb = inject(FormBuilder);
+  private readonly fb = inject(NonNullableFormBuilder);
   private readonly route = inject(ActivatedRoute);
   private readonly router = inject(Router);
   private readonly store = inject(Store);
@@ -96,7 +96,7 @@ export class SalesFormComponent implements OnInit {
   public readonly hasLineItemErrors = signal<boolean>(false);
   // Form
   public salesForm = this.fb.group({
-    line_items: this.fb.array([] as SaleLineItemDto[], Validators.minLength(1)),
+    line_items: this.fb.array<SaleLineItemDto>([], Validators.minLength(1)),
   });
   public readonly totalPrice = toSignal(
     this.lineItems.valueChanges.pipe(map((items) => lineItemsTotalPrice(items))),
@@ -180,18 +180,21 @@ export class SalesFormComponent implements OnInit {
     this.lineItems.clear();
 
     // Populate line items
+    const lineItemsToAdd: FormControl<SaleLineItemDto>[] = [];
     sale.lineItems.forEach((item) => {
       const lineItemDto: SaleLineItemDto = {
         productId: item.productId,
         requestedQuantity: item.requestedQuantity,
         batchAllocations: item.batchAllocations || [],
         customPrice: item.customPrice,
+        finalPrice: Number(item.finalPrice),
       };
-      this.lineItems.push(this.fb.control(lineItemDto));
+      lineItemsToAdd.push(this.fb.control(lineItemDto));
     });
+    this.lineItems.push(lineItemsToAdd);
   }
 
-  public get lineItems(): FormArray {
+  public get lineItems(): FormArray<FormControl<SaleLineItemDto>> {
     return this.salesForm.controls.line_items;
   }
 
@@ -229,7 +232,6 @@ export class SalesFormComponent implements OnInit {
   }
 
   public onLineItemChange(index: number, lineItem: SaleLineItemDto): void {
-    console.log('Hmm');
     this.lineItems.at(index).setValue({
       ...lineItem,
     });

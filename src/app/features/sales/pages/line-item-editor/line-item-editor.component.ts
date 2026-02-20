@@ -76,6 +76,7 @@ export class LineItemEditorComponent implements OnInit {
     productId: ['', Validators.required],
     requestedQuantity: [1, [Validators.required, Validators.min(1)]],
     customPrice: [undefined as number | undefined, Validators.min(0)],
+    finalPrice: [undefined as number | undefined, Validators.min(0)],
     priceType: ['wholesale' as PriceType],
   });
 
@@ -127,7 +128,8 @@ export class LineItemEditorComponent implements OnInit {
       productId: item.productId,
       requestedQuantity: item.requestedQuantity,
       customPrice: item.customPrice ? Number(item.customPrice) : undefined,
-      priceType: 'wholesale', // Default to wholesale
+      finalPrice: item.finalPrice ? Number(item.finalPrice) : undefined,
+      priceType: 'retail', // Default to wholesale
     });
 
     const selectedProduct = this.selectedProduct();
@@ -167,7 +169,6 @@ export class LineItemEditorComponent implements OnInit {
   private onProductChange(productId: string): void {
     const selectedProduct = this.selectedProduct();
     if (productId) {
-      console.log('Hey there');
       this.loadBatchesForProduct(productId);
     }
     if (selectedProduct && !this.lineItemForm.get('customPrice')?.value) {
@@ -191,8 +192,7 @@ export class LineItemEditorComponent implements OnInit {
         next: ({ data }) => {
           this.availableBatches.set(data);
         },
-        error: (error) => {
-          console.error('Error loading batches for product', productId, error);
+        error: () => {
           this.messageService.add({
             severity: 'error',
             summary: 'Error',
@@ -321,11 +321,11 @@ export class LineItemEditorComponent implements OnInit {
       if (totalAllocated > requestedQuantity) {
         quantityControl?.setErrors({ batchOverAllocated: true });
         hasError = true;
-      } else if (totalAllocated !== requestedQuantity) {
+      } else if (totalAllocated === requestedQuantity) {
+        this.clearBatchErrors(quantityControl);
+      } else {
         quantityControl?.setErrors({ batchAllocationMismatch: true });
         hasError = true;
-      } else {
-        this.clearBatchErrors(quantityControl);
       }
     } else {
       this.clearBatchErrors(quantityControl);
