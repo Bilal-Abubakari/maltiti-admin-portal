@@ -1,8 +1,3 @@
-/**
- * Line Item Editor Component
- * Component for editing individual sale line items with batch selection and pricing
- * Handles product selection, quantity, custom pricing, and batch allocation
- */
 import {
   ChangeDetectionStrategy,
   Component,
@@ -22,7 +17,7 @@ import { InputNumberModule } from 'primeng/inputnumber';
 import { CardModule } from 'primeng/card';
 import { MessageService } from 'primeng/api';
 import { RadioButtonModule } from 'primeng/radiobutton';
-import { SaleLineItemDto } from '../../models/sale.model';
+import { PriceType, SaleLineItemDto } from '../../models/sale.model';
 import { ButtonComponent } from '@shared/components/button/button.component';
 import { NumberInputComponent } from '@shared/components/number-input/number-input.component';
 import { SelectComponent } from '@shared/components/select/select.component';
@@ -31,12 +26,10 @@ import { Batch } from '../../../batches/models/batch.model';
 import { TooltipModule } from 'primeng/tooltip';
 import { takeUntilDestroyed, toSignal } from '@angular/core/rxjs-interop';
 import { BatchApiService } from '../../../batches/services/batch-api.service';
-import { combineLatest, EMPTY, merge, Subject, switchMap } from 'rxjs';
+import { combineLatest, merge, Subject, switchMap } from 'rxjs';
 import { Message } from 'primeng/message';
 import { filter, map, startWith } from 'rxjs/operators';
 import { productName } from '@shared/utils/product-name';
-
-type PriceType = 'wholesale' | 'retail';
 
 @Component({
   selector: 'app-line-item-editor',
@@ -68,10 +61,10 @@ export class LineItemEditorComponent implements OnInit {
   public readonly lineItem = input<SaleLineItemDto | null>(null);
   public readonly products = input<LightProduct[]>([]);
   public readonly isBatchRequired = input<boolean>(false);
+  public readonly isPaid = input<boolean>(false);
   public readonly lineItemChange = output<SaleLineItemDto>();
   public readonly remove = output<void>();
   public readonly validationError = output<boolean>();
-
   public lineItemForm = this.fb.group({
     productId: ['', Validators.required],
     requestedQuantity: [1, [Validators.required, Validators.min(1)]],
@@ -100,6 +93,19 @@ export class LineItemEditorComponent implements OnInit {
   public readonly quantityControls = signal(new Map<number, FormControl<number | null>>());
 
   constructor() {
+    effect(() => {
+      if (this.isPaid()) {
+        this.lineItemForm.controls.customPrice.disable();
+        this.lineItemForm.controls.requestedQuantity.disable();
+        this.lineItemForm.controls.productId.disable();
+        this.lineItemForm.controls.priceType.disable();
+      } else {
+        this.lineItemForm.controls.customPrice.enable();
+        this.lineItemForm.controls.requestedQuantity.enable();
+        this.lineItemForm.controls.productId.enable();
+        this.lineItemForm.controls.priceType.enable();
+      }
+    });
     effect(() => this.validateBatchAllocations());
     this.lineItemForm
       .get('productId')
@@ -129,7 +135,7 @@ export class LineItemEditorComponent implements OnInit {
       requestedQuantity: item.requestedQuantity,
       customPrice: item.customPrice ? Number(item.customPrice) : undefined,
       finalPrice: item.finalPrice ? Number(item.finalPrice) : undefined,
-      priceType: 'retail', // Default to wholesale
+      priceType: 'retail', // Default to retail
     });
 
     const selectedProduct = this.selectedProduct();
@@ -254,13 +260,8 @@ export class LineItemEditorComponent implements OnInit {
       .pipe(
         switchMap(() => {
           const streams = Array.from(this.batchControls().entries()).map((_, batchIndex) => {
-            const quantityControl = this.quantityControls().get(batchIndex);
-            const batchControl = this.batchControls().get(batchIndex);
-
-            if (!quantityControl || !batchControl) {
-              return EMPTY;
-            }
-
+            const quantityControl = this.quantityControls().get(batchIndex)!;
+            const batchControl = this.batchControls().get(batchIndex)!;
             return combineLatest([
               quantityControl.valueChanges.pipe(startWith(quantityControl.value)),
               batchControl.valueChanges.pipe(startWith(batchControl.value)),
@@ -269,14 +270,11 @@ export class LineItemEditorComponent implements OnInit {
               map(([quantity, batchId]) => ({ quantity, batchId })),
             );
           });
-
           return merge(...streams);
         }),
         takeUntilDestroyed(this.destroyRef),
       )
-      .subscribe(({ quantity, batchId }) => {
-        this.updateBatchAllocations(quantity!, batchId!);
-      });
+      .subscribe(({ quantity, batchId }) => this.updateBatchAllocations(quantity!, batchId!));
   }
 
   private updateBatchAllocations(quantity: number, batchId: string): void {

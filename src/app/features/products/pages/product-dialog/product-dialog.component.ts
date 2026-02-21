@@ -168,13 +168,11 @@ export class ProductDialogComponent {
   public readonly showFooterActions = computed(() => !this.viewMode());
 
   constructor() {
-    // Populate form when product changes
     effect(() => {
       const product = this.product();
       const isView = this.viewMode();
 
       if (product && isView) {
-        // Load batches for this product
         this.batchApiService
           .getBatchesByProduct(product.id)
           .pipe(first())

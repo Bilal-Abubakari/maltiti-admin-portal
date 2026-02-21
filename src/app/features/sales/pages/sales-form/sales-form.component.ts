@@ -7,6 +7,7 @@
 import {
   ChangeDetectionStrategy,
   Component,
+  computed,
   DestroyRef,
   inject,
   OnInit,
@@ -50,7 +51,8 @@ import { Customer } from '@models/customer.model';
 import { ProductApiService } from '@features/products/services/product-api.service';
 import { LightProduct } from '@features/products/models/product.model';
 import { APP_ROUTES } from '@config/routes.config';
-import { map } from 'rxjs/operators';
+import { combineLatest } from 'rxjs';
+import { map, startWith } from 'rxjs/operators';
 import { lineItemsTotalPrice } from '@shared/utils/totalPriceCalculator';
 
 @Component({
@@ -97,9 +99,15 @@ export class SalesFormComponent implements OnInit {
   // Form
   public salesForm = this.fb.group({
     line_items: this.fb.array<SaleLineItemDto>([], Validators.minLength(1)),
+    deliveryFee: [0, [Validators.required, Validators.min(0)]],
   });
   public readonly totalPrice = toSignal(
-    this.lineItems.valueChanges.pipe(map((items) => lineItemsTotalPrice(items))),
+    combineLatest([
+      this.lineItems.valueChanges.pipe(startWith(this.lineItems.value)),
+      this.salesForm.controls.deliveryFee.valueChanges.pipe(
+        startWith(this.salesForm.controls.deliveryFee.value),
+      ),
+    ]).pipe(map(([items, deliveryFee]) => Number(deliveryFee) + lineItemsTotalPrice(items))),
     { initialValue: 0 },
   );
   public customerControl = new FormControl<string>('', Validators.required);
@@ -108,6 +116,7 @@ export class SalesFormComponent implements OnInit {
     PaymentStatus.INVOICE_REQUESTED,
     Validators.required,
   );
+  public readonly isPaid = computed(() => this.paymentStatusControl.value === PaymentStatus.PAID);
   public isEditMode = false;
   public saleId: string | null = null;
 
@@ -175,6 +184,9 @@ export class SalesFormComponent implements OnInit {
     // Set status
     this.statusControl.setValue(sale.orderStatus);
     this.paymentStatusControl.setValue(sale.paymentStatus);
+
+    // Set delivery fee
+    this.salesForm.controls.deliveryFee.setValue(sale.deliveryFee);
 
     // Clear existing line items
     this.lineItems.clear();
@@ -273,6 +285,7 @@ export class SalesFormComponent implements OnInit {
           customerId: String(this.customerControl.value),
           orderStatus: this.statusControl.value as OrderStatus,
           paymentStatus: this.paymentStatusControl.value as PaymentStatus,
+          deliveryFee: this.salesForm.value.deliveryFee,
           lineItems: lineItems.map((item: SaleLineItemDto) => ({
             productId: item.productId,
             requestedQuantity: item.requestedQuantity,
@@ -288,6 +301,7 @@ export class SalesFormComponent implements OnInit {
           customerId: String(this.customerControl.value),
           orderStatus: this.statusControl.value as OrderStatus,
           paymentStatus: this.paymentStatusControl.value as PaymentStatus,
+          deliveryFee: this.salesForm.value.deliveryFee,
           lineItems: lineItems.map((item: SaleLineItemDto) => ({
             productId: item.productId,
             requestedQuantity: item.requestedQuantity,

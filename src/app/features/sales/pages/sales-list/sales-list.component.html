@@ -68,6 +68,7 @@
         <th scope="col">Order Status</th>
         <th scope="col">Payment Status</th>
         <th scope="col">Total Amount</th>
+        <th scope="col">Delivery Fee</th>
         <th scope="col">Created At</th>
         <th scope="col">Actions</th>
       </tr>
@@ -89,6 +90,7 @@
           />
         </td>
         <td>{{ lineItemsTotalPrice(sale.lineItems) | currency: 'GH₵ ' }}</td>
+        <td>{{ sale.deliveryFee ? (sale.deliveryFee | currency: 'GH₵ ') : 'N/A' }}</td>
         <td>{{ sale.createdAt | date:'short' }}</td>
         <td>
           <div class="action-buttons">
