@@ -26,6 +26,7 @@ export interface SaleLineItemDto {
   productId: string;
   batchAllocations: BatchAllocationDto[];
   requestedQuantity: number;
+  finalPrice?: number;
   customPrice?: number;
 }
 
@@ -106,11 +107,14 @@ export interface SaleLineItem {
 export interface Sale {
   id: string;
   customerId: string;
+  confirmedDelivery: boolean;
   customer?: User;
   orderStatus: OrderStatus;
   paymentStatus: PaymentStatus;
   lineItems: SaleLineItem[];
-  totalAmount: number;
+  total: number;
+  amount: number;
+  deliveryFee: number;
   createdAt: string;
   updatedAt: string;
 }
