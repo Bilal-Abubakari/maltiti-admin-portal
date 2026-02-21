@@ -35,6 +35,7 @@ export interface CreateSaleDto {
   orderStatus?: OrderStatus;
   paymentStatus?: PaymentStatus;
   lineItems: SaleLineItemDto[];
+  deliveryFee?: number;
 }
 
 export interface UpdateSaleLineItemDto {
@@ -49,6 +50,7 @@ export interface UpdateSaleDto {
   orderStatus?: OrderStatus;
   paymentStatus?: PaymentStatus;
   lineItems?: UpdateSaleLineItemDto[];
+  deliveryFee?: number;
 }
 
 export interface UpdateSaleStatusDto {
@@ -127,3 +129,5 @@ export interface CancelSaleByAdminDto {
   waivePenalty: boolean;
   reason?: string;
 }
+
+export type PriceType = 'wholesale' | 'retail';

@@ -76,6 +76,19 @@
           [styleClass]="'payment-status-select'"
         />
       </div>
+      <div class="form-field">
+        <label for="deliveryFee">Delivery Fe</label>
+        <p-inputNumber
+          currency="GHS"
+          id="deliveryFee"
+          locale="en-US"
+          mode="currency"
+          [disabled]="isPaid()"
+          [formControl]="salesForm.controls.deliveryFee"
+          [min]="0"
+        />
+        <small class="form-help">Enter the delivery fee for this sale</small>
+      </div>
       <div class="total-wrapper">
         <div>Total Amount</div>
         <div class="total-amount">
@@ -102,6 +115,7 @@
       @for (lineItem of lineItems.controls; track $index; let i = $index) {
         <app-line-item-editor
           [isBatchRequired]="isBatchRequired"
+          [isPaid]="isPaid()"
           [lineItem]="lineItem.value"
           [products]="products()"
           (lineItemChange)="onLineItemChange(i, $event)"
