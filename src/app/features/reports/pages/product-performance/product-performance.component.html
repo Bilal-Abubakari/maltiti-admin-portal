@@ -10,6 +10,7 @@
   </div>
 
   <app-report-filters
+    [includeTrends]="false"
     [showAggregation]="true"
     [showBatch]="false"
     [showCategory]="true"
@@ -21,7 +22,7 @@
 
   @if (isLoading()) {
     <div class="loading-state">
-      <p-skeleton height="400px" styleClass="mb-3" />
+      <p-skeleton class="mb-3" height="400px" />
       <p-skeleton height="400px" />
     </div>
   } @else {
@@ -52,11 +53,11 @@
                 </div>
                 <div class="product-metrics">
                   <div class="metric">
-                    <span class="metric-value">{{ product.revenue | currency: 'GHS ' }}</span>
+                    <span class="metric-value">{{ product.totalRevenue | currency: 'GHS ' }}</span>
                     <span class="metric-label">Revenue</span>
                   </div>
                   <div class="metric">
-                    <span class="metric-value">{{ product.quantitySold | number }}</span>
+                    <span class="metric-value">{{ product.totalQuantitySold | number }}</span>
                     <span class="metric-label">Qty Sold</span>
                   </div>
                 </div>
@@ -76,7 +77,7 @@
         <p-table
           [globalFilterFields]="['productName', 'category']"
           [paginator]="true"
-          
+
           [rows]="10"
           [value]="allProducts()"
         >
@@ -108,9 +109,9 @@
               <td>
                 <span class="category-badge">{{ product.category }}</span>
               </td>
-              <td>{{ product.revenue | currency: 'GHS ' }}</td>
-              <td>{{ product.quantitySold | number }}</td>
-              <td>{{ product.salesCount | number }}</td>
+              <td>{{ product.totalRevenue | currency: 'GHS ' }}</td>
+              <td>{{ product.totalQuantitySold | number }}</td>
+              <td>{{ product.numberOfSales | number }}</td>
               <td>{{ product.averagePrice | currency: 'GHS ' }}</td>
             </tr>
           </ng-template>

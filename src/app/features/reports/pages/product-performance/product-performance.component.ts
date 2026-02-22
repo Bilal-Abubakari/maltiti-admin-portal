@@ -62,13 +62,20 @@ export class ProductPerformanceComponent implements OnInit {
   private loadReport(params?: ReportQueryParams): void {
     this.isLoading.set(true);
 
+    const defaultParams: ReportQueryParams = {
+      fromDate: this.formatDate(new Date(new Date().getFullYear(), 0, 1)),
+      toDate: this.formatDate(new Date()),
+      aggregation: 'monthly',
+      ...params,
+    };
+
     // Load top products
     this.reportsApi
-      .getTopProducts({ ...params, limit: 10, sortOrder: 'DESC' })
+      .getTopProducts({ ...defaultParams, limit: 10, sortOrder: 'DESC' })
       .pipe(first())
       .subscribe({
         next: (report) => {
-          this.topProducts.set(report.products);
+          this.topProducts.set(report.topProducts);
         },
         error: (error) => {
           console.error('Failed to load top products:', error);
@@ -77,7 +84,7 @@ export class ProductPerformanceComponent implements OnInit {
 
     // Load all products
     this.reportsApi
-      .getSalesByProduct(params)
+      .getSalesByProduct(defaultParams)
       .pipe(first())
       .subscribe({
         next: (report) => {
@@ -92,7 +99,7 @@ export class ProductPerformanceComponent implements OnInit {
 
     // Load revenue distribution
     this.reportsApi
-      .getRevenueDistribution(params)
+      .getRevenueDistribution(defaultParams)
       .pipe(first())
       .subscribe({
         next: (report) => {
@@ -162,5 +169,9 @@ export class ProductPerformanceComponent implements OnInit {
         },
       },
     });
+  }
+
+  private formatDate(date: Date): string {
+    return date.toISOString().split('T')[0];
   }
 }

@@ -19,8 +19,8 @@
 
   @if (isLoading()) {
     <div class="loading-state">
-      <p-skeleton height="150px" styleClass="mb-3" />
-      <p-skeleton height="400px" styleClass="mb-3" />
+      <p-skeleton class="mb-3" height="150px" />
+      <p-skeleton class="mb-3" height="400px" />
       <p-skeleton height="300px" />
     </div>
   } @else {
@@ -46,7 +46,7 @@
             </div>
             <div class="kpi-details">
               <span class="kpi-label">Total Produced</span>
-              <span class="kpi-value">{{ batchReport()!.summary.totalProduced | number }}</span>
+              <span class="kpi-value">{{ batchReport()!.summary.totalProduction | number }}</span>
             </div>
           </div>
         </p-card>
@@ -71,8 +71,68 @@
             <div class="kpi-details">
               <span class="kpi-label">Avg Utilization</span>
               <span class="kpi-value"
-                >{{ batchReport()!.summary.averageUtilizationRate | number: '1.1-1' }}%</span
+                >{{ batchReport()!.summary.averageUtilization | number: '1.1-1' }}%</span
               >
+            </div>
+          </div>
+        </p-card>
+
+        <p-card class="kpi-card">
+          <div class="kpi-content">
+            <div class="kpi-icon remaining">
+              <i class="pi pi-box"></i>
+            </div>
+            <div class="kpi-details">
+              <span class="kpi-label">Total Remaining</span>
+              <span class="kpi-value">{{ batchReport()!.summary.totalRemaining | number }}</span>
+            </div>
+          </div>
+        </p-card>
+
+        <p-card class="kpi-card">
+          <div class="kpi-content">
+            <div class="kpi-icon critical">
+              <i class="pi pi-exclamation-triangle"></i>
+            </div>
+            <div class="kpi-details">
+              <span class="kpi-label">Critical Batches</span>
+              <span class="kpi-value">{{ agingReport()!.summary.criticalBatches | number }}</span>
+            </div>
+          </div>
+        </p-card>
+
+        <p-card class="kpi-card">
+          <div class="kpi-content">
+            <div class="kpi-icon expired">
+              <i class="pi pi-times-circle"></i>
+            </div>
+            <div class="kpi-details">
+              <span class="kpi-label">Expired Batches</span>
+              <span class="kpi-value">{{ agingReport()!.summary.expiredBatches | number }}</span>
+            </div>
+          </div>
+        </p-card>
+
+        <p-card class="kpi-card">
+          <div class="kpi-content">
+            <div class="kpi-icon fresh">
+              <i class="pi pi-check-circle"></i>
+            </div>
+            <div class="kpi-details">
+              <span class="kpi-label">Fresh Batches</span>
+              <span class="kpi-value">{{ agingReport()!.summary.freshBatches | number }}</span>
+            </div>
+          </div>
+        </p-card>
+
+        <p-card class="kpi-card">
+          <div class="kpi-content">
+            <div class="kpi-icon aging">
+              <i class="pi pi-clock"></i>
+            </div>
+            <div class="kpi-details">
+              <span class="kpi-label">Aging Batches</span>
+              <span class="kpi-value">{{ agingReport()!.summary.agingBatches | number }}</span>
             </div>
           </div>
         </p-card>
@@ -96,7 +156,7 @@
           </ng-template>
           <p-table
             [paginator]="true"
-            
+
             [rows]="10"
             [value]="agingReport()!.batches"
           >
@@ -114,10 +174,10 @@
                 <th pSortableColumn="daysUntilExpiry">
                   Days to Expiry <p-sortIcon field="daysUntilExpiry" />
                 </th>
-                <th pSortableColumn="quantityRemaining">
-                  Remaining <p-sortIcon field="quantityRemaining" />
+                <th pSortableColumn="remainingQuantity">
+                  Remaining <p-sortIcon field="remainingQuantity" />
                 </th>
-                <th pSortableColumn="urgencyLevel">Urgency</th>
+                <th pSortableColumn="status">Status</th>
               </tr>
             </ng-template>
             <ng-template let-batch pTemplate="body">
@@ -126,9 +186,9 @@
                 <td>{{ batch.productName }}</td>
                 <td>{{ batch.ageInDays | number }}</td>
                 <td>{{ batch.daysUntilExpiry | number }}</td>
-                <td>{{ batch.quantityRemaining | number }}</td>
+                <td>{{ batch.remainingQuantity | number }}</td>
                 <td>
-                  <p-tag [severity]="getUrgencySeverity(batch.urgencyLevel)" [value]="batch.urgencyLevel" />
+                  <p-tag [severity]="getUrgencySeverity(batch.status)" [value]="batch.status" />
                 </td>
               </tr>
             </ng-template>

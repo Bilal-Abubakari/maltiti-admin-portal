@@ -3,7 +3,15 @@
  * Reusable component for report filtering with date range, product, batch, and aggregation
  */
 
-import { ChangeDetectionStrategy, Component, inject, input, output, signal } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  inject,
+  input,
+  OnInit,
+  output,
+  signal,
+} from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { ButtonModule } from 'primeng/button';
 import { DatePickerModule } from 'primeng/datepicker';
@@ -18,7 +26,7 @@ import { AggregationLevel, ProductCategory, ReportQueryParams } from '../../mode
   styleUrl: './report-filters.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class ReportFiltersComponent {
+export class ReportFiltersComponent implements OnInit {
   private readonly fb = inject(FormBuilder);
 
   // Inputs to configure which filters to show
@@ -28,6 +36,7 @@ export class ReportFiltersComponent {
   public readonly showCategory = input<boolean>(true);
   public readonly showAggregation = input<boolean>(true);
   public readonly showTrends = input<boolean>(false);
+  public readonly includeTrends = input<boolean>(false);
 
   // Output events
   public readonly filtersApplied = output<ReportQueryParams>();
@@ -66,6 +75,15 @@ export class ReportFiltersComponent {
     { label: 'Yearly', value: 'yearly' },
   ];
 
+  ngOnInit(): void {
+    const currentDate = new Date();
+    const startOfYear = new Date(currentDate.getFullYear(), 0, 1);
+    this.filterForm.patchValue({
+      fromDate: startOfYear,
+      toDate: currentDate,
+    });
+  }
+
   public onApplyFilters(): void {
     const formValue = this.filterForm.value;
     const params: ReportQueryParams = {};
@@ -88,7 +106,7 @@ export class ReportFiltersComponent {
     if (formValue.aggregation) {
       params.aggregation = formValue.aggregation;
     }
-    if (formValue.includeTrends !== null && formValue.includeTrends !== undefined) {
+    if (this.includeTrends()) {
       params.includeTrends = formValue.includeTrends;
     }
 
@@ -96,7 +114,11 @@ export class ReportFiltersComponent {
   }
 
   public onResetFilters(): void {
+    const currentDate = new Date();
+    const startOfYear = new Date(currentDate.getFullYear(), 0, 1);
     this.filterForm.reset({
+      fromDate: startOfYear,
+      toDate: currentDate,
       aggregation: 'monthly',
       includeTrends: false,
     });

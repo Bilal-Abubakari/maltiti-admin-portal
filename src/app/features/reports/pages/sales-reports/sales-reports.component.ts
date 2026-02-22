@@ -44,7 +44,7 @@ export class SalesReportsComponent implements OnInit {
   }
 
   public ngOnInit(): void {
-    this.loadReport();
+    this.loadReport(this.getDefaultParams());
   }
 
   public onFiltersApplied(params: ReportQueryParams): void {
@@ -52,7 +52,7 @@ export class SalesReportsComponent implements OnInit {
   }
 
   public onFiltersReset(): void {
-    this.loadReport();
+    this.loadReport(this.getDefaultParams());
   }
 
   private loadReport(params?: ReportQueryParams): void {
@@ -176,5 +176,17 @@ export class SalesReportsComponent implements OnInit {
         },
       },
     });
+  }
+
+  private getDefaultParams(): ReportQueryParams {
+    const currentDate = new Date();
+    const startOfYear = new Date(currentDate.getFullYear(), 0, 1);
+
+    return {
+      fromDate: startOfYear.toISOString().split('T')[0],
+      toDate: currentDate.toISOString().split('T')[0],
+      aggregation: 'monthly',
+      includeTrends: true,
+    };
   }
 }

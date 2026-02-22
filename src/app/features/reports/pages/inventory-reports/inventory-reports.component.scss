@@ -156,6 +156,62 @@
   ::ng-deep .p-card-body {
     padding: 1.5rem;
   }
+
+  // Table styles for better dark theme support
+  ::ng-deep .p-datatable {
+    .p-datatable-thead > tr > th {
+      background: var(--p-surface-section);
+      border-color: var(--p-surface-border);
+      color: var(--p-text-color);
+      font-weight: 600;
+    }
+
+    .p-datatable-tbody > tr {
+      background: var(--p-surface-card);
+      border-color: var(--p-surface-border);
+
+      &:hover {
+        background: var(--p-surface-hover);
+      }
+
+      &.low-stock-row {
+        background: rgba(245, 158, 11, 0.1);
+        border-left: 4px solid var(--p-orange-500);
+      }
+
+      td {
+        color: var(--p-text-color);
+        border-color: var(--p-surface-border);
+      }
+    }
+
+    .p-datatable-footer {
+      background: var(--p-surface-section);
+      border-color: var(--p-surface-border);
+      color: var(--p-text-color);
+    }
+
+    .p-paginator {
+      background: var(--p-surface-card);
+      border-color: var(--p-surface-border);
+      color: var(--p-text-color);
+
+      .p-paginator-pages .p-paginator-page {
+        color: var(--p-text-color);
+
+        &.p-highlight {
+          background: var(--p-primary-color);
+          color: var(--p-primary-contrast-color);
+        }
+      }
+
+      .p-dropdown {
+        background: var(--p-surface-card);
+        border-color: var(--p-surface-border);
+        color: var(--p-text-color);
+      }
+    }
+  }
 }
 
 .category-badge {
@@ -168,8 +224,14 @@
   font-weight: 600;
 }
 
-.low-stock-row {
-  background-color: var(--p-orange-50) !important;
+.positive {
+  color: var(--p-green-600);
+  font-weight: 600;
+}
+
+.negative {
+  color: var(--p-red-600);
+  font-weight: 600;
 }
 
 .loading-state {
@@ -229,4 +291,3 @@
     font-size: 1.5rem;
   }
 }
-

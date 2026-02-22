@@ -3,7 +3,7 @@
  * Displays period-over-period comparisons and growth metrics
  */
 
-import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject, OnInit, signal } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { CardModule } from 'primeng/card';
 import { ChartModule } from 'primeng/chart';
@@ -37,7 +37,7 @@ import { first } from 'rxjs';
   styleUrl: './comparative-reports.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class ComparativeReportsComponent {
+export class ComparativeReportsComponent implements OnInit {
   private readonly reportsApi = inject(ReportsApiService);
   private readonly fb = inject(FormBuilder);
 
@@ -72,6 +72,22 @@ export class ComparativeReportsComponent {
     this.initializeChartOptions();
   }
 
+  ngOnInit(): void {
+    const today = new Date();
+    const startOfYear = new Date(today.getFullYear(), 0, 1);
+    const startOfPreviousYear = new Date(today.getFullYear() - 1, 0, 1);
+    const endOfPreviousYear = new Date(today.getFullYear() - 1, 11, 31);
+
+    this.filterForm.patchValue({
+      currentFromDate: startOfYear,
+      currentToDate: today,
+      previousFromDate: startOfPreviousYear,
+      previousToDate: endOfPreviousYear,
+    });
+
+    this.onApplyFilters();
+  }
+
   public onApplyFilters(): void {
     if (this.filterForm.invalid) {
       return;
@@ -90,7 +106,7 @@ export class ComparativeReportsComponent {
   }
 
   public onResetFilters(): void {
-    this.filterForm.reset();
+    this.ngOnInit();
     this.report.set(null);
     this.chartData.set(null);
   }
@@ -123,18 +139,20 @@ export class ComparativeReportsComponent {
         {
           label: 'Previous Period',
           data: [
-            report.previousPeriod.revenue,
-            report.previousPeriod.salesCount,
-            report.previousPeriod.averageOrderValue,
+            report.previous.totalRevenue,
+            report.previous.totalQuantitySold,
+            report.previous.averageOrderValue,
+            report.previous.totalSales,
           ],
           backgroundColor: documentStyle.getPropertyValue('--p-surface-400'),
         },
         {
           label: 'Current Period',
           data: [
-            report.currentPeriod.revenue,
-            report.currentPeriod.salesCount,
-            report.currentPeriod.averageOrderValue,
+            report.current.totalRevenue,
+            report.current.totalQuantitySold,
+            report.current.averageOrderValue,
+            report.current.totalSales,
           ],
           backgroundColor: documentStyle.getPropertyValue('--p-primary-500'),
         },

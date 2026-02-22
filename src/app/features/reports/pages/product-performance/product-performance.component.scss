@@ -60,12 +60,14 @@
   align-items: center;
   gap: 1rem;
   padding: 1rem;
-  background: var(--p-surface-50);
+  background: transparent;
+  border: 1px solid var(--p-surface-border);
   border-radius: var(--p-border-radius);
   transition: all 0.2s ease;
+  box-shadow: var(--p-shadow-xs);
 
   &:hover {
-    background: var(--p-surface-100);
+    box-shadow: var(--p-shadow-sm);
     transform: translateX(4px);
   }
 
@@ -197,4 +199,3 @@
     }
   }
 }
-
