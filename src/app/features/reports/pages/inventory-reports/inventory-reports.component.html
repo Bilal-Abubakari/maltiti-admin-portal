@@ -4,7 +4,7 @@
       <i class="pi pi-warehouse"></i>
       Inventory & Stock Reports
     </h1>
-    <p class="page-description">Monitor stock levels, inventory value, and low-stock alerts.</p>
+    <p class="page-description">Monitor inventory levels, stock value, low-stock alerts, and stock movements over time.</p>
   </div>
 
   <!-- Custom Filters for Inventory -->
@@ -30,6 +30,26 @@
             pInputText
             placeholder="Enter product ID"
             type="text"
+          />
+        </div>
+
+        <div class="filter-field">
+          <label for="fromDate">From Date</label>
+          <p-date-picker
+            dateFormat="yy-mm-dd"
+            formControlName="fromDate"
+            inputId="fromDate"
+            [showIcon]="true"
+          />
+        </div>
+
+        <div class="filter-field">
+          <label for="toDate">To Date</label>
+          <p-date-picker
+            dateFormat="yy-mm-dd"
+            formControlName="toDate"
+            inputId="toDate"
+            [showIcon]="true"
           />
         </div>
 
@@ -69,91 +89,145 @@
 
   @if (isLoading()) {
     <div class="loading-state">
-      <p-skeleton height="150px" styleClass="mb-3" />
+      <p-skeleton class="mb-3" height="150px" />
       <p-skeleton height="400px" />
     </div>
-  } @else if (inventoryReport()) {
-    <!-- Summary Cards -->
+  } @else if (inventoryReport() || stockMovementReport()) {
+    <!-- All KPI Cards at the top -->
     <div class="kpi-cards">
-      <p-card class="kpi-card">
-        <div class="kpi-content">
-          <div class="kpi-icon products">
-            <i class="pi pi-box"></i>
+      @if (inventoryReport()) {
+        <p-card class="kpi-card">
+          <div class="kpi-content">
+            <div class="kpi-icon products">
+              <i class="pi pi-box"></i>
+            </div>
+            <div class="kpi-details">
+              <span class="kpi-label">Total Products</span>
+              <span class="kpi-value">{{ inventoryReport()!.summary.totalProducts | number }}</span>
+            </div>
           </div>
-          <div class="kpi-details">
-            <span class="kpi-label">Total Products</span>
-            <span class="kpi-value">{{ inventoryReport()!.summary.totalProducts | number }}</span>
-          </div>
-        </div>
-      </p-card>
+        </p-card>
 
-      <p-card class="kpi-card">
-        <div class="kpi-content">
-          <div class="kpi-icon value">
-            <i class="pi pi-dollar"></i>
+        <p-card class="kpi-card">
+          <div class="kpi-content">
+            <div class="kpi-icon value">
+              <i class="pi pi-dollar"></i>
+            </div>
+            <div class="kpi-details">
+              <span class="kpi-label">Stock Value</span>
+              <span class="kpi-value">{{
+                inventoryReport()!.summary.totalInventoryValue | currency: 'GHS '
+              }}</span>
+            </div>
           </div>
-          <div class="kpi-details">
-            <span class="kpi-label">Stock Value</span>
-            <span class="kpi-value">{{
-              inventoryReport()!.summary.totalStockValue | currency: 'GHS '
-            }}</span>
-          </div>
-        </div>
-      </p-card>
+        </p-card>
 
-      <p-card class="kpi-card">
-        <div class="kpi-content">
-          <div class="kpi-icon units">
-            <i class="pi pi-hashtag"></i>
+        <p-card class="kpi-card">
+          <div class="kpi-content">
+            <div class="kpi-icon units">
+              <i class="pi pi-hashtag"></i>
+            </div>
+            <div class="kpi-details">
+              <span class="kpi-label">Total Units</span>
+              <span class="kpi-value">{{ inventoryReport()!.summary.totalStockQuantity | number }}</span>
+            </div>
           </div>
-          <div class="kpi-details">
-            <span class="kpi-label">Total Units</span>
-            <span class="kpi-value">{{ inventoryReport()!.summary.totalUnits | number }}</span>
-          </div>
-        </div>
-      </p-card>
+        </p-card>
 
-      <p-card class="kpi-card">
-        <div class="kpi-content">
-          <div class="kpi-icon low-stock">
-            <i class="pi pi-exclamation-triangle"></i>
+        <p-card class="kpi-card">
+          <div class="kpi-content">
+            <div class="kpi-icon low-stock">
+              <i class="pi pi-exclamation-triangle"></i>
+            </div>
+            <div class="kpi-details">
+              <span class="kpi-label">Low Stock Items</span>
+              <span class="kpi-value">{{ inventoryReport()!.summary.lowStockItems | number }}</span>
+            </div>
           </div>
-          <div class="kpi-details">
-            <span class="kpi-label">Low Stock Items</span>
-            <span class="kpi-value">{{ inventoryReport()!.summary.lowStockItems | number }}</span>
+        </p-card>
+      }
+
+      @if (stockMovementReport()) {
+        <p-card class="kpi-card">
+          <div class="kpi-content">
+            <div class="kpi-icon products">
+              <i class="pi pi-plus-circle"></i>
+            </div>
+            <div class="kpi-details">
+              <span class="kpi-label">Total Produced</span>
+              <span class="kpi-value">{{ stockMovementReport()!.summary.totalProduced | number }}</span>
+            </div>
           </div>
-        </div>
-      </p-card>
+        </p-card>
+
+        <p-card class="kpi-card">
+          <div class="kpi-content">
+            <div class="kpi-icon value">
+              <i class="pi pi-minus-circle"></i>
+            </div>
+            <div class="kpi-details">
+              <span class="kpi-label">Total Sold</span>
+              <span class="kpi-value">{{ stockMovementReport()!.summary.totalSold | number }}</span>
+            </div>
+          </div>
+        </p-card>
+
+        <p-card class="kpi-card">
+          <div class="kpi-content">
+            <div class="kpi-icon units">
+              <i class="pi pi-chart-line"></i>
+            </div>
+            <div class="kpi-details">
+              <span class="kpi-label">Net Change</span>
+              <span class="kpi-value">{{ stockMovementReport()!.summary.netChange | number }}</span>
+            </div>
+          </div>
+        </p-card>
+
+        <p-card class="kpi-card">
+          <div class="kpi-content">
+            <div class="kpi-icon low-stock">
+              <i class="pi pi-box"></i>
+            </div>
+            <div class="kpi-details">
+              <span class="kpi-label">Current Stock</span>
+              <span class="kpi-value">{{ stockMovementReport()!.summary.currentStock | number }}</span>
+            </div>
+          </div>
+        </p-card>
+      }
     </div>
 
     <!-- Inventory Table -->
-    @if (inventoryReport()!.items.length > 0) {
+    @if (inventoryReport() && inventoryReport()!.inventory.length > 0) {
       <p-card class="table-card">
         <ng-template pTemplate="header">
           <h3 class="card-title">Inventory Details</h3>
         </ng-template>
         <p-table
           [paginator]="true"
-
           [rows]="15"
-          [value]="inventoryReport()!.items"
+          [value]="inventoryReport()!.inventory"
         >
           <ng-template pTemplate="header">
             <tr>
               <th pSortableColumn="productName">
                 Product Name <p-sortIcon field="productName" />
               </th>
-              <th pSortableColumn="category">
-                Category <p-sortIcon field="category" />
+              <th pSortableColumn="totalStock">
+                Current Stock <p-sortIcon field="totalStock" />
               </th>
-              <th pSortableColumn="currentStock">
-                Current Stock <p-sortIcon field="currentStock" />
+              <th pSortableColumn="numberOfBatches">
+                Number of Batches <p-sortIcon field="numberOfBatches" />
               </th>
-              <th pSortableColumn="unitPrice">
-                Unit Price <p-sortIcon field="unitPrice" />
+              <th pSortableColumn="totalValue">
+                Inventory Value <p-sortIcon field="totalValue" />
               </th>
-              <th pSortableColumn="inventoryValue">
-                Inventory Value <p-sortIcon field="inventoryValue" />
+              <th pSortableColumn="oldestBatchDate">
+                Oldest Batch Date <p-sortIcon field="oldestBatchDate" />
+              </th>
+              <th pSortableColumn="newestBatchDate">
+                Newest Batch Date <p-sortIcon field="newestBatchDate" />
               </th>
               <th pSortableColumn="isLowStock">Status</th>
             </tr>
@@ -161,12 +235,11 @@
           <ng-template let-item pTemplate="body">
             <tr [class.low-stock-row]="item.isLowStock">
               <td>{{ item.productName }}</td>
-              <td>
-                <span class="category-badge">{{ item.category }}</span>
-              </td>
-              <td>{{ item.currentStock | number }}</td>
-              <td>{{ item.unitPrice | currency: 'GHS ' }}</td>
-              <td>{{ item.inventoryValue | currency: 'GHS ' }}</td>
+              <td>{{ item.totalStock | number }}</td>
+              <td>{{ item.numberOfBatches | number }}</td>
+              <td>{{ item.totalValue | currency: 'GHS ' }}</td>
+              <td>{{ item.oldestBatchDate | date }}</td>
+              <td>{{ item.newestBatchDate | date }}</td>
               <td>
                 <p-tag
                   [severity]="item.isLowStock ? 'warn' : 'success'"
@@ -178,11 +251,56 @@
         </p-table>
       </p-card>
     }
+
+    <!-- Stock Movement Table -->
+    @if (stockMovementReport() && stockMovementReport()!.movements.length > 0) {
+      <p-card class="table-card">
+        <ng-template pTemplate="header">
+          <h3 class="card-title">Stock Movement Details</h3>
+        </ng-template>
+        <p-table
+          [paginator]="true"
+          [rows]="15"
+          [value]="stockMovementReport()!.movements"
+        >
+          <ng-template pTemplate="header">
+            <tr>
+              <th pSortableColumn="date">
+                Date <p-sortIcon field="date" />
+              </th>
+              <th pSortableColumn="produced">
+                Produced <p-sortIcon field="produced" />
+              </th>
+              <th pSortableColumn="sold">
+                Sold <p-sortIcon field="sold" />
+              </th>
+              <th pSortableColumn="netChange">
+                Net Change <p-sortIcon field="netChange" />
+              </th>
+              <th pSortableColumn="closingStock">
+                Closing Stock <p-sortIcon field="closingStock" />
+              </th>
+            </tr>
+          </ng-template>
+          <ng-template let-item pTemplate="body">
+            <tr>
+              <td>{{ item.date | date }}</td>
+              <td>{{ item.produced | number }}</td>
+              <td>{{ item.sold | number }}</td>
+              <td [class]="item.netChange >= 0 ? 'positive' : 'negative'">
+                {{ item.netChange | number }}
+              </td>
+              <td>{{ item.closingStock | number }}</td>
+            </tr>
+          </ng-template>
+        </p-table>
+      </p-card>
+    }
   } @else {
     <div class="empty-state">
       <i class="pi pi-warehouse"></i>
-      <h3>No Inventory Data Available</h3>
-      <p>Apply filters to view inventory reports</p>
+      <h3>No Data Available</h3>
+      <p>Apply filters to view inventory and stock movement reports</p>
     </div>
   }
 </div>

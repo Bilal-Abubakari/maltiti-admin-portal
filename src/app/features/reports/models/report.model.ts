@@ -25,6 +25,8 @@ export interface InventoryQueryParams {
   productId?: string;
   lowStockOnly?: boolean;
   lowStockThreshold?: number;
+  fromDate?: string;
+  toDate?: string;
   [key: string]: string | boolean | number | ProductCategory | undefined;
 }
 
@@ -72,12 +74,32 @@ export type AggregationLevel = 'daily' | 'weekly' | 'monthly' | 'yearly';
 /**
  * Sales Report Response
  */
-export interface SalesReport {
+export interface SalesSummary {
   totalRevenue: number;
-  salesCount: number;
+  totalSales: number;
   averageOrderValue: number;
-  timeSeries?: TimeSeriesDataPoint[];
-  trends?: SalesTrends;
+  totalQuantitySold: number;
+}
+
+export interface TimeSeriesItem {
+  /**
+   * Format: YYYY-MM (e.g. "2026-01")
+   */
+  date: string;
+  revenue: number;
+  salesCount: number;
+}
+
+export interface SalesTrends {
+  revenueGrowth: number;
+  salesGrowth: number;
+  averageOrderValueGrowth: number;
+}
+
+export interface SalesReport {
+  summary: SalesSummary;
+  timeSeries: TimeSeriesItem[];
+  trends: SalesTrends;
 }
 
 /**
@@ -115,9 +137,10 @@ export interface ProductSalesData {
   productId: string;
   productName: string;
   category: ProductCategory;
-  quantitySold: number;
-  revenue: number;
-  salesCount: number;
+  totalQuantitySold: number;
+  totalRevenue: number;
+  numberOfSales: number;
+  rank: number;
   averagePrice: number;
 }
 
@@ -145,6 +168,7 @@ export interface CategorySalesData {
  */
 export interface TopProductsReport {
   products: ProductSalesData[];
+  topProducts: ProductSalesData[];
   totalProducts: number;
 }
 
@@ -183,10 +207,14 @@ export interface BatchProductionData {
   productId: string;
   productName: string;
   productionDate: string;
-  quantityProduced: number;
-  quantitySold: number;
-  quantityRemaining: number;
-  utilizationRate: number;
+  initialQuantity: number;
+  soldQuantity: number;
+  remainingQuantity: number;
+  expiryDate: string;
+  soldPercentage: number;
+  isActive: boolean;
+  daysUntilExpiry: number;
+  // utilizationRate: number;
 }
 
 /**
@@ -194,10 +222,10 @@ export interface BatchProductionData {
  */
 export interface BatchSummary {
   totalBatches: number;
-  totalProduced: number;
+  totalProduction: number;
   totalSold: number;
   totalRemaining: number;
-  averageUtilizationRate: number;
+  averageUtilization: number;
 }
 
 /**
@@ -207,6 +235,8 @@ export interface BatchAgingReport {
   batches: BatchAgingData[];
   summary: BatchAgingSummary;
 }
+
+export type Status = 'fresh' | 'aging' | 'critical' | 'expired';
 
 /**
  * Batch aging data
@@ -219,8 +249,8 @@ export interface BatchAgingData {
   expiryDate: string;
   ageInDays: number;
   daysUntilExpiry: number;
-  quantityRemaining: number;
-  urgencyLevel: 'critical' | 'warning' | 'normal';
+  remainingQuantity: number;
+  status: Status;
 }
 
 /**
@@ -229,15 +259,16 @@ export interface BatchAgingData {
 export interface BatchAgingSummary {
   totalBatches: number;
   criticalBatches: number;
-  warningBatches: number;
-  normalBatches: number;
+  expiredBatches: number;
+  freshBatches: number;
+  agingBatches: number;
 }
 
 /**
  * Inventory Report Response
  */
 export interface InventoryReport {
-  items: InventoryData[];
+  inventory: InventoryData[];
   summary: InventorySummary;
 }
 
@@ -248,11 +279,12 @@ export interface InventoryData {
   productId: string;
   productName: string;
   category: ProductCategory;
-  currentStock: number;
-  lowStockThreshold: number;
+  newestBatchDate: string;
+  numberOfBatches: number;
+  oldestBatchDate: string;
+  totalStock: number;
+  totalValue: number;
   isLowStock: boolean;
-  inventoryValue: number;
-  unitPrice: number;
 }
 
 /**
@@ -260,9 +292,9 @@ export interface InventoryData {
  */
 export interface InventorySummary {
   totalProducts: number;
-  totalStockValue: number;
+  totalInventoryValue: number;
   lowStockItems: number;
-  totalUnits: number;
+  totalStockQuantity: number;
 }
 
 /**
@@ -278,11 +310,9 @@ export interface StockMovementReport {
  */
 export interface StockMovementData {
   date: string;
-  productId?: string;
-  productName?: string;
-  production: number;
-  sales: number;
-  netMovement: number;
+  produced: number;
+  sold: number;
+  netChange: number;
   closingStock: number;
 }
 
@@ -290,30 +320,29 @@ export interface StockMovementData {
  * Stock movement summary
  */
 export interface StockMovementSummary {
-  totalProduction: number;
-  totalSales: number;
-  netMovement: number;
+  totalProduced: number;
+  totalSold: number;
+  netChange: number;
+  currentStock: number;
 }
 
 /**
  * Comparative Report Response
  */
 export interface ComparativeReport {
-  currentPeriod: PeriodData;
-  previousPeriod: PeriodData;
-  comparison: ComparisonData;
+  current: PeriodData;
+  previous: PeriodData;
+  growth: ComparisonData;
 }
 
 /**
  * Period data
  */
 export interface PeriodData {
-  fromDate: string;
-  toDate: string;
-  revenue: number;
-  salesCount: number;
   averageOrderValue: number;
-  topProducts: ProductSalesData[];
+  totalSales: number;
+  totalRevenue: number;
+  totalQuantitySold: number;
 }
 
 /**

@@ -111,32 +111,32 @@
           <div class="metric-values">
             <div class="period-value">
               <span class="label">Previous</span>
-              <span class="value">{{ report()!.previousPeriod.revenue | currency: 'GHS ' }}</span>
+              <span class="value">{{ report()!.previous.totalRevenue | currency: 'GHS ' }}</span>
             </div>
             <div class="arrow">
               <i
                 [class]="
-                  report()!.comparison.revenueGrowth >= 0 ? 'pi pi-arrow-up' : 'pi pi-arrow-down'
+                  report()!.growth.revenueGrowth >= 0 ? 'pi pi-arrow-up' : 'pi pi-arrow-down'
                 "
-                [class.negative]="report()!.comparison.revenueGrowth < 0"
-                [class.positive]="report()!.comparison.revenueGrowth >= 0"
+                [class.negative]="report()!.growth.revenueGrowth < 0"
+                [class.positive]="report()!.growth.revenueGrowth >= 0"
               ></i>
             </div>
             <div class="period-value">
               <span class="label">Current</span>
-              <span class="value">{{ report()!.currentPeriod.revenue | currency: 'GHS ' }}</span>
+              <span class="value">{{ report()!.current.totalRevenue | currency: 'GHS ' }}</span>
             </div>
           </div>
           <div class="growth-indicator">
             <span
               class="growth-value"
-              [class.negative]="report()!.comparison.revenueGrowthPercentage < 0"
-              [class.positive]="report()!.comparison.revenueGrowthPercentage >= 0"
+              [class.negative]="report()!.growth.revenueGrowthPercentage < 0"
+              [class.positive]="report()!.growth.revenueGrowthPercentage >= 0"
             >
-              {{ report()!.comparison.revenueGrowthPercentage | number: '1.2-2' }}%
+              {{ report()!.growth.revenueGrowthPercentage | number: '1.2-2' }}%
             </span>
             <span class="growth-label">
-              {{ report()!.comparison.revenueGrowth | currency: 'GHS ' }}
+              {{ report()!.growth.revenueGrowth | currency: 'GHS ' }}
             </span>
           </div>
         </div>
@@ -146,36 +146,36 @@
         <div class="comparison-content">
           <div class="metric-header">
             <i class="pi pi-shopping-bag"></i>
-            <span class="metric-label">Sales Count</span>
+            <span class="metric-label">Sales Count (Quantity Sold)</span>
           </div>
           <div class="metric-values">
             <div class="period-value">
               <span class="label">Previous</span>
-              <span class="value">{{ report()!.previousPeriod.salesCount | number }}</span>
+              <span class="value">{{ report()!.previous.totalSales | number }}({{report()!.previous.totalQuantitySold | number}})</span>
             </div>
             <div class="arrow">
               <i
                 [class]="
-                  report()!.comparison.salesGrowth >= 0 ? 'pi pi-arrow-up' : 'pi pi-arrow-down'
+                  report()!.growth.salesGrowth >= 0 ? 'pi pi-arrow-up' : 'pi pi-arrow-down'
                 "
-                [class.negative]="report()!.comparison.salesGrowth < 0"
-                [class.positive]="report()!.comparison.salesGrowth >= 0"
+                [class.negative]="report()!.growth.salesGrowth < 0"
+                [class.positive]="report()!.growth.salesGrowth >= 0"
               ></i>
             </div>
             <div class="period-value">
               <span class="label">Current</span>
-              <span class="value">{{ report()!.currentPeriod.salesCount | number }}</span>
+              <span class="value">{{ report()!.current.totalSales | number }}({{report()!.current.totalQuantitySold | number}})</span>
             </div>
           </div>
           <div class="growth-indicator">
             <span
               class="growth-value"
-              [class.negative]="report()!.comparison.salesGrowthPercentage < 0"
-              [class.positive]="report()!.comparison.salesGrowthPercentage >= 0"
+              [class.negative]="report()!.growth.salesGrowthPercentage < 0"
+              [class.positive]="report()!.growth.salesGrowthPercentage >= 0"
             >
-              {{ report()!.comparison.salesGrowthPercentage | number: '1.2-2' }}%
+              {{ report()!.growth.salesGrowthPercentage | number: '1.2-2' }}%
             </span>
-            <span class="growth-label">{{ report()!.comparison.salesGrowth | number }} sales</span>
+            <span class="growth-label">{{ report()!.growth.salesGrowth | number }} sales</span>
           </div>
         </div>
       </p-card>
@@ -190,37 +190,37 @@
             <div class="period-value">
               <span class="label">Previous</span>
               <span class="value">{{
-                report()!.previousPeriod.averageOrderValue | currency: 'GHS '
+                report()!.previous.averageOrderValue | currency: 'GHS '
               }}</span>
             </div>
             <div class="arrow">
               <i
                 [class]="
-                  report()!.comparison.averageOrderValueGrowth >= 0
+                  report()!.growth.averageOrderValueGrowth >= 0
                     ? 'pi pi-arrow-up'
                     : 'pi pi-arrow-down'
                 "
-                [class.negative]="report()!.comparison.averageOrderValueGrowth < 0"
-                [class.positive]="report()!.comparison.averageOrderValueGrowth >= 0"
+                [class.negative]="report()!.growth.averageOrderValueGrowth < 0"
+                [class.positive]="report()!.growth.averageOrderValueGrowth >= 0"
               ></i>
             </div>
             <div class="period-value">
               <span class="label">Current</span>
               <span class="value">{{
-                report()!.currentPeriod.averageOrderValue | currency: 'GHS '
+                report()!.current.averageOrderValue | currency: 'GHS '
               }}</span>
             </div>
           </div>
           <div class="growth-indicator">
             <span
               class="growth-value"
-              [class.negative]="report()!.comparison.averageOrderValueGrowthPercentage < 0"
-              [class.positive]="report()!.comparison.averageOrderValueGrowthPercentage >= 0"
+              [class.negative]="report()!.growth.averageOrderValueGrowthPercentage < 0"
+              [class.positive]="report()!.growth.averageOrderValueGrowthPercentage >= 0"
             >
-              {{ report()!.comparison.averageOrderValueGrowthPercentage | number: '1.2-2' }}%
+              {{ report()!.growth.averageOrderValueGrowthPercentage | number: '1.2-2' }}%
             </span>
             <span class="growth-label">{{
-              report()!.comparison.averageOrderValueGrowth | currency: 'GHS '
+              report()!.growth.averageOrderValueGrowth | currency: 'GHS '
             }}</span>
           </div>
         </div>

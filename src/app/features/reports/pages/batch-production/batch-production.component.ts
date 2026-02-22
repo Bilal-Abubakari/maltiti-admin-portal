@@ -11,7 +11,12 @@ import { SkeletonModule } from 'primeng/skeleton';
 import { TagModule } from 'primeng/tag';
 import { ReportFiltersComponent } from '../../components/report-filters/report-filters.component';
 import { ReportsApiService } from '../../services/reports-api.service';
-import { BatchAgingReport, BatchReport, ReportQueryParams } from '../../models/report.model';
+import {
+  BatchAgingReport,
+  BatchReport,
+  ReportQueryParams,
+  Status,
+} from '../../models/report.model';
 import { DecimalPipe } from '@angular/common';
 import { first } from 'rxjs';
 
@@ -44,7 +49,7 @@ export class BatchProductionComponent implements OnInit {
   }
 
   public ngOnInit(): void {
-    this.loadReport();
+    this.loadReport(this.getDefaultParams());
   }
 
   public onFiltersApplied(params: ReportQueryParams): void {
@@ -52,15 +57,17 @@ export class BatchProductionComponent implements OnInit {
   }
 
   public onFiltersReset(): void {
-    this.loadReport();
+    this.loadReport(this.getDefaultParams());
   }
 
-  public getUrgencySeverity(level: string): 'success' | 'warn' | 'danger' {
+  public getUrgencySeverity(level: Status): 'success' | 'warn' | 'danger' | 'info' {
     switch (level) {
-      case 'critical':
+      case 'expired':
         return 'danger';
-      case 'warning':
+      case 'critical':
         return 'warn';
+      case 'aging':
+        return 'info';
       default:
         return 'success';
     }
@@ -111,17 +118,17 @@ export class BatchProductionComponent implements OnInit {
       datasets: [
         {
           label: 'Produced',
-          data: top10.map((b) => b.quantityProduced),
+          data: top10.map((b) => b.initialQuantity),
           backgroundColor: documentStyle.getPropertyValue('--p-primary-500'),
         },
         {
           label: 'Sold',
-          data: top10.map((b) => b.quantitySold),
+          data: top10.map((b) => b.soldQuantity),
           backgroundColor: documentStyle.getPropertyValue('--p-green-500'),
         },
         {
           label: 'Remaining',
-          data: top10.map((b) => b.quantityRemaining),
+          data: top10.map((b) => b.remainingQuantity),
           backgroundColor: documentStyle.getPropertyValue('--p-orange-500'),
         },
       ],
@@ -153,5 +160,16 @@ export class BatchProductionComponent implements OnInit {
         },
       },
     });
+  }
+
+  private getDefaultParams(): ReportQueryParams {
+    const currentDate = new Date();
+    const startOfYear = new Date(currentDate.getFullYear(), 0, 1);
+
+    return {
+      fromDate: startOfYear.toISOString().split('T')[0],
+      toDate: currentDate.toISOString().split('T')[0],
+      aggregation: 'monthly',
+    };
   }
 }
