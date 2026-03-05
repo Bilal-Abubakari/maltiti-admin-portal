@@ -26,7 +26,8 @@
       "@auth/*": ["src/app/auth/*"],
       "@config/*": ["src/app/config/*"],
       "@environments/*": ["src/environments/*"],
-      "@styles/*": ["src/styles/*"]
+      "@styles/*": ["src/styles/*"],
+      "@notifications/*": ["src/app/features/notifications/*"],
     }
   },
   "angularCompilerOptions": {
