@@ -24,8 +24,8 @@ import { take } from 'rxjs';
   templateUrl: './delivery-cost-update-modal.component.html',
   styleUrls: ['./delivery-cost-update-modal.component.scss'],
   imports: [CommonModule, ReactiveFormsModule, DialogModule, InputNumberModule, ButtonModule],
+  providers: [],
   changeDetection: ChangeDetectionStrategy.OnPush,
-  providers: [MessageService],
 })
 export class DeliveryCostUpdateModalComponent {
   private readonly fb = inject(FormBuilder);
