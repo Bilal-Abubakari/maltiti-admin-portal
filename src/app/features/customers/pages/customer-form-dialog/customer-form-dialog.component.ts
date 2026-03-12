@@ -69,7 +69,8 @@ export class CustomerFormDialogComponent implements OnInit {
   public readonly cancelled = output<void>();
 
   public readonly loading = this.store.selectSignal(selectLoading);
-  public readonly visible = signal(false);
+  // eslint-disable-next-line @angular-eslint/prefer-signals
+  public visible = signal(false);
 
   public readonly isEditMode = computed(() => this.customer() !== null);
   public readonly dialogHeader = computed(() =>
