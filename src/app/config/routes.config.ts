@@ -39,6 +39,7 @@ export interface IAppRoutes {
     list: IRouteConfig;
     create: IRouteConfig;
     edit: (id: string) => string;
+    payments: (id: string) => string;
   };
   auditLogs: IRouteConfig & {
     details: (id: string) => string;
@@ -101,6 +102,7 @@ export const APP_ROUTES: IAppRoutes = {
       fullPath: '/sales/create',
     },
     edit: (id: string) => `/sales/${id}`,
+    payments: (id: string) => `/sales/${id}/payments`,
   },
   auditLogs: {
     path: 'audit-logs',
